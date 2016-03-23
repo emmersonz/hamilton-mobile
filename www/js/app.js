@@ -602,6 +602,21 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       tx.executeSql(sql, [], getAudPref_success);
     });
   }
+function getscrollHTML() {
+    $.ajax({
+                type:'post',url:'https://www.hamilton.edu/thescroll/appview.cfm'
+                ,data:{}
+                ,success:function(data, textStatus,e){
+                    $('#scrollstories').empty().append(data).show();
+                   // console.log("stories in");
+                }
+                }).done(function( e ) {
+                     $('#scrollcontent').iscrollview("refresh");
+                  //  console.log("scroll view refresh");
+                });
+  }
+
+
 
   function getAudPref_success(tx, results) {
 
@@ -829,12 +844,12 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       $(document).on('click', 'a[href^="http"]', function (e) {
         e.preventDefault();
         var url = $(this).attr('href');
-        window.open(url, '_system');
+        //window.open(url, '_system');
+        window.open(url, '_blank');
         return false;
       });
     }
     else {
-       console.log("bleh");
       $(document).on('click', 'a[href^="http"]', function (e) {
         e.preventDefault();
         var url = $(this).attr('href');
@@ -926,6 +941,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
   }
 
+    
   /* Pull full JSON Feed */
   function loadFullJson() {
     $.getJSON("https://www.hamilton.edu/appPages/ajax/getpages.cfm", function (data) {
@@ -1116,6 +1132,11 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   $(document).on('pagebeforeshow', '#phonenums', function (e, data) {
     loadPhoneJson();
   });
+    $(document).on('pagebeforeshow', '#scroll', function (e, data) {
+     getscrollHTML();
+  });
+
+   
   $(document).on('pagebeforeshow', '#diningmenus', function (e, data) {
     //loadDiningJSON();
     loadAllDiningJSON(0);
@@ -1207,7 +1228,36 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       }).done(bugReportDone);
     });
   });
-
+ $(document).on("click",".scrollLikeBlank", function(e){
+            var clickedItem = $(this);
+            var identifier = $('#identifier').val();
+            var cid = $('#cid').val();
+            var storyid= $(this).data("storyid");
+            $.ajax({
+                type:'post',url:'https://www.hamilton.edu/thescroll/assets/ajax/appscrollLike.cfm'
+                ,data:{identifier: identifier,cid:cid,storyid:storyid}
+                ,success:function(data, textStatus,e){
+                   clickedItem.removeClass( "scrollLikeBlank" ).addClass('scrollLikeFull');
+                      $('#likecount'+storyid).empty().append(data).show();
+                    }
+                });
+       
+            });
+        $(document).on("click",".scrollLikeFull", function(e){
+            var clickedItem = $(this);
+            var identifier = $('#identifier').val();
+            var cid = $('#cid').val();
+            var storyid= $(this).data("storyid");
+     
+            $.ajax({
+                type:'post',url:'https://www.hamilton.edu/thescroll/assets/ajax/appscrollLike.cfm'
+                ,data:{identifier: identifier,cid:cid,storyid:storyid,remove:1}
+                ,success:function(data, textStatus,e){
+                      clickedItem.removeClass( "scrollLikeFull" ).addClass('scrollLikeBlank');
+                              $('#likecount'+storyid).empty().append(data).show();
+                                      }
+                });
+           });
   $(document).on('pagebeforeshow', '.dyn', function (e, data) {
     var pageid = ($.mobile.activePage.attr('id'));
     var htmlcontent = $('#' + pageid + '>.ui-content>.iscroll-scroller>.iscroll-content div').text();

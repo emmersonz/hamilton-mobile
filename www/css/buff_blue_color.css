@@ -13,7 +13,7 @@ svg path, svg circle, svg rect{
     fill: currentColor; 
 }
 
-.homeicon:hover,.homeicon:active{
+.homeicon:hover,.homeicon:active, a.homeicon:visited{
     background: #c3b49a !important;
     border-radius: 15px;
     color: white !important;
@@ -22,7 +22,6 @@ svg path, svg circle, svg rect{
 .homeicon.weather-anchor:hover, .homeicon.weather-anchor:active {
     background-color: transparent !important;
 }
-
 
 .title_bar {
     padding: 0px;

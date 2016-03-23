@@ -18,6 +18,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+edu.hamilton.hamiltonapp
 -->
 <widget xmlns = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
