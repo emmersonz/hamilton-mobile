@@ -679,7 +679,6 @@ a > .desc {
     .box .profile div span.handle a,
     .box .profile div span.handle a:hover,
     .box .profile div span.handle a:visited { color: #00b2de; text-decoration: none; }
-
 .box .content { clear: both; color: #444444; font: 14px/22px Georgia, san-serif; padding-top: 8px; word-wrap:break-word;}
 .box .content:first-line { font-size: 20px; }
 
