@@ -1,6 +1,6 @@
 /* BUFF AND BLUE */
 
-.homeicon {
+.homeicon,.homeicon:visited {
     color: #ccb793 !important;
     font-family: 'Titillium Web', sans-serif;
     font-size: 10%; 

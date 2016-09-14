@@ -502,6 +502,10 @@ a.homeicon.ui-btn {
 .web-width{
     width: 37px !important;   
 }
+.fall-width{
+    margin-top: -10px;
+    width: 37px;
+}
 
 .scroll-width{
     padding-top: 4px;
