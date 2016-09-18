@@ -575,7 +575,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
     };
     $.ajax({
-      url: "https://www.hamilton.edu/appPages/ajax/getAppData.cfm",
+      url: "https://newsite.hamilton.edu/appPages/ajax/getappdata.cfm",
       cache: 'true',
       dataType: 'json'
     }).done(jsonCallback);
