@@ -543,7 +543,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   }
 
   function phoneChecks(tx) {
-    var sql = "CREATE TABLE IF NOT EXISTS phonenumbers (id varchar(50) PRIMARY KEY, letter varchar(255), name varchar(255), email varchar(255), phone varchar(255), url varchar(255), officehours varchar(512))";
+    var sql = "CREATE TABLE IF NOT EXISTS phonenumbers (id varchar(50) PRIMARY KEY, letter varchar(255), name varchar(255), email varchar(255), phone varchar(255), url varchar(255), officehours varchar(255))";
     db.transaction(function (tx) {
       tx.executeSql(sql);
     });
@@ -562,6 +562,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           tx.executeSql('DELETE FROM phonenumbers');
         }
         for (var i = 0; i < len; i++) {
+          console.log(data[i].officehours);
           tx.executeSql('INSERT INTO phonenumbers (id, letter, name, email, phone, url, officehours) VALUES (?,?,?,?,?,?,?)', [data[i].id, data[i].letter, data[i].name, data[i].email, data[i].phone, data[i].url, data[i].officehours]);
         }
         getNumbers();
@@ -748,7 +749,7 @@ function getscrollHTML() {
     for (var i = 0; i < items.rows.length; i++) {
       phonecontacts.push(items.rows.item(i));
     }
-    var phonetemplate = ' <li><a href="tel:${phone}" data-rel="dialog">${name}<br><span class="smgrey">${phone}</span></li>';
+    var phonetemplate = ' <li><a href="tel:${phone}" data-rel="dialog">${name}<br><span class="smgrey">${phone}<br>${officehours}<br></span></li>';
     var permphones = '<li><a href="tel:1-315-859-4000"><span class="red">CAMPUS SAFETY (EMERGENCY)</span><br><span class="smgrey">315-859-4000</span></a</li><li><a href="tel:1-315-859-4141">Campus Safety (Non-Emergency)<br><span class="smgrey">315-859-4141</span></a></li><li><a href="tel:1-315-282-5426">Campus Safety (Tip Now) <br><span class="smgrey">315-282-5426</span></a></li><li><a href="tel:1-315-859-4340">Counseling Center<br><span class="smgrey">315-859-4340</span></a></li>';
     var pnlist = $('#phonenumlist');
     pnlist.html('');
