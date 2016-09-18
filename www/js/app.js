@@ -749,7 +749,7 @@ function getscrollHTML() {
     for (var i = 0; i < items.rows.length; i++) {
       phonecontacts.push(items.rows.item(i));
     }
-    var phonetemplate = ' <li><a href="tel:${phone}" data-rel="dialog">${name}<br><span class="smgrey">${phone}<br>${officehours}<br></span></li>';
+    var phonetemplate = ' <li><a href="#" data-rel="dialog">${name}<br><span class="smgrey">${phone}<br>${officehours}<br></span></li>';
     var permphones = '<li><a href="tel:1-315-859-4000"><span class="red">CAMPUS SAFETY (EMERGENCY)</span><br><span class="smgrey">315-859-4000</span></a</li><li><a href="tel:1-315-859-4141">Campus Safety (Non-Emergency)<br><span class="smgrey">315-859-4141</span></a></li><li><a href="tel:1-315-282-5426">Campus Safety (Tip Now) <br><span class="smgrey">315-282-5426</span></a></li><li><a href="tel:1-315-859-4340">Counseling Center<br><span class="smgrey">315-859-4340</span></a></li>';
     var pnlist = $('#phonenumlist');
     pnlist.html('');
@@ -1125,8 +1125,18 @@ function getscrollHTML() {
   });
 
   $(document).on('pagebeforeshow', '#phonenums', function (e, data) {
-    loadPhoneJson();
+    loadPhoneJson(); // Load listview
+    // Now for each element in the above listview, if clicked, do this here thingy..?
+    
+    
+    
   });
+    
+  $(document).on('pagebeforeshow', '#contactdetails', function(){       
+    $('#second [data-role="content"]').html('You have selected Link' + listObject.itemID);
+  });
+    
+    
     $(document).on('pagebeforeshow', '#scroll', function (e, data) {
      getscrollHTML();
   });
@@ -1349,7 +1359,7 @@ function getscrollHTML() {
   $(document).on('pagehide', '#webcam', function(e, data) {
     $("#webcam-img-container").empty();
   });
-  $(document).one("mobileinit", function () {
+  $(document).on("mobileinit", function () {
  
       // Setting #container div as a jqm pageContainer
       $.mobile.pageContainer = $('#container');
@@ -1408,6 +1418,7 @@ function getscrollHTML() {
 
       });
   });
+
 
     
   $(function() {
