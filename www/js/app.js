@@ -568,7 +568,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           var email = data[i].email;
           var phone = data[i].phone;
           var url = data[i].url;
-          tx.executeSql('INSERT INTO phonenumbers (id, letter, name, email, phone, url) VALUES (?,?,?,?,?,?)', [data[i].id, data[i].letter, data[i].name, data[i].email, data[i].phone, data[i].url]);
+          tx.executeSql('INSERT INTO phonenumbers (id, letter, name, email, phone, url, officehours) VALUES (?,?,?,?,?,?)', [data[i].id, data[i].letter, data[i].name, data[i].email, data[i].phone, data[i].url, data[i].officehours]);
         }
         getNumbers();
       });
