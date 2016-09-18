@@ -543,7 +543,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   }
 
   function phoneChecks(tx) {
-    var sql = "CREATE TABLE IF NOT EXISTS phonenumbers (id varchar(50) PRIMARY KEY, letter varchar(255), name varchar(255), email varchar(255), phone varchar(255), url varchar(255))";
+    var sql = "CREATE TABLE IF NOT EXISTS phonenumbers (id varchar(50) PRIMARY KEY, letter varchar(255), name varchar(255), email varchar(255), phone varchar(255), url varchar(255), officehours varchar(512))";
     db.transaction(function (tx) {
       tx.executeSql(sql);
     });
@@ -568,7 +568,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           var email = data[i].email;
           var phone = data[i].phone;
           var url = data[i].url;
-          tx.executeSql('INSERT INTO phonenumbers (id, letter, name, email, phone, url, officehours) VALUES (?,?,?,?,?,?)', [data[i].id, data[i].letter, data[i].name, data[i].email, data[i].phone, data[i].url, data[i].officehours]);
+          tx.executeSql('INSERT INTO phonenumbers (id, letter, name, email, phone, url, officehours) VALUES (?,?,?,?,?,?,?)', [data[i].id, data[i].letter, data[i].name, data[i].email, data[i].phone, data[i].url, data[i].officehours]);
         }
         getNumbers();
       });
