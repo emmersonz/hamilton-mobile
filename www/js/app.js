@@ -562,12 +562,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           tx.executeSql('DELETE FROM phonenumbers');
         }
         for (var i = 0; i < len; i++) {
-          var id = data[i].id;
-          var letter = data[i].letter;
-          var name = data[i].name;
-          var email = data[i].email;
-          var phone = data[i].phone;
-          var url = data[i].url;
           tx.executeSql('INSERT INTO phonenumbers (id, letter, name, email, phone, url, officehours) VALUES (?,?,?,?,?,?,?)', [data[i].id, data[i].letter, data[i].name, data[i].email, data[i].phone, data[i].url, data[i].officehours]);
         }
         getNumbers();
