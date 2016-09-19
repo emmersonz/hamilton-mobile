@@ -1127,7 +1127,7 @@ function getscrollHTML() {
     loadPhoneJson(); // Load listview
       
     // Now for each element in the listview
-    $('#phonenums li').each(function(){
+    $('#phonenums').each(function(){
       var elementID = $(this).attr('id');
       $(document).on('click', '#'+elementID, function(event){
           if (event.handled !== true){
