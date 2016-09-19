@@ -1127,7 +1127,7 @@ function getscrollHTML() {
     loadPhoneJson(); // Load listview
       
     // Now for each element in the listview
-    $('#phonenums').each(function(){
+    $('#phonenumlist').each(function(){
       var elementID = $(this).attr('id');
       $(document).on('click', '#'+elementID, function(event){
           if (event.handled !== true){
@@ -1142,8 +1142,7 @@ function getscrollHTML() {
     
   // CONTACT DETAILS
   $(document).on('pagebeforeshow', '#contactdetails', function(){   
-      console.log("listitemid: " + contactListObject.itemID);
-      $('#contactdetails [data-role="content"]').html('You have selected Link' + contactListObject.itemID);
+      //$('#contactdetails [data-role="content"]').html('You have selected Link' + contactListObject.itemID);
   });
     
     
