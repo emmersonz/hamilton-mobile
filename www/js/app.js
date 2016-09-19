@@ -562,7 +562,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           tx.executeSql('DELETE FROM phonenumbers');
         }
         for (var i = 0; i < len; i++) {
-          console.log(data[i].officehours);
           tx.executeSql('INSERT INTO phonenumbers (id, letter, name, email, phone, url, officehours) VALUES (?,?,?,?,?,?,?)', [data[i].id, data[i].letter, data[i].name, data[i].email, data[i].phone, data[i].url, data[i].officehours]);
         }
         getNumbers();
@@ -749,7 +748,7 @@ function getscrollHTML() {
     for (var i = 0; i < items.rows.length; i++) {
       phonecontacts.push(items.rows.item(i));
     }
-    var phonetemplate = ' <li><a href="#" data-rel="dialog">${name}<br><span class="smgrey">${phone}<br>${officehours}<br></span></li>';
+    var phonetemplate = '<li><a href="#" data-rel="dialog" id=${id}>${name}<br><span class="smgrey">${phone}<br>${officehours}<br></span></li>';
     var permphones = '<li><a href="tel:1-315-859-4000"><span class="red">CAMPUS SAFETY (EMERGENCY)</span><br><span class="smgrey">315-859-4000</span></a</li><li><a href="tel:1-315-859-4141">Campus Safety (Non-Emergency)<br><span class="smgrey">315-859-4141</span></a></li><li><a href="tel:1-315-282-5426">Campus Safety (Tip Now) <br><span class="smgrey">315-282-5426</span></a></li><li><a href="tel:1-315-859-4340">Counseling Center<br><span class="smgrey">315-859-4340</span></a></li>';
     var pnlist = $('#phonenumlist');
     pnlist.html('');
@@ -1126,14 +1125,25 @@ function getscrollHTML() {
 
   $(document).on('pagebeforeshow', '#phonenums', function (e, data) {
     loadPhoneJson(); // Load listview
-    // Now for each element in the above listview, if clicked, do this here thingy..?
+      
+    // Now for each element in the listview
+    $('#phonenums li').each(function(){
+      var elementID = $(this).attr('id');
+      $(document).on('click', '#'+elementID, function(event){
+          if (event.handled !== true){
+              contactListObject.itemID = elementID;
+              $.mobile.changePage("#contactdetails");
+              event.handled = true;
+          }
+      });
     
-    
-    
+    });
   });
     
-  $(document).on('pagebeforeshow', '#contactdetails', function(){       
-    $('#second [data-role="content"]').html('You have selected Link' + listObject.itemID);
+  // CONTACT DETAILS
+  $(document).on('pagebeforeshow', '#contactdetails', function(){   
+      console.log("listitemid: " + contactListObject.itemID);
+      $('#contactdetails [data-role="content"]').html('You have selected Link' + contactListObject.itemID);
   });
     
     
@@ -1432,3 +1442,7 @@ function getscrollHTML() {
   
 })();
 ;
+    
+var contactListObject = {
+    itemID : null
+}
