@@ -743,6 +743,25 @@ function getscrollHTML() {
     });
   }
 
+// Function sets up the contacts list click listener. On the click of a listview item
+// the id is sent to the details page.
+function setupContactsClickListener () {
+    
+    // For each list item, add a click handler with a unique ID gotten from 
+    // the phonenums db.
+    $('#phonenumlist li a').each(function(){
+      var elementID = $(this).attr('id');
+        
+      $(document).on('click', '#'+elementID, function(event){
+          if (event.handled !== true){
+              contactListObject.itemID = elementID;
+              $.mobile.changePage("#contactdetails");
+              event.handled = true;
+          }
+      });
+    });
+}
+    
   var loadPhoneList = function (items) {
     var phonecontacts = [];
     for (var i = 0; i < items.rows.length; i++) {
@@ -756,6 +775,9 @@ function getscrollHTML() {
     $.tmpl("contactTemplate", phonecontacts).appendTo('#phonenumlist');
     pnlist.prepend(permphones);
     pnlist.listview("refresh");
+      
+    // Setup the click listener for each list item so we can click them.
+    setupContactsClickListener();
   };
 
   function getNumbers_success(tx, results) {
@@ -1125,23 +1147,12 @@ function getscrollHTML() {
 
   $(document).on('pagebeforeshow', '#phonenums', function (e, data) {
     loadPhoneJson(); // Load listview
-      
-    // Now for each element in the listview
-    $('#phonenumlist').each(function(){
-      var elementID = $(this).attr('id');
-      $(document).on('click', '#'+elementID, function(event){
-          if (event.handled !== true){
-              contactListObject.itemID = elementID;
-              $.mobile.changePage("#contactdetails");
-              event.handled = true;
-          }
-      });
-    
-    });
   });
     
   // CONTACT DETAILS
   $(document).on('pagebeforeshow', '#contactdetails', function(){   
+      
+      console.log("id: " + contactListObject.itemID);
       //$('#contactdetails [data-role="content"]').html('You have selected Link' + contactListObject.itemID);
   });
     
