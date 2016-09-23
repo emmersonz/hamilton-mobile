@@ -308,13 +308,16 @@
                 </ul>
             </div>
         </div>
-
+        
+        <!--Campus Map page -->
         <div data-role="page" id="map">
+            <!-- Campus Map Page Header with a back button -->
             <div data-id="header" data-role="header" data-transition="slideleft" class="pageheader menu-hide" style="padding-top: 0; margin-bottom: 0">
                 <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
                     <i class="fa fa-home fa-2x house" style="padding:0"></i>
                 </a>
                 <h1>Campus Map</h1>
+                <!-- Campus Map Navigation Bar -->
                 <div id="mapNav" class="map" data-role="navbar">
                     <ul style="margin-bottom: -45px">
                         <li><a href="#list" id="find" data-rel="dialog" data-transition="pop" ><i class="fa fa-search fa-lg"></i>&nbsp;Find</a></li>
@@ -322,12 +325,12 @@
                     </ul>
                 </div>
             </div>
-
+             
             <div id="mapContent" data-role="content" style="position: fixed;left: 0; right: 0; bottom: 0; top: 95px;">
                 <div id="map_canvas"></div>
             </div>
         </div>
-
+        <!-- Locations page -->
         <div data-role="page" id="list" data-close-btn="right" data-history="false">
             <div data-role="header" class="ui-bar-b">
                 <h1>Locations</h1>
@@ -336,14 +339,16 @@
                 <ul id="listing" data-role="listview" data-filter="true"></ul>
             </div>
         </div>
-
+        <!--Feedback Page -->
         <div data-role="page" id="feedback-page">
+            <!--Feedback Page Header-->
             <div data-id="header" data-role="header" data-tap-toggle="false" class="pageheader">
                 <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
                     <i class="fa fa-home fa-2x house" style="padding:0"></i>
                 </a>
                 <h1>Feedback/Bug Report</h1>
             </div>
+            <!--Feedback Page and Bug sub-pages-->
             <div data-role="header" class="pageheader" data-theme="b">
                 <div id="feedback-navbarcont" data-role="navbar" class="ui-btn-active ui-state-persist">
                     <ul class="xnavbar ui-grid-a">
@@ -356,6 +361,7 @@
                     </ul>
                 </div>
             </div>
+            <!-- Feedback Form -->
             <form class="feedback">
                 <label for="feedback-text">Feedback</label>
                 <textarea name="feedback-text" id="feedback-text"></textarea>
