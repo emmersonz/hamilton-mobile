@@ -1160,10 +1160,27 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       console.log(deptName);
       
       // Set header for the correct department. Select the header with 
-      // id=details-header-name then set its text to the name of the dept.
+      // id=details-header-name from the html then set its text to the 
+      // name of the dept.
       var detailHeaderName = $('#details-header-name');
       detailHeaderName.text(deptName);
       
+      // Set the listview item values to their appropriate values.
+      
+      // For office hours, we split the string by the | delimiter.
+      var officeHours = details.rows.item(0).officehours;
+      var officeHoursPieces = officeHours.split("|"); // Split the officeHours 
+                                                      // by the | delimiter
+      // Build up the HTML and put a break between every piece of officeHoursPieces
+      var officeHoursHTML = 'Hours<br><span class="smgrey">';
+      for (var i = 1; i < officeHoursPieces.length; i++) { // Start at one to "Office Hours"
+                                                           // from being added
+          officeHoursHTML = officeHoursHTML + officeHoursPieces[i] + "<br>";
+      }
+      officeHoursHTML = officeHoursHTML + "</span>";
+      
+      // Put the Hours into its listview item
+      $('#details-officehours').html(officeHoursHTML);
       
   }
   
