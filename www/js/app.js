@@ -1150,22 +1150,48 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     loadPhoneJson(); // Load listview
   });
     
+    
   // Load the contact details. Populate the listview with phone number,
   // hours, email, and website
-  function loadContactDetails() {
+  var populateContactDetails = function (details) {
+      
+      // details should only be one row.
+      var deptName = details.rows.item(0).name;
+      console.log(deptName);
       
       // Set header for the correct department. Select the header with 
       // id=details-header-name then set its text to the name of the dept.
       var detailHeaderName = $('#details-header-name');
-      detailHeaderName.text("TEST HEADER");
+      detailHeaderName.text(deptName);
       
-  }         
+      
+  }
+  
+  // Error is the error message from the SQL db query failure.
+  function loadDetailsFailure(err) {
+      alert("Error getting Details from DB: " + err)
+  }
+  
+  // Results is the result of the db query. Called on a succesful phonenums
+  // db query
+  function loadDetailsSuccess(tx, results) {
+      populateContactDetails(results);
+  }
     
+  // Get the contact details for a specific detailID from the phonenums db
+  function loadContactDetails(detailsID) {
+      var sql = "SELECT * FROM phonenumbers WHERE id='" + detailsID + "'";
+      db.transaction(function (tx) {
+        tx.executeSql(sql, [], loadDetailsSuccess, loadDetailsFailure);
+      });      
+  }
+  
   // CONTACT DETAILS
   $(document).on('pagebeforeshow', '#contactdetails', function(){   
       
-      loadContactDetails();
+      loadContactDetails(contactListObject.itemID);
       
+      console.log("ID: " + contactListObject.itemID);
       $('#contactdetails [id="details-phonenum"]').html('The ID you picked is' + contactListObject.itemID);
   });
     
