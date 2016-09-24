@@ -108,23 +108,20 @@
             </div>
             
             <div data-iscroll="" data-role="content" class="ui-content">
-                <ul data-role="content" id="contact-details" data-filter="true"
-                    data-autodividers="true">
-                    <h1>Phone Number</h1>
-                    <div data-role="content" id="details-phonenum">
-                        
-                    </div>
-                </ul>
-                
+                <ul data-role="listview" class="widelist" data-autodividers="true" 
+                    id="contact-details">
+                    
+                    <!-- Information be filled by the javascript in pagebeforeshow listener -->
+                    <li><a id="details-officehours"></a></li>
+                    <li><a id="details-phonenum"></a></li>
+                    <li><a id="details-email"></a></li>
 <!--
-                <ul data-role="content" id="contactdetails" data-filter="true" data-autodividers="true">
-                    <h1>Phone Number</h1>
-                    <div data-id="phonenumber" data-position="fixed">
+                    <h3>Phone Number</h3>
+                    <div data-role="content" data-icon="carat-r" id="details-phonenum">
                         
                     </div>
-                </ul>
 -->
-                
+                </ul>                
             </div>
         </div>
         
