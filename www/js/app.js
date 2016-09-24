@@ -596,7 +596,8 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       tx.executeSql(sql, [], getAudPref_success);
     });
   }
-function getscrollHTML() {
+    
+  function getscrollHTML() {
     $.ajax({
                 type:'post',url:'https://www.hamilton.edu/thescroll/appview.cfm'
                 ,data:{}
@@ -743,24 +744,24 @@ function getscrollHTML() {
     });
   }
 
-// Function sets up the contacts list click listener. On the click of a listview item
-// the id is sent to the details page.
-function setupContactsClickListener () {
-    
-    // For each list item, add a click handler with a unique ID gotten from 
-    // the phonenums db.
-    $('#phonenumlist li a').each(function(){
-      var elementID = $(this).attr('id');
-        
-      $(document).on('click', '#'+elementID, function(event){
-          if (event.handled !== true){
-              contactListObject.itemID = elementID;
-              $.mobile.changePage("#contactdetails");
-              event.handled = true;
-          }
-      });
-    });
-}
+    // Function sets up the contacts list click listener. On the click of a listview item
+    // the id is sent to the details page.
+    function setupContactsClickListener () {
+
+        // For each list item, add a click handler with a unique ID gotten from 
+        // the phonenums db.
+        $('#phonenumlist li a').each(function(){
+          var elementID = $(this).attr('id');
+
+          $(document).on('click', '#'+elementID, function(event){
+              if (event.handled !== true){
+                  contactListObject.itemID = elementID;
+                  $.mobile.changePage("#contactdetails");
+                  event.handled = true;
+              }
+          });
+        });
+    }
     
   var loadPhoneList = function (items) {
     var phonecontacts = [];
@@ -1144,13 +1145,27 @@ function setupContactsClickListener () {
       // do something else
     }
   });
-
+    
   $(document).on('pagebeforeshow', '#phonenums', function (e, data) {
     loadPhoneJson(); // Load listview
   });
     
+  // Load the contact details. Populate the listview with phone number,
+  // hours, email, and website
+  function loadContactDetails() {
+      
+      // Set header for the correct department. Select the header with 
+      // id=details-header-name then set its text to the name of the dept.
+      var detailHeaderName = $('#details-header-name');
+      detailHeaderName.text("TEST HEADER");
+      
+  }         
+    
   // CONTACT DETAILS
   $(document).on('pagebeforeshow', '#contactdetails', function(){   
+      
+      loadContactDetails();
+      
       $('#contactdetails [id="details-phonenum"]').html('The ID you picked is' + contactListObject.itemID);
   });
     
