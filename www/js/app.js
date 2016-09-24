@@ -1151,9 +1151,7 @@ function setupContactsClickListener () {
     
   // CONTACT DETAILS
   $(document).on('pagebeforeshow', '#contactdetails', function(){   
-      
-      console.log("id: " + contactListObject.itemID);
-      //$('#contactdetails [data-role="content"]').html('You have selected Link' + contactListObject.itemID);
+      $('#contactdetails [id="details-phonenum"]').html('The ID you picked is' + contactListObject.itemID);
   });
     
     
