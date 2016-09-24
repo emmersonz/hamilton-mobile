@@ -378,13 +378,16 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
     var data = diningJSON;
 
+    // Function to lookup and return the description of FoodItem given itemID
     var lookupFoodItem = function (itemID, extra) {
       var item = data.items[itemID];
       var display = item.label;
       var cor_lookup = {"humane": "hm", "vegan": "vg", "vegetarian" : "v", "made without gluten-containing ingredients": "gf", "farm to fork": "f2f", "seafood watch": "sw"};
+      // Add the description of the item to what is going to be displayed if it exists
       if (item.description) {
         display += '<span class="item-description">' + item.description + '</span>';
       }
+      // If the FoodItem falls into categories like glutten-free, add that category to the description
       if (extra && item.cor_icon != []) {
         /*for (var id in item.cor_icon) {
           display = '<img height="16" width="16" src="' + data.cor_icons[id].image + '" class="ui-li-icon">'
@@ -402,9 +405,11 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       }
       return display;
     };
-
+    
+    // cafe has the Json Object with all the data for a given dining hall
     var cafe = data.days[0].cafes[targetDiningHall];
 
+    // displays a meal with a given mealID
     var initializeMeal = function (mealID) {
       var meal = cafe.dayparts[0][mealID];
       $(".items .diningmenuholder").html('');
@@ -506,6 +511,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
   };
 
+   
   function loadAllDiningJSON(dayDelta) {
     $('[data-role="navbar"]').navbar();
     checkConnection();
