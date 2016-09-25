@@ -1,5 +1,10 @@
-var diningJSONCallback; // need to declare all jsonp callbacks as global variables
+// JSON Callback global variable
+var diningJSONCallback; 
+
 var diningJSON = null;
+
+// Finds the title element in the song-container div in
+// the radio page
 var gotSong = function(data) {
   $(data).find("item").first(function() {
     var el = $(this);
@@ -8,6 +13,10 @@ var gotSong = function(data) {
 
   });
 };
+
+// Sends a JSON request for the RSS Feed (probably for The Scroll?)
+// Checks if there was an error fulfilling the request
+// Outputs the error to the console 
 var grabRssFeed = function(url, callback, cacheBust, limit) {
   console.log("start");
   var fxurl = url + (cacheBust ? ("&_=" + Math.round(new Date().getTime() / 1000)) : '');
@@ -35,6 +44,8 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     }
   );
 };
+
+// A function for logging error messages
 (function () {
   'use strict';
   var errorConsole;
@@ -42,7 +53,10 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     errorConsole += msg + " " + url + ":" + linenumber + ":" + column + " (" + errorObj + ")";
     return false;
   };
-
+    
+    
+// A lot of scrap code
+    
   /*function rewriteClass() {
     $('h4 a').addClass("external");
     $('#news').find('.iscroll-content').attr("style", "");
@@ -61,20 +75,25 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     //$(name+' .eventsholder').iscrollview('refresh');
       
   }
-
+    
+    
+  // Database global variable
   var db;
 
+  // Opens the application's database and returns a new database object
+  // window.openDatabase(name, version, display name, size)
   function setupDB() {
     db = window.openDatabase("appContentsDB", "1.0", "HamiltonCollege", 200000);
   }
 
+  // Global variable to keep track of the state of JSON and AJAX requests
   var jsonNotLoadedInitially = false;
   var loadDiningAJAXRequest;
-
+    
+    
+  // Updates the hours and open-closed icons for the dining halls
   var updateDiningHallHours = function(data) {
-    /* POST: updates the hours and open/closed signs in the dining halls menu
-     *
-     */
+   
     for (var key in data.days[0].cafes) {
         //TESTING- issue with Date object here
         /*console.log("CAFE: ");
@@ -92,20 +111,25 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         var cafeElement = $("li[data-bamco-id=\"" + key + "\"]");
         
         var day = now.getDay();
-        // DINER
+          
+        // DINER HOURS
         if (key == 512) {
           if (!(cafe.dayparts) || !(cafe.dayparts[0]) || cafe.dayparts[0].length == 0) {
-              // should add diner b hours
+            
               
             // Saturday or Sunday
             if (day == 6 || day == 0) {
+                
                 // Diner B or after 3pm
                 if (now.getHours() < 4 || now.getHours() > 15) {
                     cafeElement.find(".open-indicator").addClass("open");
                 }
+                
                 else {
                     cafeElement.find(".open-indicator").addClass("closed");
                 }
+                
+                // Diner and Diner B hours inserted into the HTML
                 cafeElement.find(".dining-hall-block .hours-text").text("12:00am - 4:00am | 3:00pm - 12:00am");
                 console.log("HERE! SATURDAY OR SUNDAY")
             } 
@@ -118,6 +142,8 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
                 else {
                     cafeElement.find(".open-indicator").addClass("closed");   
                     }
+                
+                // Diner and Diner B hours inserted into the HTML
                 cafeElement.find(".dining-hall-block .hours-text").text("12:00am - 4:00am | 9:00am - 12:00am");
                 console.log("HERE! FRIDAY")
             }
@@ -130,51 +156,70 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
                 else {
                     cafeElement.find(".open-indicator").addClass("closed");
                 }
+                
+                // Diner weekday hours inserted into the HTML
                 cafeElement.find(".dining-hall-block .hours-text").text("9:00am - 12:00am");
                 console.log("HERE! ANY DAY")
             }
-            //continue;
+          
           } 
             
             else {
-            cafeElement.removeClass("ui-li-static").children().wrapAll("<a></a>");
-            $('.dining-halls .diningmenuholder').listview("refresh");
-            cafeElement.children("a").click(function () {
-              var id = $(this).parent().attr("data-bamco-id");
-              initializeDiningHall(id);
-              $(".dining-halls").css("display", "none");
+                
+                
+                cafeElement.removeClass("ui-li-static").children().wrapAll("<a></a>");
+                $('.dining-halls .diningmenuholder').listview("refresh");
+                
+                cafeElement.children("a").click(function () {
+                    var id = $(this).parent().attr("data-bamco-id");
+                initializeDiningHall(id);
+                $(".dining-halls").css("display", "none");
+                
             });
           }
         }
         
-        // Commons
+        // COMMONS 
+        // Currently does NOT include the hours that Commons is closed
+        // during the day
         else if (key == 109) {
             cafeElement.find("a .dining-hall-block .hours-text").text("7:30am - 8:00pm");
         }
           
-        // McEwen
+        // MCEWEN
+        // Currently does NOT include the hours that Commons is closed
+        // during the day
         else if (key == 110) {
             //console.log("MCEWENNNNNNNN")
             console.log(day);
+            
+            // Friday
             if (day == 5) {
                 cafeElement.find("a .dining-hall-block .hours-text").text("7:30am - 2:30pm");
             }
+            
+            // Monday - Thursday
             else if (day <= 5 && day > 0) {
                 console.log("weekday!");
                 cafeElement.find("a .dining-hall-block .hours-text").text("7:30am - 8:00pm");
             }
+            
+            // Friday
             else {
                 console.log(key, " is closed");
                 cafeElement.find("a .dining-hall-block .hours-text").text("Closed Today");
                 cafeElement.find("a").addClass("ui-disabled");
             }
         }
-          
+        
+        // PUB
         else if (key == 598) {
             
+            // Monday - Friday lunchtime
             if (day > 0 && day < 6) {
                 cafeElement.find("a .dining-hall-block .hours-text").text("11:30am - 1:00pm");
             }
+            
             else {
                 console.log(key, " is closed");
                 cafeElement.find("a .dining-hall-block .hours-text").text("Closed Today");
@@ -190,30 +235,31 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         //console.log(cafe.dayparts[0]);
         //------------------------------------------------------------------
           
-          // goes through each meal for a giving dining hall today
-        
+    
+        // Goes through each meal for a given dining hall on the current day
         $.each(cafe.dayparts[0], function (id, meal) { 
-            // for each meal
-          // parse the dayparts of this meal into javascript dates
-
-          // convert times
+            // For each meal, parse the "dayparts" of the current meal
+            // into JavaScript dates 
         
-          var start = moment(meal.starttime,'HH:mma');
-          //var starttime12hr = start.format('h:mma');
-          var end = moment(meal.endtime,'HH:mma');
-          //endtime12hr = end.format('h:mma');
-
-
-          var xnow = moment();
-
-          //if (id == 0) {
-            //cafeElement.find("a .dining-hall-block .hours-text").text(starttime12hr);
-          //}
-
-          // is this meal going on now?
           
-          if (start.isBefore(xnow) && end.isAfter(xnow)) {
+            // Convert the time
+            var start = moment(meal.starttime,'HH:mma');
+            //var starttime12hr = start.format('h:mma');
+            var end = moment(meal.endtime,'HH:mma');
+            //endtime12hr = end.format('h:mma');
 
+
+            var xnow = moment();
+
+            
+            // Dead code
+            //if (id == 0) {
+                //cafeElement.find("a .dining-hall-block .hours-text").text(starttime12hr);
+            //}
+
+        
+          // Is the current meal being offered now?
+          if (start.isBefore(xnow) && end.isAfter(xnow)) {
             mealSet = true;
             console.log("meal has been set");
             return false;
@@ -239,6 +285,9 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         }
         */
 
+        // Set the current cafe to closed or open depending on 
+        // if the meal has been set
+        // Maybe why McEwen and Pub are always closed?
         if (mealSet) {
 
           cafeElement.find("a .open-indicator").addClass("open");
@@ -251,13 +300,14 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     }
 
   };
-
+    
+  // PRE: Data is JSON to check <- Old comment, I don't know what this means
+  // POST: Determines whether menu data should be stored 
+  //       (i.e it is up to date, etc.)
+  //       Updates warnings/error to reflect the data retrieved
   var diningDataCheck = function(data) {
-    /* PRE: data is JSON to check
-    POST: determines whether menu data should be stored (i.e. is up to date & etc)
-          updates warnings/errors to reflect data retrieved
-     */
     console.log("starting checks");
+      
     if (data.hasOwnProperty("status") && data.status === false) {
       $(".menu-not-loaded").fadeIn();
       return false;
@@ -278,19 +328,23 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       menuCurrentDate = false;
     } else {
 
-      $(".menu-out-of-date").fadeOut();
+        $(".menu-out-of-date").fadeOut();
 
-      loadDiningAJAXRequest.abort();
-      // if we find that the menu is not out of date (i.e. the date corresponds), we cancel
-      // the ajax request. This will probably not do anything if we already have the response
-      // but the response often takes a while to download so this should be fine
+        
+        // If we find that the menu is not out of date (i.e the date matches)
+        // we cancel the AJAX request. 
+        // This will probably not do anything if we already have the response
+        // BUT the response often takes a while to download so this should be 
+        // fine
+        loadDiningAJAXRequest.abort();
     }
 
     $("#this-day").addClass("ui-btn-active ui-state-persist");
     $("#next-day").removeClass("ui-btn-active");
     $("#prev-day").removeClass("ui-btn-active");
 
-    if (jsonNotLoadedInitially) { // json was not loaded, but is now loaded so hide loader
+    // JSON was not loaded, but it is now, so hide the loader
+    if (jsonNotLoadedInitially) { 
       $( "#diningmenus").find(".ldr" ).loader( "hide");
       $.mobile.loading( "hide" );
     }
@@ -300,32 +354,44 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
     return menuCurrentDate;
   };
+    
 
   var diningJSONLoadOffline = function() {
+      
+    // Get the JSON data from the dining menu database
     var sql = "SELECT jsonData FROM diningmenu";
     db.transaction(function (tx) {
       tx.executeSql(sql, [], function(txn, data) {
+        // Function gets executed if the database query was succesful
         if (data.rows.length == 0) {
           $( ".ldr" ).loader("show");
           $.mobile.loading( "show" );
           jsonNotLoadedInitially = true;
           return;
         }
+          
+        // Parse the JSON dining menu and check if it is up to date
         diningJSON = $.parseJSON(data.rows.item(0).jsonData);
         var upToDate = diningDataCheck(diningJSON, true);
-        // we are calling this offline, so it won't display anything if the data is not the right date
+          
+
+        // We are calling this offline, so it will not display anything if the 
+        // data is not the right date
         if (upToDate) {
           $('.dining-halls .diningmenuholder').show();
           updateDiningHallHours(diningJSON);
         } else {
           $('.dining-halls .diningmenuholder').fadeOut();
         }
+          
       }, function(err){
-        alert("Error processing SQL: " + err.code);
+            // Gets executed if the query was unsuccesful
+            alert("Error processing SQL: " + err.code);
       });
     });
   };
 
+  
   var updateDiningMenu = function (adata) {
     if (diningJSON != null) {
       diningJSON = adata;
@@ -346,6 +412,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   };
 
   var lastDiningHall = null;
+    
   diningJSONCallback = function (adata) {
     if (diningDataCheck(adata)) { // we are not checking this offline
       console.log("updating database with new dining menu");
