@@ -1173,8 +1173,8 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
                                                       // by the | delimiter
       // Build up the HTML and put a break between every piece of officeHoursPieces
       var officeHoursHTML = 'Hours<br><span class="smgrey">';
-      for (var i = 1; i < officeHoursPieces.length; i++) { // Start at one to "Office Hours"
-                                                           // from being added
+      for (var i = 1; i < officeHoursPieces.length; i++) { // Start at one so "Office Hours"
+                                                           // isn't
           officeHoursHTML = officeHoursHTML + officeHoursPieces[i] + "<br>";
       }
       officeHoursHTML = officeHoursHTML + "</span>";
@@ -1182,6 +1182,12 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       // Put the Hours into its listview item
       $('#details-officehours').html(officeHoursHTML);
       
+      
+      // The other two are trivial; just get the data item from the db
+      // and update the html for their listview items.
+      // var phoneNumberHTML = 
+      
+      // var phoneNumberDetail = "";
   }
   
   // Error is the error message from the SQL db query failure.
