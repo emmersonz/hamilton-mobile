@@ -792,11 +792,18 @@ function getscrollHTML() {
     }
   }
 
-  var connectionStatus;
-
+    
+  // Global string for the connection status. Either "online" or "offline"
+  var connectionStatus;    
+    
+  // Ask the navigator if we are online.
   function checkConnection() {
     connectionStatus = navigator.onLine ? 'online' : 'offline';
   }
+    
+  // There is a delay in mobile browsers of 300ms.  
+  // Remove it using FastClick. For when we open a browser from
+  // the browser.
   $(function () {
     FastClick.attach(document.body);
   });
@@ -832,9 +839,11 @@ function getscrollHTML() {
     // want to be in-app
     else if (device.platform.toUpperCase() === 'ANDROID') {
       $(document).on('click', 'a[href^="http"]', function (e) {
+          
+        // Don't let the event do it's normal thing... instead...
         e.preventDefault();
-        //var url = $(this).attr('href');
-        //window.open(url, '_system');
+        
+        // Open the event in a 
         var url = $(this).attr('href');
         navigator.app.loadUrl(url, { openExternal: true });
         return false;
@@ -844,7 +853,8 @@ function getscrollHTML() {
       $(document).on('click', 'a[href^="http"]', function (e) {
         e.preventDefault();
         var url = $(this).attr('href');
-        //window.open(url, '_system');
+          
+        // Open in-app
         window.open(url, '_blank');
         return false;
       });
@@ -857,13 +867,10 @@ function getscrollHTML() {
         return false;
       });
     }
-    /*$(document).on('click', 'a[href^="http"]', function (e) {
-      e.preventDefault();
-      var url = $(this).attr('href');
-      window.open(url, '_system', 'location=yes');
-    });*/
   }
 
+  // Audience preferences. Create the table if it exists? 
+  // We should remove.
   function setAudiencePrefTable() {
     var sql =
       "CREATE TABLE IF NOT EXISTS audPrefs ( " +
@@ -894,6 +901,7 @@ function getscrollHTML() {
     });
   }
 
+  // Content tables.
   function BuildContentTables(tx) {
     var sql =
       "CREATE TABLE IF NOT EXISTS pages ( " +
@@ -964,6 +972,7 @@ function getscrollHTML() {
   }
 
   /* insert feed parts in to dbs and update accordingly */
+  // Populate the pages DB with the pages portion of full JSON string.
   function loadPagesJson(data) {
     db.transaction(function (transaction) {
       var len = data.length;
@@ -984,6 +993,7 @@ function getscrollHTML() {
     });
   }
 
+  // Populate the app audience DB with the pages portion of full JSON string.
   function loadAppAudJson(data) {
     db.transaction(function (transaction) {
       var len = data.length;
@@ -999,6 +1009,7 @@ function getscrollHTML() {
     });
   }
 
+  // Some currently undisplayed icons are populated.
   function loadNavJson(data) {
     db.transaction(function (transaction) {
       var len = data.length;
@@ -1015,6 +1026,7 @@ function getscrollHTML() {
     });
   }
 
+  // For the audiences. 
   function loadappNavToAudienceJson(data) {
     db.transaction(function (transaction) {
       var len = data.length;
@@ -1063,11 +1075,14 @@ function getscrollHTML() {
   /* Check to see if version is Stale */
 
 
-  // initial app load
+  // Load the app. This is what happens when you load the app for the first time after it was
+  // either killed by OS or user.
   $(document).on("pagecontainerbeforechange", function (event, ui) {
-    onDeviceReady();
-    handleExternalURLs();
+    onDeviceReady(); // Wait for the device to be safe to use
+    handleExternalURLs(); // Set the means of how to open new pages.
   });
+    
+  // A pageshow handler for the phonenums db. Currently empty cuz.
   $(document).on('pageshow', '#phonenums', function (e, data) {
     // this won't work need to check to see if there is a db if not then load it if yes then show it.
     // db.transaction(getNumbers, db_error);
@@ -1080,23 +1095,24 @@ function getscrollHTML() {
     //use this function to find out if the app has access to the internet
     checkConnection();
     if (connectionStatus === 'online') {
-      setupDB();
-      phoneChecks();
+      setupDB(); // Allocate space for the dbs.
+      phoneChecks(); // Setup athe phonenumbers and diningmenu dbs.
       var table = 'pages';
-      ckTable(db, function (callBack) {
-        if (callBack == 0) {
+      ckTable(db, function (callBack) { // Check the validity of the pages table.
+        if (callBack == 0) {            // If invalid, create the audience tables.
           //create db tables
           BuildAudienceTable();
           BuildContentTables();
           //get the content and add it.
-          loadFullJson();
+          loadFullJson();               // Then create the other tables
         } else {
           //check versions then load whatever content you want here? or maybe just all for now just all
           loadFullJson();
         }
       }, table);
+        
       table = 'audPrefs';
-      ckTable(db, function (callBack) {
+      ckTable(db, function (callBack) { // Check validity of audience tables
         if (callBack == 0) {
           //if the pref table doesn't exist - show audience choice for now just enter student aud.
           setAudiencePrefTable();
@@ -1112,7 +1128,7 @@ function getscrollHTML() {
       }, table);
         
       //Color CSS Switcher- unsure if necessary    
-      var table = 'colors';
+      var table = 'colors'; // Set the colors table appropriately
       ckTable(db, function (callBack) {
         if (callBack == 0) {
           //create db tables
@@ -1129,14 +1145,17 @@ function getscrollHTML() {
     }
   });
 
+  // Load the phone numbers for the contacts menu. Gets info from db.
   $(document).on('pagebeforeshow', '#phonenums', function (e, data) {
     loadPhoneJson();
   });
+    
+  // Load the scroll HTML for the Scroll view. Gets info from db.
     $(document).on('pagebeforeshow', '#scroll', function (e, data) {
      getscrollHTML();
   });
 
-   
+  // Load the dining menu to the screen.
   $(document).on('pagebeforeshow', '#diningmenus', function (e, data) {
     //loadDiningJSON();
     loadAllDiningJSON(0);
@@ -1146,20 +1165,24 @@ function getscrollHTML() {
     });
 
     $(".dining-back-btn").removeClass('ui-btn-right').addClass('ui-btn-left');
+      
+    // On a click of a dining hall...
     $(".dining-halls ul.diningmenuholder li a").click(function () {
-      var id = $(this).parent().attr("data-bamco-id");
-      initializeDiningHall(id);
-      $(".dining-halls").css("display", "none");
+      var id = $(this).parent().attr("data-bamco-id"); // Get the dining hall name
+      initializeDiningHall(id);                        // Load from the db its menu
+      $(".dining-halls").css("display", "none");       // Display
     });
-    var currentDiningDayDelta = 0;
+    var currentDiningDayDelta = 0;                     // Keep track diff from current day
+    
+    // Select previous day...  
     $("#prev-day").click(function(){
-      currentDiningDayDelta -= 1;
-      console.log("loading", currentDiningDayDelta);
-      $( ".ldr" ).loader("show");
-      $.mobile.loading( "show" );
+      currentDiningDayDelta -= 1;                      // decrement delta
+      console.log("loading", currentDiningDayDelta);   // Load the other day
+      $( ".ldr" ).loader("show");                      // Loading... (because of async)
+      $.mobile.loading( "show" );                      // Show loading screen
       jsonNotLoadedInitially = true;
 
-      loadAllDiningJSON(currentDiningDayDelta);
+      loadAllDiningJSON(currentDiningDayDelta);        // Load the full details
     });
     $("#next-day").click(function(){
       currentDiningDayDelta += 1;
@@ -1171,6 +1194,10 @@ function getscrollHTML() {
     });
   });
 
+    
+    
+    
+    
   var feedbackSentDone = function(data, textStatus, jqXHR) {
     if (jqXHR.status == 200) {
       $("#feedback-sent-popup").text(data);
