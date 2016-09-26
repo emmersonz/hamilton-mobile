@@ -387,20 +387,31 @@
             
             <!-- Report a bug form -->
             <form class="bug">
+                
+                <!-- Input box -->
                 <label for="bug-description-text">Describe the problem</label>
                 <textarea name="bug-description-text" id="bug-description-text"></textarea>
+                
+                <!-- Input box -->
                 <label for="bug-reproduction-text">What were you doing?</label>
                 <textarea name="bug-reproduction-text" id="bug-reproduction-text"></textarea>
                 <label for="bug-email">Email (so we can get back to you)</label>
+                
+                <!-- Reporter's email -->
                 <input type="email" name="bug-email" id="bug-email">
                 <button type="submit">Send</button>
+                
+                <!-- Popup message when the bug report has been completed -->
                 <div id="bug-reported-popup" data-role="popup" data-theme="e" data-overlay-theme="a" class="ui-content">
                     Bug reported.
                 </div>
             </form>
-            <!-- /content -->
         </div>
-
+        
+        <!-- END FEEDBACK PAGE -->
+        
+        
+        <!-- COLLEGE CALENDAR PAGE -->
         <div data-role="page" id="collegeCalendar">
             <div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false" class="pageheader">
                 <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
@@ -408,14 +419,18 @@
                 </a>
                 <h1>Academic Calendar</h1>
             </div>
-            <!-- might need to mess with height stretching more -->
+            
+            <!-- Embeded Hamilton College Events Calendar -->
             <div class="ui-content" data-role="content">
                 <iframe src="https://www.google.com/calendar/embed?showTitle=0&amp;showPrint=0&amp;showTabs=0&amp;mode=AGENDA&amp;height=600&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;src=hamilton.edu_3239373830363935323439%40resource.calendar.google.com&amp;color=%235F6B02&amp;ctz=America%2FNew_York" style="position: absolute; position:fixed ; top:75px; left:0; right:0; border: none" height="100%" width="100%" frameborder="0" scrolling="no"></iframe>
             </div>
         </div>
+        <!-- COLLAGE CALENDAR PAGE END -->
+        
 
-        <!----------------SCROLL ----------------->
+        <!-- SCROLL PAGE -->
         <div data-role="page" id="scroll">
+            
             <div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false" class="pageheader">
                 <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
                     <i class="fa fa-home fa-2x house" style="padding:0"></i>
@@ -424,6 +439,7 @@
             </div>
             <!-- might need to mess with height stretching more -->
             
+            <!-- Where The Scroll stories HTML gets inserted -->
             <div class="ui-content" id="scrollcontent"data-role="content" data-iscroll="">
                 <div id="scrollstories"></div>
             </div>
