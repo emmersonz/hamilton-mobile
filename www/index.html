@@ -110,19 +110,12 @@
             </div>
             
             <div data-iscroll="" data-role="content" class="ui-content">
-                <ul data-role="listview" class="widelist" data-autodividers="true" 
+                
+                <!-- This listview is populated by the Javascript. Contains the 
+                     the info about a specific department from phonenums db. -->
+                <ul data-role="listview" class="widelist" data-autodividers="false" 
                     id="contact-details">
-                    
-                    <!-- Information be filled by the javascript in pagebeforeshow listener -->
-                    <li data-icon="false"><a id="details-officehours"></a></li>
-                    <li><a id="details-phonenum"></a></li>
-                    <li><a id="details-email"></a></li>
-<!--
-                    <h3>Phone Number</h3>
-                    <div data-role="content" data-icon="carat-r" id="details-phonenum">
-                        
-                    </div>
--->
+
                 </ul>                
             </div>
         </div>

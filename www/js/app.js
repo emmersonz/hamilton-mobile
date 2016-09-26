@@ -1155,9 +1155,12 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   // hours, email, and website
   var populateContactDetails = function (details) {
       
+      // The database row we got for the details. Contains the info about the 
+      // selected dept.
+      var detailsRow = details.rows.item(0);
+      
       // details should only be one row.
-      var deptName = details.rows.item(0).name;
-      console.log(deptName);
+      var deptName = detailsRow.name;
       
       // Set header for the correct department. Select the header with 
       // id=details-header-name from the html then set its text to the 
@@ -1165,29 +1168,47 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       var detailHeaderName = $('#details-header-name');
       detailHeaderName.text(deptName);
       
-      // Set the listview item values to their appropriate values.
+      var contactDetailsListview = $('#contact-details');
+      
+      // Clear the listview of any items by filling it in with empty string
+      contactDetailsListview.html('');
       
       // For office hours, we split the string by the | delimiter.
-      var officeHours = details.rows.item(0).officehours;
+      var officeHours = detailsRow.officehours;
       var officeHoursPieces = officeHours.split("|"); // Split the officeHours 
                                                       // by the | delimiter
       // Build up the HTML and put a break between every piece of officeHoursPieces
-      var officeHoursHTML = 'Hours<br><span class="smgrey">';
+      var officeHoursHTML = '<li data-icon="false"><a>Hours<br><span class="smgrey">';
       for (var i = 1; i < officeHoursPieces.length; i++) { // Start at one so "Office Hours"
                                                            // isn't
           officeHoursHTML = officeHoursHTML + officeHoursPieces[i] + "<br>";
       }
-      officeHoursHTML = officeHoursHTML + "</span>";
+      officeHoursHTML = officeHoursHTML + "</span></a></li>";
       
       // Put the Hours into its listview item
-      $('#details-officehours').html(officeHoursHTML);
+      contactDetailsListview.append(officeHoursHTML);
       
       
-      // The other two are trivial; just get the data item from the db
+      // The others are trivial; just get the data item from the db
       // and update the html for their listview items.
-      // var phoneNumberHTML = 
+      var phoneNumber = detailsRow.phone;
+      var phoneNumberHTML = '<li><a href=tel:' + phoneNumber + '>Phone<br><span class="smgrey">' 
+                            + phoneNumber + '<br></span></a></li>';      
+      contactDetailsListview.append(phoneNumberHTML);
       
-      // var phoneNumberDetail = "";
+      var emailAddress = detailsRow.email;
+      var emailAddressHTML = '<li><a href=mailto:' + emailAddress + '>Email<br><span class="smgrey">' 
+                            + emailAddress + '<br></span></a></li>';
+      contactDetailsListview.append(emailAddressHTML);
+      
+      var websiteURL = detailsRow.url;
+      
+      console.log(websiteURL);
+      
+      var websiteURLHTML = '<li><a href="http://hamilton.edu' + websiteURL + '">Webpage</a></li>';
+      contactDetailsListview.append(websiteURLHTML);
+      
+      contactDetailsListview.listview("refresh");
   }
   
   // Error is the error message from the SQL db query failure.
