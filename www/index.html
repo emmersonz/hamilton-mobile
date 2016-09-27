@@ -146,6 +146,7 @@
             <!-- /content -->
         </div>
 
+        <!-- Radio -->
         <div data-role="page" id="radio">
             <div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false"  class="pageheader">
                 <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
@@ -155,10 +156,12 @@
                 <h1>WHCL Radio</h1>
             </div>
             <div style="text-align:center">
-                <!--<audio controls="controls" src="http://150.209.66.147:8000/stream/1/" style="margin-left:auto; margin-right:auto;width:24em"></audio>-->
-
+            
+                <!-- An open source audio player named bbplayer. -->
                 <div class="bbplayer">
                     <span class="bb-play"></span>
+                    
+                    <!-- Get the audio stream from here. Downloads a stream pkg. -->
                     <audio src="http://150.209.66.147:8000/stream/1/" preload="auto">
                     </audio>
                 </div>
@@ -167,6 +170,7 @@
             <!-- /content -->
         </div>
 
+        <!-- Webcam -->
         <div data-role="page" id="webcam">
             <div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false"  class="pageheader">
                 <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
@@ -176,11 +180,14 @@
             </div>
             <div style="text-align:center">
                 <h3>Martin's Way & KJ</h3>
+                
+                <!-- Fileld by the html. Adds a video file with the stream. Source is the website. -->
                 <div id="webcam-img-container"></div>
             </div>
             <!-- /content -->
         </div>
 
+        <!-- Dining -->
         <div data-role="page" id="diningmenus">
             <div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false"  class="pageheader">
                 <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
@@ -191,18 +198,28 @@
                 </a>
                 <h1>Dining</h1>
             </div>
+            
+            <!-- Filled by javascript. The header for the meal nav-bar. -->
             <div data-role="header" data-theme="b" class="apageheader menu-show">
 
             </div>
             <div class="ldr"></div>
 
+            <!-- Cannot load menu. -->
             <div class="alert tight error menu-not-loaded navmargin">
                 <strong>Error</strong> the menu you requested could not be loaded.
             </div>
+            
+            <!-- Menu not the correct day-->
             <div class="alert tight warning menu-out-of-date navmargin">
                 <strong>Warning</strong> this menu is for <span class="date-container">a different date</span>.
             </div>
+            
+            <!-- The listview containing the dining halls. -->
             <div data-iscroll="" data-role="content" class="ui-content dining-halls" data-transition="slide">
+                
+                <!-- Each Dining hall name currently contains three parts: An open indicator, 
+                     the name, and the hours hard-coded. -->
                 <ul data-role="listview" class="widelist diningmenuholder">
                     <li data-bamco-id="109"><a><span class="open-indicator"></span><span class="dining-hall-block">Soper Commons<span class="hours-text">7:30 - 8:00</span></span></a></li>
                     <li data-bamco-id="110"><a><span class="open-indicator closed"></span><span class="dining-hall-block">McEwen Cafe<span class="hours-text">Closed</span></span></a></li>
@@ -210,15 +227,22 @@
                     <li data-bamco-id="512"><span class="open-indicator closed"></span><span class="dining-hall-block"><b>The Howard Diner</b><span class="hours-text">Closed</span></span></li>
                 </ul>
             </div>
+            
+            <!-- After a click on a dining hall, if the menu was not loaded. -->
              <div class="alert tight error menu-not-loaded navmargin">
                 <strong>Error</strong> the menu you requested could not be loaded.
             </div>
             <!-- /content -->
+            
+            <!-- Filled by javascript. This listview is populated with the menu for that 
+                 dining hall. -->
             <div data-iscroll="" data-role="content" class="ui-content items">
                 <ul data-role="listview" class="widelist diningmenuholder" data-filter="true">
 
                 </ul>
             </div>
+            
+            <!-- Footer contains switches between days menus. -->
             <div data-role="footer" data-theme="b" class="menu-hide footer-nav-days">
                 <div data-role="navbar" class="ui-navbar" role="navigation">
                     <ul>
@@ -231,6 +255,7 @@
             <!-- /content -->
         </div>
 
+        <!-- Events -->
         <div data-role="page" id="events">
             <div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false" data-transition="slideup" class="pageheader">
                 <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
@@ -239,10 +264,13 @@
                 <h1>All Events</h1>
                 <a href="#eventsFilterPopup" data-rel="popup" data-transition="pop" class="events-filter-btn"><i class="fa fa-filter fa-2x"></i></a>
             </div>
+            
+            <!-- Filled with the events -->
             <div class="ui-content eventsholder" data-iscroll="" data-role="content">
                 <div id="feed" class="rssFeed" ></div>
             </div>
 
+            <!-- The option to filter in the top right corner -->
             <div data-role ="popup" id = "eventsFilterPopup" data-theme="b">
                 <ul data-role="listview" data-inset="true">
                     <li data-role="list-divider">Choose an event type</li>
@@ -252,6 +280,7 @@
             </div>
         </div>
 
+        <!-- Athletics -->
         <div data-role="page" id="athleticEvents">
             <div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false" data-transition="slideup" class="pageheader">
                 <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
@@ -259,10 +288,14 @@
                 </a>
                 <h1>Athletic Events</h1>
             </div>
+            
+            <!-- Filled in the same manner as the events page is. -->
             <div class="ui-content eventsholder" data-iscroll="" data-role="content">
                 <div id="feed" class="rssFeed" ></div>
             </div>
         </div>
+        
+        
 
         <div data-role="page" id="artEvents">
             <div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false" data-transition="fade" class="pageheader">
@@ -284,7 +317,10 @@
             </div>
         </div>
 
+        
+        <!-- Alumni Events Page -->
         <div data-role="page" id="alumniEvents">
+            <!-- Alumni Events Page Header with a back button to the home page-->
             <div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false" class="pageheader">
                 <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
                     <i class="fa fa-home fa-2x house" style="padding:0"></i>
@@ -292,9 +328,11 @@
                 <h1>Alumni Events</h1>
                 <a href="#alumniFilterPopup" data-rel="popup" data-transition="pop" class="events-filter-btn"><i class="fa fa-filter fa-2x"></i></a>
             </div>
+            <!-- Alumni Events contents div -->
             <div class="ui-content eventsholder" data-iscroll="" data-role="content">
                 <div id="feed" class="rssFeed" ></div>
             </div>
+            <!-- Event Selection popup -->
             <div data-role ="popup" id = "alumniFilterPopup" data-theme="b">
                 <ul data-role="listview" data-inset="true">
                     <li data-role="list-divider">Choose an event type</li>
@@ -303,13 +341,16 @@
                 </ul>
             </div>
         </div>
-
+        
+        <!--Campus Map page -->
         <div data-role="page" id="map">
+            <!-- Campus Map Page Header with a back button -->
             <div data-id="header" data-role="header" data-transition="slideleft" class="pageheader menu-hide" style="padding-top: 0; margin-bottom: 0">
                 <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
                     <i class="fa fa-home fa-2x house" style="padding:0"></i>
                 </a>
                 <h1>Campus Map</h1>
+                <!-- Campus Map Navigation Bar -->
                 <div id="mapNav" class="map" data-role="navbar">
                     <ul style="margin-bottom: -45px">
                         <li><a href="#list" id="find" data-rel="dialog" data-transition="pop" ><i class="fa fa-search fa-lg"></i>&nbsp;Find</a></li>
@@ -317,12 +358,12 @@
                     </ul>
                 </div>
             </div>
-
+             
             <div id="mapContent" data-role="content" style="position: fixed;left: 0; right: 0; bottom: 0; top: 95px;">
                 <div id="map_canvas"></div>
             </div>
         </div>
-
+        <!-- Locations page -->
         <div data-role="page" id="list" data-close-btn="right" data-history="false">
             <div data-role="header" class="ui-bar-b">
                 <h1>Locations</h1>
@@ -331,14 +372,16 @@
                 <ul id="listing" data-role="listview" data-filter="true"></ul>
             </div>
         </div>
-
+        <!--Feedback Page -->
         <div data-role="page" id="feedback-page">
+            <!--Feedback Page Header-->
             <div data-id="header" data-role="header" data-tap-toggle="false" class="pageheader">
                 <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
                     <i class="fa fa-home fa-2x house" style="padding:0"></i>
                 </a>
                 <h1>Feedback/Bug Report</h1>
             </div>
+            <!--Feedback Page and Bug sub-pages-->
             <div data-role="header" class="pageheader" data-theme="b">
                 <div id="feedback-navbarcont" data-role="navbar" class="ui-btn-active ui-state-persist">
                     <ul class="xnavbar ui-grid-a">
@@ -351,6 +394,7 @@
                     </ul>
                 </div>
             </div>
+            <!-- Feedback Form -->
             <form class="feedback">
                 <label for="feedback-text">Feedback</label>
                 <textarea name="feedback-text" id="feedback-text"></textarea>
@@ -363,6 +407,7 @@
             </form>
             <!-- /content -->
         </div>
+        
         <div data-role="page" id="feedback-bug">
             <div data-id="header" data-role="header" data-tap-toggle="false" class="pageheader">
                 <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
