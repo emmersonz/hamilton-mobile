@@ -82,6 +82,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
   // Opens the application's database and returns a new database object
   // window.openDatabase(name, version, display name, size)
+  // If version is "", database will persist over many versions/audiences
   function setupDB() {
     db = window.openDatabase("appContentsDB", "1.0", "HamiltonCollege", 200000);
   }
