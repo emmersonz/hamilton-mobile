@@ -474,6 +474,14 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       return display;
     };
     
+    var foodItemStickers = function (itemID) {
+        var item = data.items[itemID];
+        var stickersDiv = "<div id=foodStickers>";
+        stickersDiv += "<h1>HELLO WORLD</h1>";
+        stickersDiv += "</div>";
+        return stickersDiv;
+    }
+      
     // cafe has the Json Object with all the data for a given dining hall
     var cafe = data.days[0].cafes[targetDiningHall];
 
@@ -488,6 +496,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           // Build the list item html
           var fooditemHTML = "<li>";
           fooditemHTML = fooditemHTML + lookupFoodItem(item, true);
+          //fooditemHTML += foodItemStickers(item);
           fooditemHTML = fooditemHTML + "</li>";
             
           $(".items .diningmenuholder").append(fooditemHTML).enhanceWithin();
