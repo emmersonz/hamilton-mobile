@@ -81,6 +81,7 @@
         </div>
         <!-- END HOME PAGE -->
 
+        <!-- CONTACTS -->
         <div data-role="page" id="phonenums">
             <div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false"  class="pageheader">
                 <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
@@ -95,6 +96,31 @@
             </div>
         </div>
 
+        <!-- CONTACT DETAILS -->
+        <div data-role="page" id="contactdetails">
+            <div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false"
+                class="pageheader">
+                <a class="back-btn ui-link ui-btn" href="#phonenums" data-transition="slide" 
+                    data-direction="reverse" style="padding-bottom:0">
+                    <i class="fa fa-home fa-2x house" style="padding:0"></i>
+                </a>
+                
+                <!-- Header name filled in by javascript -->
+                <h1 id=details-header-name></h1>
+            </div>
+            
+            <div data-iscroll="" data-role="content" class="ui-content">
+                
+                <!-- This listview is populated by the Javascript. Contains the 
+                     the info about a specific department from phonenums db. -->
+                <ul data-role="listview" class="widelist" data-autodividers="false" 
+                    id="contact-details">
+
+                </ul>                
+            </div>
+        </div>
+        
+        <!-- HAMILTON NEWS -->
         <div data-role="page" id="news">
             <div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false" class="pageheader">
                 <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">

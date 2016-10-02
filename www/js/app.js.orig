@@ -1315,18 +1315,28 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       // do something else
     }
   });
+<<<<<<< HEAD
 
   // Load the phone numbers for the contacts menu. Gets info from db.
+=======
+    
+>>>>>>> officehours
   $(document).on('pagebeforeshow', '#phonenums', function (e, data) {
     loadPhoneJson(); // Load listview
   });
     
+<<<<<<< HEAD
+  // Load the scroll HTML for the Scroll view. Gets info from db.
+=======
+   
+  
   // CONTACT DETAILS
   $(document).on('pagebeforeshow', '#contactdetails', function(){   
       loadContactDetails(contactListObject.itemID);
   });
-
-    // Load the scroll HTML for the Scroll view. Gets info from db.   
+    
+    
+>>>>>>> officehours
     $(document).on('pagebeforeshow', '#scroll', function (e, data) {
      getscrollHTML();
   });
