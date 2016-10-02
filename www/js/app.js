@@ -84,6 +84,8 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   // window.openDatabase(name, version, display name, size)
   // If version is "", database will persist over many versions/audiences
   function setupDB() {
+//      second field in opendatabase = version (switch to empty to allow it to persist over multiple versions)
+//      can store audience based, even through versions      
     db = window.openDatabase("appContentsDB", "1.0", "HamiltonCollege", 200000);
   }
 
@@ -1403,6 +1405,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     });
   });
 
+    //bug reporting notification function
   var bugReportDone = function(data, textStatus, jqXHR) {
     if (jqXHR.status == 200) {
       $("#bug-reported-popup").text(data);
@@ -1411,6 +1414,8 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       console.log("failure :(");
     }
   };
+    
+    //sending bug report to server, before page loads
   $(document).on('pagebeforeshow', '#feedback-bug', function (e, data) {
     $('#feedback-bug-navbarcont').find('.xnavbar > li > a').removeClass('ui-btn-icon-top');
     $('form.bug').submit(function(e){
@@ -1431,6 +1436,8 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       }).done(bugReportDone);
     });
   });
+    
+//SCROLL CLICK BEHAVIOR
  $(document).on("click",".scrollLikeBlank", function(e){
             var clickedItem = $(this);
             var identifier = $('#identifier').val();
@@ -1467,6 +1474,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     $('#' + pageid + '>.ui-content>.iscroll-scroller>.iscroll-content').html('').html(htmlcontent);
   });
 
+//RSS UPDATE    
   var initRSSList = function(name, url){
     var eventList = $('<ul data-role="listview" class="widelist" id="' + name + 'Listview"></ul>');
     grabRssFeed(url,
@@ -1514,20 +1522,23 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   });
 
 
-
+//EVENTS
   $(document).on('pagebeforeshow', '#events', function (e, data) {
     initRSSList('events', 'https://25livepub.collegenet.com/calendars/hamilton-college-open-to-the-public.rss');
   });
     
+//ATHLETICS    
   $(document).on('pagebeforeshow', '#athleticEvents', function (e, data) {
     initRSSList('athleticEvents', 'http://25livepub.collegenet.com/calendars/Hamilton_College_Athletic_Competitions.rss');
   });
 
+//EVENTS >> ART EVENTS
   $(document).on('pagebeforeshow', '#artEvents', function (e, data) {
     initRSSList('artEvents', 'http://25livepub.collegenet.com/calendars/hamilton-college-performances.rss');
       
   });
    
+//EVENTS >> ALUMNI EVENTS    
   $(document).on('pagebeforeshow', '#alumniEvents', function (e, data) {
     initRSSList('alumniEvents', 'http://25livepub.collegenet.com/calendars/hamilton-college-alumni-and-parent-events.rss');
   });
@@ -1551,6 +1562,8 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       $.getScript("js/campus.map.js", function (data, textStatus, jqxhr) {});
     }, 100);
   });
+
+//WEBCAM
   $(document).on('pagebeforeshow', '#webcam', function (e, data) {
     $("#webcam-img-container").append($('<img src="http://150.209.65.30:80/mjpg/video.mjpg" height="480" width="640" class="" id="webcam-img" style="width:100%;height:auto" alt="Camera Image">'));
   });
@@ -1567,6 +1580,8 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     $.mobile.ajaxEnabled = true;
 
   });
+    
+//RADIO 
   var songUpdateInterval;
   var updateSong = function() {
     grabRssFeed('http://spinitron.com/public/rss.php?station=whcl', function(data){
