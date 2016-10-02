@@ -485,7 +485,12 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         $(".items .diningmenuholder").append('<li data-role="list-divider">' + station.label + "</li>");
         $.each(station.items, function (id, item) {
 
-          $(".items .diningmenuholder").append("<li>" + lookupFoodItem(item, true) + "</li>").enhanceWithin();
+          // Build the list item html
+          var fooditemHTML = "<li>";
+          fooditemHTML = fooditemHTML + lookupFoodItem(item, true);
+          fooditemHTML = fooditemHTML + "</li>";
+            
+          $(".items .diningmenuholder").append(fooditemHTML).enhanceWithin();
         });
       });
       $('.items ul').listview("refresh");
