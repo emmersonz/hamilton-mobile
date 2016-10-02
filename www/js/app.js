@@ -784,6 +784,86 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   function getNumbers_success(tx, results) {
     loadPhoneList(results);
   }
+    
+ 
+  // Load the contact details. Populate the listview with phone number,
+  // hours, email, and website
+  var populateContactDetails = function (details) {
+      
+      // The database row we got for the details. Contains the info about the 
+      // selected dept.
+      var detailsRow = details.rows.item(0);
+      
+      // details should only be one row.
+      var deptName = detailsRow.name;
+      
+      // Set header for the correct department. Select the header with 
+      // id=details-header-name from the html then set its text to the 
+      // name of the dept.
+      var detailHeaderName = $('#details-header-name');
+      detailHeaderName.text(deptName);
+      
+      var contactDetailsListview = $('#contact-details');
+      
+      // Clear the listview of any items by filling it in with empty string
+      contactDetailsListview.html('');
+      
+      // For office hours, we split the string by the | delimiter.
+      var officeHours = detailsRow.officehours;
+      var officeHoursPieces = officeHours.split("|"); // Split the officeHours 
+                                                      // by the | delimiter
+      // Build up the HTML and put a break between every piece of officeHoursPieces
+      var officeHoursHTML = '<li data-icon="false"><a>Hours<br><span class="smgrey">';
+      for (var i = 1; i < officeHoursPieces.length; i++) { // Start at one so "Office Hours"
+                                                           // isn't
+          officeHoursHTML = officeHoursHTML + officeHoursPieces[i] + "<br>";
+      }
+      officeHoursHTML = officeHoursHTML + "</span></a></li>";
+      
+      // Put the Hours into its listview item
+      contactDetailsListview.append(officeHoursHTML);
+      
+      
+      // The others are trivial; just get the data item from the db
+      // and update the html for their listview items.
+      var phoneNumber = detailsRow.phone;
+      var phoneNumberHTML = '<li><a href=tel:' + phoneNumber + '>Phone<br><span class="smgrey">' 
+                            + phoneNumber + '<br></span></a></li>';      
+      contactDetailsListview.append(phoneNumberHTML);
+      
+      var emailAddress = detailsRow.email;
+      var emailAddressHTML = '<li><a href=mailto:' + emailAddress + '>Email<br><span class="smgrey">' 
+                            + emailAddress + '<br></span></a></li>';
+      contactDetailsListview.append(emailAddressHTML);
+      
+      var websiteURL = detailsRow.url;
+      
+      console.log(websiteURL);
+      
+      var websiteURLHTML = '<li><a href="http://hamilton.edu' + websiteURL + '">Webpage</a></li>';
+      contactDetailsListview.append(websiteURLHTML);
+      
+      contactDetailsListview.listview("refresh");
+  }
+  
+  // Error is the error message from the SQL db query failure.
+  function loadDetailsFailure(err) {
+      alert("Error getting Details from DB: " + err)
+  }
+  
+  // Results is the result of the db query. Called on a succesful phonenums
+  // db query
+  function loadDetailsSuccess(tx, results) {
+      populateContactDetails(results);
+  }
+    
+  // Get the contact details for a specific detailID from the phonenums db
+  function loadContactDetails(detailsID) {
+      var sql = "SELECT * FROM phonenumbers WHERE id='" + detailsID + "'";
+      db.transaction(function (tx) {
+        tx.executeSql(sql, [], loadDetailsSuccess, loadDetailsFailure);
+      });      
+  }
 
   function ckTable(tx, callBack, table) {
     var sql = "SELECT CASE WHEN tbl_name = '" + table + "' THEN 1 ELSE 0 END FROM sqlite_master WHERE tbl_name = '" + table + "' AND type = 'table'";
@@ -1150,93 +1230,11 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     loadPhoneJson(); // Load listview
   });
     
-    
-  // Load the contact details. Populate the listview with phone number,
-  // hours, email, and website
-  var populateContactDetails = function (details) {
-      
-      // The database row we got for the details. Contains the info about the 
-      // selected dept.
-      var detailsRow = details.rows.item(0);
-      
-      // details should only be one row.
-      var deptName = detailsRow.name;
-      
-      // Set header for the correct department. Select the header with 
-      // id=details-header-name from the html then set its text to the 
-      // name of the dept.
-      var detailHeaderName = $('#details-header-name');
-      detailHeaderName.text(deptName);
-      
-      var contactDetailsListview = $('#contact-details');
-      
-      // Clear the listview of any items by filling it in with empty string
-      contactDetailsListview.html('');
-      
-      // For office hours, we split the string by the | delimiter.
-      var officeHours = detailsRow.officehours;
-      var officeHoursPieces = officeHours.split("|"); // Split the officeHours 
-                                                      // by the | delimiter
-      // Build up the HTML and put a break between every piece of officeHoursPieces
-      var officeHoursHTML = '<li data-icon="false"><a>Hours<br><span class="smgrey">';
-      for (var i = 1; i < officeHoursPieces.length; i++) { // Start at one so "Office Hours"
-                                                           // isn't
-          officeHoursHTML = officeHoursHTML + officeHoursPieces[i] + "<br>";
-      }
-      officeHoursHTML = officeHoursHTML + "</span></a></li>";
-      
-      // Put the Hours into its listview item
-      contactDetailsListview.append(officeHoursHTML);
-      
-      
-      // The others are trivial; just get the data item from the db
-      // and update the html for their listview items.
-      var phoneNumber = detailsRow.phone;
-      var phoneNumberHTML = '<li><a href=tel:' + phoneNumber + '>Phone<br><span class="smgrey">' 
-                            + phoneNumber + '<br></span></a></li>';      
-      contactDetailsListview.append(phoneNumberHTML);
-      
-      var emailAddress = detailsRow.email;
-      var emailAddressHTML = '<li><a href=mailto:' + emailAddress + '>Email<br><span class="smgrey">' 
-                            + emailAddress + '<br></span></a></li>';
-      contactDetailsListview.append(emailAddressHTML);
-      
-      var websiteURL = detailsRow.url;
-      
-      console.log(websiteURL);
-      
-      var websiteURLHTML = '<li><a href="http://hamilton.edu' + websiteURL + '">Webpage</a></li>';
-      contactDetailsListview.append(websiteURLHTML);
-      
-      contactDetailsListview.listview("refresh");
-  }
-  
-  // Error is the error message from the SQL db query failure.
-  function loadDetailsFailure(err) {
-      alert("Error getting Details from DB: " + err)
-  }
-  
-  // Results is the result of the db query. Called on a succesful phonenums
-  // db query
-  function loadDetailsSuccess(tx, results) {
-      populateContactDetails(results);
-  }
-    
-  // Get the contact details for a specific detailID from the phonenums db
-  function loadContactDetails(detailsID) {
-      var sql = "SELECT * FROM phonenumbers WHERE id='" + detailsID + "'";
-      db.transaction(function (tx) {
-        tx.executeSql(sql, [], loadDetailsSuccess, loadDetailsFailure);
-      });      
-  }
+   
   
   // CONTACT DETAILS
   $(document).on('pagebeforeshow', '#contactdetails', function(){   
-      
       loadContactDetails(contactListObject.itemID);
-      
-      console.log("ID: " + contactListObject.itemID);
-      $('#contactdetails [id="details-phonenum"]').html('The ID you picked is' + contactListObject.itemID);
   });
     
     
