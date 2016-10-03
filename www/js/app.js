@@ -474,13 +474,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     var lookupFoodItem2 = function(itemID) {
         
         var fooditem = data.items[itemID];        
-        var cor_lookup = {"humane": "images/menu-item-type-humane.png", 
-                          "vegan": "images/menu-item-type-vegan.png", 
-                          "vegetarian" : "images/menu-item-type-vegetarian.png", 
-                          "made without gluten-containing ingredients": "images/menu-item-type-gluten-free.png", 
-                          "farm to fork": "images/menu-item-type-farm-to-fork.png", 
-                          "seafood watch": "images/menu-item-type-seafood.png"
-                         };
+        var cor_lookup = {"humane": "images/menu-item-type-humane.png", "vegan": "images/menu-item-type-vegan.png", "vegetarian" : "images/menu-item-type-vegetarian.png", "made without gluten-containing ingredients": "images/menu-item-type-gluten-free.png", "farm to fork": "images/menu-item-type-farm-to-fork.png", "seafood watch": "images/menu-item-type-seafood.png"};
         
         var fooditemHTML = "<a href='#'>";
         fooditemHTML += "<h1>" + fooditem.label + "</h1>"; // The name of dish
@@ -488,13 +482,16 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         if (fooditem.cor_icon != []) {
           fooditemHTML += "<span class=item-description>";
           for (var id in fooditem.cor_icon) {
-            fooditemHTML += cor_lookup[fooditem.cor_icon[id]] + " ";
+            fooditemHTML += '<img src="' + cor_lookup[fooditem.cor_icon[id]] + '"/> ';
           }
             
           fooditemHTML += "</span>";
         }
         
         fooditemHTML += "</a>";
+        
+        console.log("fooditemHTML: " + fooditemHTML);
+        
         return fooditemHTML;
     };
     
