@@ -474,7 +474,13 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     var lookupFoodItem2 = function(itemID) {
         
         var fooditem = data.items[itemID];        
-        var cor_lookup = {"humane": "hm", "vegan": "vg", "vegetarian" : "v", "made without gluten-containing ingredients": "gf", "farm to fork": "f2f", "seafood watch": "sw"};
+        var cor_lookup = {"humane": "images/menu-item-type-humane.png", 
+                          "vegan": "images/menu-item-type-vegan.png", 
+                          "vegetarian" : "images/menu-item-type-vegetarian.png", 
+                          "made without gluten-containing ingredients": "images/menu-item-type-gluten-free.png", 
+                          "farm to fork": "images/menu-item-type-farm-to-fork.png", 
+                          "seafood watch": "images/menu-item-type-seafood.png"
+                         };
         
         var fooditemHTML = "<a href='#'>";
         fooditemHTML += "<h1>" + fooditem.label + "</h1>"; // The name of dish
