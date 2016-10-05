@@ -42,29 +42,39 @@
     <script src="js/bbplayer.js" type="text/javascript"></script>
     <script src="phonegap.js"></script>
     <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: blob: filesystem; style-src * 'self' 'unsafe-inline'; script-src * 'self' 'unsafe-inline' 'unsafe-eval'; media-src * 'self'; connect-src * 'self'; object-src * 'self';"/>
+    <!-- script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="js/jquery.bpopup.min.js" type="text/javascript"></script>
+    <script>
+     $( document ).ready(function() {
+     $('#popup_this').bPopup();
+     });
+    </script -->
 </head>
     
     
 <body style="height:auto">
+    <!-- div id="popup_this">
+       <span class="button b-close">
+         <a href="#home">Student</a> 
+       </span>
+       <div data-role="popup" id="myPopup"><div id="ham-home-img"class="title_bar" style="padding-bottom:0px;"><img src="icons/Hamilton.svg" class="imgResponsive hamTitle"></div>
+           <div data-role="header">
+               <h1>Select Audience Preference</h1>
+           </div>
+           <div data-role="main" class="ui-content">
+               <ul data-role="listview">
+                   <li><a href="#home">Student</a></li>
+                   <li><a href="#home">Alumni</a></li>
+                   <li><a href="#home">Faculty</a></li>
+               </ul>
+           </div>
+        </div>
+    </div -->
 <div id="container">
     <div>
          <!-- Audience Preference Page -->
-         <div data-role="page" style="background-color:transparent!important" id="audPref">
-             <div id="ham-home-img" class="title_bar" style="padding-bottom:0px;">
-                <img src="icons/Hamilton.svg" class="imgResponsive hamTitle">
-            </div>
-             <div data-role="header" >
-                <h1>Select Audience Preference</h1>
-            </div>
-
-             <div data-role="main" class="ui-content">
-                 <ul data-role="listview">
-                    <li><a href="#home">Student</a></li>
-                    <li><a href="#home">Alumni</a></li>
-                    <li><a href="#home">Faculty</a></li>
-                 </ul>
-             </div>
-        </div>
+         <!-- div data-role="page" style="background-color:transparent!important" id="audPref">
+        </div -->
 
         <!-- HOME PAGE -->
         <div data-role="page" id="home" style="background-color:transparent!important">

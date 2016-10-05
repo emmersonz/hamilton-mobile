@@ -84,9 +84,9 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   // window.openDatabase(name, version, display name, size)
   // If version is "", database will persist over many versions/audiences
   function setupDB() {
-//      second field in opendatabase = version (switch to empty to allow it to persist over multiple versions)
-//      can store audience based, even through versions      
-    db = window.openDatabase("appContentsDB", "1.0", "HamiltonCollege", 200000);
+  // second field in opendatabase = version (switch to empty to allow it to persist over multiple versions)
+  // can store audience based, even through versions      
+    db = window.openDatabase("appContentsDB", "", "HamiltonCollege", 200000);
   }
 
   // Global variable to keep track of the state of JSON and AJAX requests
@@ -667,7 +667,8 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   }
 
   function getAudPref(tx) {
-    var sql = "select audienceID from audPrefs";
+    var sql = "SELECT * FROM audPrefs as a CROSS JOIN" +
+              "audNavtoAudience as b ON a.audienceID = b.audid";
     db.transaction(function (tx) {
       tx.executeSql(sql, [], getAudPref_success);
     });
@@ -1632,7 +1633,11 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       });
   });
 
-
+   /*$(document).on('pagebeforeshow', '#audPref', function () {
+       var popUp = '<div data-role="popup" id="myPopup"><div id="ham-home-img"class="title_bar" style="padding-bottom:0px;"><img src="icons/Hamilton.svg" class="imgResponsive hamTitle"></div><div data-role="header" ><h1>Select Audience Preference</h1></div><div data-role="main" class="ui-content"><ul data-role="listview"><li><a href="#home">Student</a></li><li><a href="#home">Alumni</a></li><li><a href="#home">Faculty</a></li></ul></div></div>';
+      var prefPage = $('#audPref');
+      prefPage.prepend(popUp);
+   }); */
     
   $(function() {
   $('.cal').hover(function() {
