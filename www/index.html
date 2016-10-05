@@ -3,8 +3,11 @@
 <head>
     <title>Hamilton College</title>
 
+    <!--metadata-->
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+    
+    <!--    Coallating files   -->
     <link href="css/jquery.mobile-1.4.5.min.css" media="screen" rel="stylesheet" type="text/css" />
     <link href="stylesheets/jquery.mobile.iscrollview.css" media="screen" rel="stylesheet" type="text/css" />
     <link href="stylesheets/jquery.mobile.iscrollview-pull.css" media="screen" rel="stylesheet" type="text/css" />
@@ -20,6 +23,7 @@
 
     <link href='https://fonts.googleapis.com/css?family=Titillium+Web:200' rel='stylesheet' type='text/css'>
 
+    <!--    begin running javascript components-->
     <script src="js/jquery-2.1.4.min.js" type="text/javascript"></script>
     <script src="js/demo.js" type="text/javascript"></script>
     <script src="js/jquery.mobile-1.4.5.min.js" type="text/javascript"></script>
@@ -39,6 +43,8 @@
     <script src="phonegap.js"></script>
     <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: blob: filesystem; style-src * 'self' 'unsafe-inline'; script-src * 'self' 'unsafe-inline' 'unsafe-eval'; media-src * 'self'; connect-src * 'self'; object-src * 'self';"/>
 </head>
+    
+    
 <body style="height:auto">
 <div id="container">
     <div>
@@ -70,7 +76,7 @@
             STATIC BACKGROUND HEIGHT- not good? -->
             <div class="home-icon-wrapper">
                 <ul class="home-all-icons" style="list-style:none; padding:0; padding-left:10px; padding-right:10px; text-align:center;">
-                    <!-- first row -->
+                    <!-- static icons -->
                      <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon con" href="#phonenums"><img src="icons/contacts.svg" class="imgResponsive svg-width svg"/><br>Contacts</a></li>
                     <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon cal" href="#collegeCalendar"><img src="icons/academiccalendar.svg" class="imgResponsive svg-width svg"/><br>Academic<br>Calendar</a></li>
                     <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon clubs" href="#events"><img src="icons/calender.svg" class="imgResponsive svg-width svg"/><br>Events</a></li>            
@@ -99,6 +105,7 @@
         </div>
         <!-- END HOME PAGE -->
 
+        <!--CONTACTS PAGE-->
         <div data-role="page" id="phonenums">
             <div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false"  class="pageheader">
                 <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
@@ -113,6 +120,32 @@
             </div>
         </div>
 
+        <!-- CONTACT DETAILS -->
+        <div data-role="page" id="contactdetails">
+            <div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false"
+                class="pageheader">
+                <a class="back-btn ui-link ui-btn" href="#phonenums" data-transition="slide" 
+                    data-direction="reverse" style="padding-bottom:0">
+                    <i class="fa fa-home fa-2x house" style="padding:0"></i>
+                </a>
+                
+                <!-- Header name filled in by javascript -->
+                <h1 id=details-header-name></h1>
+            </div>
+            
+            <div data-iscroll="" data-role="content" class="ui-content">
+                
+                <!-- This listview is populated by the Javascript. Contains the 
+                     the info about a specific department from phonenums db. -->
+                <ul data-role="listview" class="widelist" data-autodividers="false" 
+                    id="contact-details">
+
+                </ul>                
+            </div>
+        </div>
+        
+        
+        <!--NEWS PAGE-->
         <div data-role="page" id="news">
             <div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false" class="pageheader">
                 <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
@@ -164,7 +197,7 @@
             <!-- /content -->
         </div>
 
-        <!-- Radio -->
+        <!--RADIO-->
         <div data-role="page" id="radio">
             <div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false"  class="pageheader">
                 <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
@@ -188,7 +221,8 @@
             <!-- /content -->
         </div>
 
-        <!-- Webcam -->
+
+        <!--WEBCAM-->
         <div data-role="page" id="webcam">
             <div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false"  class="pageheader">
                 <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
@@ -205,7 +239,7 @@
             <!-- /content -->
         </div>
 
-        <!-- Dining -->
+        <!--DINING MENUS-->
         <div data-role="page" id="diningmenus">
             <div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false"  class="pageheader">
                 <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
@@ -272,8 +306,9 @@
             </div><!-- /footer -->
             <!-- /content -->
         </div>
-
-        <!-- Events -->
+        <!--END DINING MENUS -->
+        
+<!--EVENTS -->
         <div data-role="page" id="events">
             <div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false" data-transition="slideup" class="pageheader">
                 <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
@@ -390,8 +425,10 @@
                 <ul id="listing" data-role="listview" data-filter="true"></ul>
             </div>
         </div>
+        
         <!--Feedback Page -->
         <div data-role="page" id="feedback-page">
+            
             <!--Feedback Page Header-->
             <div data-id="header" data-role="header" data-tap-toggle="false" class="pageheader">
                 <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
@@ -399,6 +436,7 @@
                 </a>
                 <h1>Feedback/Bug Report</h1>
             </div>
+            
             <!--Feedback Page and Bug sub-pages-->
             <div data-role="header" class="pageheader" data-theme="b">
                 <div id="feedback-navbarcont" data-role="navbar" class="ui-btn-active ui-state-persist">
@@ -412,6 +450,7 @@
                     </ul>
                 </div>
             </div>
+            
             <!-- Feedback Form -->
             <form class="feedback">
                 <label for="feedback-text">Feedback</label>
@@ -423,7 +462,6 @@
                     Bug reported.
                 </div>
             </form>
-            <!-- /content -->
         </div>
         
         <div data-role="page" id="feedback-bug">
@@ -439,27 +477,42 @@
                         <li class="ui-block-a">
                             <a class="ui-btn-icon-left" id="feedback-nav" href="#feedback-page" data-icon="comment" data-transition="none">Feedback</a>
                         </li>
+                        
+                        <!-- Bug Report Header -->
                         <li class="ui-block-b">
                             <a class="ui-btn-icon-left ui-btn-active ui-state-persist" id="bug-nav" href="#feedback-bug" data-icon="gear" data-transition="none">Bug</a>
                         </li>
                     </ul>
                 </div>
             </div>
+            
+            <!-- Report a bug form -->
             <form class="bug">
+                
+                <!-- Input box -->
                 <label for="bug-description-text">Describe the problem</label>
                 <textarea name="bug-description-text" id="bug-description-text"></textarea>
+                
+                <!-- Input box -->
                 <label for="bug-reproduction-text">What were you doing?</label>
                 <textarea name="bug-reproduction-text" id="bug-reproduction-text"></textarea>
                 <label for="bug-email">Email (so we can get back to you)</label>
+                
+                <!-- Reporter's email -->
                 <input type="email" name="bug-email" id="bug-email">
                 <button type="submit">Send</button>
+                
+                <!-- Popup message when the bug report has been completed -->
                 <div id="bug-reported-popup" data-role="popup" data-theme="e" data-overlay-theme="a" class="ui-content">
                     Bug reported.
                 </div>
             </form>
-            <!-- /content -->
         </div>
-
+        
+        <!-- END FEEDBACK PAGE -->
+        
+        
+        <!-- COLLEGE CALENDAR PAGE -->
         <div data-role="page" id="collegeCalendar">
             <div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false" class="pageheader">
                 <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
@@ -467,14 +520,18 @@
                 </a>
                 <h1>Academic Calendar</h1>
             </div>
-            <!-- might need to mess with height stretching more -->
+            
+            <!-- Embeded Hamilton College Events Calendar -->
             <div class="ui-content" data-role="content">
                 <iframe src="https://www.google.com/calendar/embed?showTitle=0&amp;showPrint=0&amp;showTabs=0&amp;mode=AGENDA&amp;height=600&amp;wkst=1&amp;bgcolor=%23FFFFFF&amp;src=hamilton.edu_3239373830363935323439%40resource.calendar.google.com&amp;color=%235F6B02&amp;ctz=America%2FNew_York" style="position: absolute; position:fixed ; top:75px; left:0; right:0; border: none" height="100%" width="100%" frameborder="0" scrolling="no"></iframe>
             </div>
         </div>
+        <!-- COLLEGE CALENDAR PAGE END -->
+        
 
-        <!----------------SCROLL ----------------->
+        <!-- SCROLL PAGE -->
         <div data-role="page" id="scroll">
+            
             <div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false" class="pageheader">
                 <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
                     <i class="fa fa-home fa-2x house" style="padding:0"></i>
@@ -483,6 +540,7 @@
             </div>
             <!-- might need to mess with height stretching more -->
             
+            <!-- Where The Scroll stories HTML gets inserted -->
             <div class="ui-content" id="scrollcontent"data-role="content" data-iscroll="">
                 <div id="scrollstories"></div>
             </div>
