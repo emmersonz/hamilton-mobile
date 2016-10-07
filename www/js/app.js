@@ -1602,6 +1602,9 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   });
 
   //KJD Necessary for SVG images (icons)
+  $(document).on('pageshow', '#home', function () {
+      $("#myPopup").popup("open");
+  });
   $(document).on('pagebeforeshow', '#home', function (e, data) {
       jQuery('img.svg').each(function(){
           var $img = jQuery(this);
