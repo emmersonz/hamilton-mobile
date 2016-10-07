@@ -1064,10 +1064,11 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   }
 
   function BuildAudienceTable(tx) {
+      console.log("built audience table");
     var audsql =
-      "CREATE TABLE IF NOT EXISTS appAudiences ( " +
+      "CREATE TABLE IF NOT EXISTS audience ( " +  
+      "appAudience VARCHAR(300), " +
       "id varchar(50) PRIMARY KEY, " +
-      "appAudience VARCHAR(300)," +
       "isActive BIT)";
     db.transaction(function (tx) {
       tx.executeSql(audsql);
@@ -1076,7 +1077,33 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
   // Content tables.
   function BuildContentTables(tx) {
-    var sql =
+      console.log("built content tables")
+
+// new tables
+    var navsql =
+      "CREATE TABLE IF NOT EXISTS navigation ( " +
+      "id varchar(50) PRIMARY KEY, " +
+      "navAddClass VARCHAR(300), " +
+      "navIcon VARCHAR(300), " +
+      "navLink VARCHAR(300), " + 
+      "navTitle VARCHAR(200) " +
+      ")";
+    db.transaction(function (tx) {
+      tx.executeSql(navsql);
+    });
+
+    var navtoAudiencesql =
+      "CREATE TABLE IF NOT EXISTS navtoaud  ( " +
+      "audid VARCHAR(50), " +
+      "id varchar(50) PRIMARY KEY, " +
+      "navid VARCHAR(50), " +
+      "navorder int )";
+    db.transaction(function (tx) {
+      tx.executeSql(navtoAudiencesql);
+    });
+           
+      //old tables
+/*    var sql =
       "CREATE TABLE IF NOT EXISTS pages ( " +
       "id varchar(50) PRIMARY KEY, " +
       "pagetitle VARCHAR(255), " +
@@ -1118,12 +1145,63 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       "pageorder int )";
     db.transaction(function (tx) {
       tx.executeSql(pagetonavsql);
-    });
-
+    });*/
   }
+    
+  /*
+  Author: Ty Torregrosa 
+  Cite: Jim Thomson
+  
+  Description: This function is a repurposed version of the function named "BuildContentTables2" in clearit.html.
+  It is used to drop old tables that will no longer be used in the database (but are somehow still present in the database, despite no longer being created by any part of the code).
+  
+  Takes: Nothing
+  Returns: Nothing
+  */
+  function clearTables(tx) {
+    db.transaction(function (tx)
+                   {
+                    tx.executeSql("DROP TABLE appNavs",[],
+                                  function(tx,results){console.log("Successfully Dropped");},
+                                  function(tx,error){console.log("Could not delete");}
+                                 );
+                    tx.executeSql("DROP TABLE appNavToAudience",[],
+                                  function(tx,results){console.log("Successfully Dropped2");},
+                                  function(tx,error){console.log("Could not delete2");}
+                                 );
+                    tx.executeSql("DROP TABLE appPageToNav",[],
+                                  function(tx,results){console.log("Successfully Dropped3");},
+                                  function(tx,error){console.log("Could not delete3");}
+                                 );
+                    tx.executeSql("DROP TABLE pages",[],
+                                  function(tx,results){console.log("Successfully Dropped4");},
+                                  function(tx,error){console.log("Could not delete4");}
+                                 );
+                     tx.executeSql("DROP TABLE appAudiences",[],
+                                  function(tx,results){console.log("Successfully Dropped5");},
+                                  function(tx,error){console.log("Could not delete5");}
+                                 );
+            });
+    }    
 
     
   /* Pull full JSON Feed */
+  function loadFullJson() {
+      console.log("loadfullJSON");
+    $.getJSON("https://newsite.hamilton.edu/apppages/ajax/getalldataforTy.cfm", function (data) {
+      if (data.audience.length > 0) {
+        console.log("data.audience.length > 0");
+        loadAudienceJson(data.audience);
+      }
+      if (data.navigation.length > 0) {
+        loadNavigationJson(data.navigation);
+      }
+      if (data.navtoaud.length > 0) {
+        loadNavToAudJson(data.navtoaud);
+      }
+    });
+  }
+  /*OLD PULL FULL JSON
   function loadFullJson() {
     $.getJSON("https://www.hamilton.edu/appPages/ajax/getpages.cfm", function (data) {
       if (data.audience.length > 0) {
@@ -1142,11 +1220,12 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         loadappPageToNavJson(data.pagetonav);
       }
     });
-  }
-
+  }*/
+    
+/*OLD loadPagesJson
   /* insert feed parts in to dbs and update accordingly */
   // Populate the pages DB with the pages portion of full JSON string.
-  function loadPagesJson(data) {
+ /* function loadPagesJson(data) {
     db.transaction(function (transaction) {
       var len = data.length;
       if (len > 0) {
@@ -1164,9 +1243,26 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         transaction.executeSql('INSERT INTO pages (id,pagetitle, pagecontents, pageActive, lastupdated, lastupdatedusername,version,packet) VALUES (?,?,?,?,?,?,?,?)', [id, pagetitle, pagecontents, pageactive, lastupdated, lastupdatedusername, version, packet]);
       }
     });
-  }
+  }*/
 
+   function loadAudienceJson(data) {
+    db.transaction(function (transaction) {
+        //not sure exactly what this does, should we delete from audience?
+      var len = data.length;
+      if (len > 0) {
+        transaction.executeSql('Delete from audience');
+      }
+      for (var i = 0; i < len; i++) {
+        var id = data[i].id;
+        var appAudience = data[i].appAudience;
+        var isActive = data[i].isActive;
+        transaction.executeSql('INSERT INTO audience (id,appAudience,isActive) VALUES (?,?,?)', [id, appAudience, isActive]);
+      }
+    });
+  }
+  
   // Populate the app audience DB with the pages portion of full JSON string.
+/*  OLD LoadAppAudJson
   function loadAppAudJson(data) {
     db.transaction(function (transaction) {
       var len = data.length;
@@ -1180,10 +1276,30 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         transaction.executeSql('INSERT INTO appAudiences (id,appAudience,isActive) VALUES (?,?,?)', [id, appAudience, isActive]);
       }
     });
-  }
+  }*/
 
+  function loadNavigationJson(data) {
+    db.transaction(function (transaction) {
+      //pretty sure we need to delete from navigation (so we can check for new icons)
+      var len = data.length;
+      if (len > 0) {
+        transaction.executeSql('Delete from navigation');
+      }
+      for (var i = 0; i < len; i++) {
+        var id = data[i].id;
+        var navTitle = data[i].navTitle;
+        var navIcon = data[i].navIcon;
+        var navAddClass = data[i].navAddClass;
+        var navLink = data[i].navLink;
+        transaction.executeSql('INSERT INTO navigation (id, navTitle, navIcon, navAddClass, navLink) VALUES (?,?,?,?,?)', [id, navTitle, navIcon, navAddClass, navLink]);
+      }
+    });
+  }   
+    
+    
+  //OLD loadNavJson
   // Some currently undisplayed icons are populated.
-  function loadNavJson(data) {
+/*  function loadNavJson(data) {
     db.transaction(function (transaction) {
       var len = data.length;
       if (len > 0) {
@@ -1197,10 +1313,28 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         transaction.executeSql('INSERT INTO appNavs (id, navTitle, navIcon, navAudience) VALUES (?,?,?,?)', [id, navTitle, navIcon, navAudience]);
       }
     });
-  }
+  }*/
 
+  function loadNavToAudJson(data) {
+    db.transaction(function (transaction) {
+      //not sure if we should delete from navtoaud, if we do it allows us to change what audiences see dynamically
+      var len = data.length;
+      if (len > 0) {
+        transaction.executeSql('Delete from navtoaud');
+      }
+      for (var i = 0; i < len; i++) {
+        var id = data[i].id;
+        var navid = data[i].navid;
+        var audid = data[i].audid;
+        var navorder = data[i].navorder;
+        transaction.executeSql('INSERT INTO navtoaud (id, navid, audid, navorder) VALUES (?,?,?,?)', [id, navid, audid, navorder]);
+      }
+    });
+  }   
+    
+  //OLD appNavToAudienceJson
   // For the audiences. 
-  function loadappNavToAudienceJson(data) {
+  /*function loadappNavToAudienceJson(data) {
     db.transaction(function (transaction) {
       var len = data.length;
       if (len > 0) {
@@ -1215,7 +1349,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         transaction.executeSql('INSERT INTO appNavToAudience (id, navid, audid, navorder, navlink) VALUES (?,?,?,?,?)', [id, navid, audid, navorder, navlink]);
       }
     });
-  }
+  }*/
 
   function loadappPageToNavJson(data) {
     db.transaction(function (transaction) {
@@ -1268,17 +1402,20 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     //use this function to find out if the app has access to the internet
     checkConnection();
     if (connectionStatus === 'online') {
+        console.log("online");  
       setupDB(); // Allocate space for the dbs.
-      phoneChecks(); // Setup athe phonenumbers and diningmenu dbs.
+      phoneChecks(); // Setup the phonenumbers and diningmenu dbs.
       var table = 'pages';
       ckTable(db, function (callBack) { // Check the validity of the pages table.
         if (callBack == 0) {            // If invalid, create the audience tables.
           //create db tables
+          console.log("callback == 0");
           BuildAudienceTable();
           BuildContentTables();
           //get the content and add it.
           loadFullJson();               // Then create the other tables
         } else {
+          console.log("callback != 0");
           //check versions then load whatever content you want here? or maybe just all for now just all
           loadFullJson();
         }
