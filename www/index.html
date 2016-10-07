@@ -52,7 +52,15 @@
         <div data-role="page" id="home" style="background-color:transparent!important">
             <div id="ham-home-img" class="title_bar" style="padding-bottom:0px;">
                 <img src="icons/Hamilton.svg" class="imgResponsive hamTitle">
+                
+               <a class="ui-btn-icon-right" id="settings" href="#settings" data-icon="gear" data-transition="none" style="position:absolute; top:30px;right:5px"></a>
+                
             </div>
+            
+            <!--<div id = "settings-button">
+            <a class="ui-btn-icon-right" id="settings" href="" data-icon="gear" data-transition="none">Settings</a>
+            </div>-->
+            
             <div id="home-gradient"></div>
             <!-- <hr class="home-divider">
             STATIC BACKGROUND HEIGHT- not good? -->
@@ -86,6 +94,29 @@
 
         </div>
         <!-- END HOME PAGE -->
+        
+        <!-- SETTINGS PAGE -->
+        <div data-role="page" id="settings">
+            
+            <div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false"  class="pageheader">
+                <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
+                    <i class="fa fa-home fa-2x house" style="padding:0"></i>
+                </a>
+                <h1>Settings</h1>
+            </div>
+            
+            <!-- Settings Menu Options -->
+            <div data-iscroll="" data-role="content" class="ui-content">
+                <ul data-role="listview" class="widelist" id="settingsmenu" data-filter="false" data-autodividers="false">
+                    <li><a id="changeaud" href="#">Change Audience</a></li>
+                    <li><a id="changeicons" href="#">Manage Icons</a></li>
+                </ul>
+                <br>
+            </div>
+        </div>
+        
+        
+        <!-- END SETTINGS PAGE -->
 
         <!--CONTACTS PAGE-->
         <div data-role="page" id="phonenums">
