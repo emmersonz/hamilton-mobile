@@ -484,7 +484,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         $.each(station.items, function (id, item) {
 
           // Build the list item html
-          var fooditemHTML = "<li>";
+          var fooditemHTML = "<li data-icon='false'>";
           fooditemHTML += lookupFoodItem(item);
           fooditemHTML += "</li>";
             
