@@ -445,33 +445,10 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     }
 
     var data = diningJSON;
-
-    // Function to lookup and return the description of FoodItem given itemID
-    var lookupFoodItem = function (itemID, extra) {
-      var item = data.items[itemID];
-      var display = item.label;
-      var cor_lookup = {"humane": "hm", "vegan": "vg", "vegetarian" : "v", "made without gluten-containing ingredients": "gf", "farm to fork": "f2f", "seafood watch": "sw"};
-        
-      // Add the description of the item to what is going to be displayed if it exists
-      if (item.description) {
-        display += '<span class="item-description">' + item.description + '</span>';
-      }
-        
-      // If the FoodItem falls into categories like glutten-free, add that category to the description
-      if (extra && item.cor_icon != []) {
-        display += '<br><span>';
-        for (var id in item.cor_icon) {
-          display += cor_lookup[item.cor_icon[id]] + " ";
-        }
-
-        display += '</span>';
-      }
-      return display;
-    };
       
     // Lookup the fooditem from the db query and return an HTML string with the
     // properly formatted info.
-    var lookupFoodItem2 = function(itemID) {
+    var lookupFoodItem = function(itemID) {
         
         var fooditem = data.items[itemID];        
         var cor_lookup = {"humane": "images/menu-item-type-humane.png", "vegan": "images/menu-item-type-vegan.png", "vegetarian" : "images/menu-item-type-vegetarian.png", "made without gluten-containing ingredients": "images/menu-item-type-gluten-free.png", "farm to fork": "images/menu-item-type-farm-to-fork.png", "seafood watch": "images/menu-item-type-seafood.png"};
@@ -493,17 +470,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         console.log("fooditemHTML: " + fooditemHTML);
         
         return fooditemHTML;
-    };
-    
-    var foodItemStickers = function (itemID) {
-        var item = data.items[itemID];
-        var stickersDiv = "<div class='stickers'>";
-        stickersDiv += "<h1>HELLO WORLD</h1>";
-        stickersDiv += "</div>";
-        return stickersDiv;
-    };
-      
-  
+    };  
       
     // cafe has the Json Object with all the data for a given dining hall
     var cafe = data.days[0].cafes[targetDiningHall];
@@ -518,8 +485,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
           // Build the list item html
           var fooditemHTML = "<li>";
-          // fooditemHTML += foodItemStickers(item);
-          fooditemHTML += lookupFoodItem2(item);
+          fooditemHTML += lookupFoodItem(item);
           fooditemHTML += "</li>";
             
           $(".items .diningmenuholder").append(fooditemHTML).enhanceWithin();
