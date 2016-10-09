@@ -9,3 +9,10 @@
 .sticker {
     width:20px;
 }
+
+/* 
+  Make it so that the menu legend is spaced nicely
+*/
+.legend {
+    padding-left:1em;
+}

@@ -480,7 +480,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         fooditemHTML += "<h1>" + fooditem.label + "</h1>"; // The name of dish
         
         if (fooditem.cor_icon != []) {
-          fooditemHTML += "<span class=item-description>";
+          fooditemHTML += "<span class='item-description'>";
           for (var id in fooditem.cor_icon) {
             fooditemHTML += '<img class="sticker" src="' + cor_lookup[fooditem.cor_icon[id]] + '"/> ';
           }
