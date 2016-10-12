@@ -665,23 +665,27 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       tx.executeSql(sql, [], getNumbers_success, errorCBgetNumbers);
     });
   }
-
-  // Checks to see if a preferred audience has been selected yet
-  function checkPref() {
+  /* Author: Emmerson Zhaime
+  Gets all the app audiences which are activated
+  */
+  function getActiveAud() {
       var sql = "SELECT * FROM audience WHERE isActive=1";
       db.transaction(function (tx) {
-        tx.executeSql(sql, [], checkPref_success, errorCBgetNumbers);
+        tx.executeSql(sql, [], getActiveAud_success, errorCBgetNumbers);
       });
   }
-    
-  // If a preferred audience is not set then a pop up window comes up 
-  function checkPref_success(tx, results){
+ /* Author: Emmerson Zhaime
+  If the number of activated app audiences are more than one a pop up comes up that prompts you to choose your audience preference
+  */
+  function getActiveAud_success(tx, results){
      if(results.rows.length > 1){
          $("#myPopup").popup("open");
         };    
     }
 
   // Sets one specific audience active in the audience table
+  // I (Emmerson) had written this function to set an audience preference but Lyndsay is writting another one
+/*
   function setPref(num){
     if(num==1){
         var sql ="UPDATE audience SET isActive=0 WHERE appAudience='Students' OR appAudience='Alumni'";
@@ -704,16 +708,20 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       });
     };  
   }
+   */
     
-  // Selects the appAudience and aud id for the preferred audience in the audience table
+   /* Author: Emmerson Zhaime
+   Selects the appAudience and aud id for audience set to Active in the audience table
+   */
   function getPrefAud(tx){
-      console.log("hi");
       var sql = "SELECT appAudience, id FROM audience WHERE isActive=1 LIMIT 1"; // 'Limit 1'is there temporarily
       db.transaction(function(tx){
           tx.executeSql(sql, [], getAudIcons);
       });
   }
-    
+  /* Author: Emmerson Zhaime    
+  // Gets all the information for the icons for a given audience preference and calls a function to make the homepage
+   */
   function getAudIcons(tx, results){
       var audience = results.rows.item(0);
       var audienceID = audience.id;
@@ -723,7 +731,9 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           tx.executeSql(sql, [], makeHomePage);
       });
   }
-    
+   /* Author: Emmerson Zhaime
+  This is supposed to be the function that makes a homepage from a list of icon information. Now it is just printing all the icons information in the console
+  */
   function makeHomePage(tx, results){
     var len = results.rows.length;
     console.log("length: "+ len);
@@ -744,12 +754,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
                      $('#scrollcontent').iscrollview("refresh");
                   //  console.log("scroll view refresh");
                 });
-  }
-
-
-
-  function getAudPref_success(tx, results) {
-
   }
 
   function navorderCmp(fa, fb) {
@@ -1799,8 +1803,11 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   });
 
   //KJD Necessary for SVG images (icons)
+  /* Author: Emmerson Zhaime
+  Calls a function that decides whether or not to show a pop up at the homepage
+  */
   $(document).on('pageshow', '#home', function () {
-      checkPref();
+      getActiveAud();
   });
 
   $(document).on('pagebeforeshow', '#home', function (e, data) {
