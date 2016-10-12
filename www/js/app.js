@@ -666,14 +666,72 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     });
   }
 
-  function getAudPref(tx) {
-    var sql = "SELECT * FROM audPrefs as a CROSS JOIN" +
-              "audNavtoAudience as b ON a.audienceID = b.audid";
-    db.transaction(function (tx) {
-      tx.executeSql(sql, [], getAudPref_success);
-    });
+  // Checks to see if a preferred audience has been selected yet
+  function checkPref() {
+      var sql = "SELECT * FROM audience WHERE isActive=1";
+      db.transaction(function (tx) {
+        tx.executeSql(sql, [], checkPref_success, errorCBgetNumbers);
+      });
   }
     
+  // If a preferred audience is not set then a pop up window comes up 
+  function checkPref_success(tx, results){
+     if(results.rows.length > 1){
+         $("#myPopup").popup("open");
+        };    
+    }
+
+  // Sets one specific audience active in the audience table
+  function setPref(num){
+    if(num==1){
+        var sql ="UPDATE audience SET isActive=0 WHERE appAudience='Students' OR appAudience='Alumni'";
+        db.transaction(function (tx) {
+        tx.executeSql(sql);
+      });
+    };
+    
+    if(num==2){
+        var sql ="UPDATE audience SET isActive=0 WHERE appAudience='Staff' OR appAudience='Alumni'";
+        db.transaction(function (tx) {
+        tx.executeSql(sql);
+      });
+    };
+      
+    if(num==3){
+        var sql ="UPDATE audience SET isActive=0 WHERE appAudience='Students' OR appAudience='Staff'";
+        db.transaction(function (tx) {
+        tx.executeSql(sql);
+      });
+    };  
+  }
+    
+  // Selects the appAudience and aud id for the preferred audience in the audience table
+  function getPrefAud(tx){
+      console.log("hi");
+      var sql = "SELECT appAudience, id FROM audience WHERE isActive=1 LIMIT 1"; // 'Limit 1'is there temporarily
+      db.transaction(function(tx){
+          tx.executeSql(sql, [], getAudIcons);
+      });
+  }
+    
+  function getAudIcons(tx, results){
+      var audience = results.rows.item(0);
+      var audienceID = audience.id;
+      console.log (audience);
+      var sql = "SELECT * FROM navtoaud as a CROSS JOIN navigation as b ON a.navid=b.id where a.audid='" + audienceID + "'";
+      db.transaction(function(tx){
+          tx.executeSql(sql, [], makeHomePage);
+      });
+  }
+    
+  function makeHomePage(tx, results){
+    var len = results.rows.length;
+    console.log("length: "+ len);
+    for (var i = 0; i < len; i++) {
+          console.log(results.rows.item(i));   
+        }
+  }
+
   function getscrollHTML() {
     $.ajax({
                 type:'post',url:'https://www.hamilton.edu/thescroll/appview.cfm'
@@ -1415,6 +1473,8 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           BuildContentTables();
           //get the content and add it.
           loadFullJson();               // Then create the other tables
+          // checkPref();
+          getPrefAud();
         } else {
           console.log("callback != 0");
           //check versions then load whatever content you want here? or maybe just all for now just all
@@ -1740,8 +1800,9 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
   //KJD Necessary for SVG images (icons)
   $(document).on('pageshow', '#home', function () {
-      $("#myPopup").popup("open");
+      checkPref();
   });
+
   $(document).on('pagebeforeshow', '#home', function (e, data) {
       jQuery('img.svg').each(function(){
           var $img = jQuery(this);
