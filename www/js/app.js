@@ -673,6 +673,66 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     });
   }
     
+
+  
+    
+    //var sql ="UPDATE audience SET isActive=0 WHERE appAudience='Students' OR appAudience='Staff'";//
+    
+    // For each list item, add a click handler with a unique ID gotten from 
+        // the phonenums db.
+       // $('#phonenumlist li a').each(function(){
+        //  var elementID = $(this).attr('id');
+
+        //  $(document).on('click', '#'+elementID, function(event){
+        //      if (event.handled !== true){
+        //          contactListObject.itemID = elementID;
+        //          $.mobile.changePage("#contactdetails");
+        //          event.handled = true;
+        //      }
+        //  });
+       // });
+  function audienceFormClickHandlers() {
+      $('input[name="audiencelist"]').change(function () {
+          console.log("CLICKED " + $(this).attr('id'));
+          var newAudience = $(this).attr('id').split('-')[1];
+          console.log(newAudience);
+          
+          var sql = "UPDATE audience SET isActive=1 WHERE appAudience=" + newAudience;
+          db.transaction(function (tx) {
+              tx.executeSql(sql);
+          });
+          
+      });
+      
+     // console.log($('input[name="audiencelist"]').length);
+     // $('input[name="audiencelist"]').each(function () {
+     //     var bttnID = $(this).attr('id');
+     //     console.log(bttnID);
+     //     $(document).on('click', '#' + bttnID, function(event) {
+     //         alert('You clicked' + $(this).val());
+     //         console.log('In click function');
+      //        console.log($(this).attr('id'));
+      //    });
+     // });
+  
+  }
+
+  // checkCurrentAudience 
+  function checkCurrentAudienceRadioBttn(tx, results) {
+      var currentAudience = results.rows.item(0)['appAudience'];
+      $('#choice-' + currentAudience).attr("checked",true).checkboxradio("refresh");
+  }
+    
+  // Selects the appAudience and aud id for the preferred audience in the audience table
+  function checkAudienceRadioBttn(tx) {
+      console.log("getting audiences");
+      var sql = "SELECT appAudience, id FROM audience where isActive = 1"; 
+      db.transaction(function(tx){
+          tx.executeSql(sql, [], checkCurrentAudienceRadioBttn);
+      });
+  }
+   
+    
   function getscrollHTML() {
     $.ajax({
                 type:'post',url:'https://www.hamilton.edu/thescroll/appview.cfm'
@@ -1201,49 +1261,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       }
     });
   }
-  /*OLD PULL FULL JSON
-  function loadFullJson() {
-    $.getJSON("https://www.hamilton.edu/appPages/ajax/getpages.cfm", function (data) {
-      if (data.audience.length > 0) {
-        loadAppAudJson(data.audience);
-      }
-      if (data.navigation.length > 0) {
-        loadNavJson(data.navigation);
-      }
-      if (data.navtoaud.length > 0) {
-        loadappNavToAudienceJson(data.navtoaud);
-      }
-      if (data.pages.length > 0) {
-        loadPagesJson(data.pages);
-      }
-      if (data.pagetonav.length > 0) {
-        loadappPageToNavJson(data.pagetonav);
-      }
-    });
-  }*/
-    
-/*OLD loadPagesJson
-  /* insert feed parts in to dbs and update accordingly */
-  // Populate the pages DB with the pages portion of full JSON string.
- /* function loadPagesJson(data) {
-    db.transaction(function (transaction) {
-      var len = data.length;
-      if (len > 0) {
-        transaction.executeSql('Delete from pages');
-      }
-      for (var i = 0; i < len; i++) {
-        var id = data[i].id;
-        var pagetitle = data[i].pagetitle;
-        var pagecontents = data[i].pagecontents;
-        var pageactive = data[i].pageactive;
-        var lastupdated = data[i].lastupdated;
-        var lastupdatedusername = data[i].lastupdatedusername;
-        var version = data[i].version;
-        var packet = data[i].packet;
-        transaction.executeSql('INSERT INTO pages (id,pagetitle, pagecontents, pageActive, lastupdated, lastupdatedusername,version,packet) VALUES (?,?,?,?,?,?,?,?)', [id, pagetitle, pagecontents, pageactive, lastupdated, lastupdatedusername, version, packet]);
-      }
-    });
-  }*/
+  
 
    function loadAudienceJson(data) {
     db.transaction(function (transaction) {
@@ -1261,22 +1279,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     });
   }
   
-  // Populate the app audience DB with the pages portion of full JSON string.
-/*  OLD LoadAppAudJson
-  function loadAppAudJson(data) {
-    db.transaction(function (transaction) {
-      var len = data.length;
-      if (len > 0) {
-        transaction.executeSql('Delete from appAudiences');
-      }
-      for (var i = 0; i < len; i++) {
-        var id = data[i].id;
-        var appAudience = data[i].appAudience;
-        var isActive = data[i].isActive;
-        transaction.executeSql('INSERT INTO appAudiences (id,appAudience,isActive) VALUES (?,?,?)', [id, appAudience, isActive]);
-      }
-    });
-  }*/
 
   function loadNavigationJson(data) {
     db.transaction(function (transaction) {
@@ -1297,23 +1299,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   }   
     
     
-  //OLD loadNavJson
-  // Some currently undisplayed icons are populated.
-/*  function loadNavJson(data) {
-    db.transaction(function (transaction) {
-      var len = data.length;
-      if (len > 0) {
-        transaction.executeSql('Delete from appNavs');
-      }
-      for (var i = 0; i < len; i++) {
-        var id = data[i].id;
-        var navTitle = data[i].navTitle;
-        var navIcon = data[i].navIcon;
-        var navAudience = data[i].navAudience;
-        transaction.executeSql('INSERT INTO appNavs (id, navTitle, navIcon, navAudience) VALUES (?,?,?,?)', [id, navTitle, navIcon, navAudience]);
-      }
-    });
-  }*/
 
   function loadNavToAudJson(data) {
     db.transaction(function (transaction) {
@@ -1332,24 +1317,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     });
   }   
     
-  //OLD appNavToAudienceJson
-  // For the audiences. 
-  /*function loadappNavToAudienceJson(data) {
-    db.transaction(function (transaction) {
-      var len = data.length;
-      if (len > 0) {
-        transaction.executeSql('Delete from appNavToAudience');
-      }
-      for (var i = 0; i < len; i++) {
-        var id = data[i].id;
-        var navid = data[i].navid;
-        var audid = data[i].audid;
-        var navorder = data[i].navorder;
-        var navlink = data[i].navlink;
-        transaction.executeSql('INSERT INTO appNavToAudience (id, navid, audid, navorder, navlink) VALUES (?,?,?,?,?)', [id, navid, audid, navorder, navlink]);
-      }
-    });
-  }*/
+
 
   function loadappPageToNavJson(data) {
     db.transaction(function (transaction) {
@@ -1458,6 +1426,13 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   // Load the phone numbers for the contacts menu. Gets info from db.
   $(document).on('pagebeforeshow', '#phonenums', function (e, data) {
     loadPhoneJson(); // Load listview
+  });
+    
+  // Check the radio button for the current audience before showing the page
+  // Adds click handler to each radio button to update the database
+  $(document).on('pagebeforeshow','#changeaudience', function() {
+      checkAudienceRadioBttn();  
+      audienceFormClickHandlers();
   });
     
   // CONTACT DETAILS
