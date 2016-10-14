@@ -674,46 +674,33 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   }
     
 
-  
-    
-    //var sql ="UPDATE audience SET isActive=0 WHERE appAudience='Students' OR appAudience='Staff'";//
-    
-    // For each list item, add a click handler with a unique ID gotten from 
-        // the phonenums db.
-       // $('#phonenumlist li a').each(function(){
-        //  var elementID = $(this).attr('id');
-
-        //  $(document).on('click', '#'+elementID, function(event){
-        //      if (event.handled !== true){
-        //          contactListObject.itemID = elementID;
-        //          $.mobile.changePage("#contactdetails");
-        //          event.handled = true;
-        //      }
-        //  });
-       // });
   function audienceFormClickHandlers() {
       $('input[name="audiencelist"]').change(function () {
           console.log("CLICKED " + $(this).attr('id'));
           var newAudience = $(this).attr('id').split('-')[1];
           console.log(newAudience);
           
-          var sql = "UPDATE audience SET isActive=1 WHERE appAudience=" + newAudience;
+          // Clear the current audience
+          var sql = "UPDATE audience SET isActive=0";
           db.transaction(function (tx) {
-              tx.executeSql(sql);
+              tx.executeSql(sql, [], function(tx, results) {console.log("success");}, 
+                           function(tx, results) {console.log("failure");});
           });
           
+          // Set the new audience to isActive
+          sql = "UPDATE audience SET isActive=1 WHERE appAudience="+newAudience;
+          db.transaction(function (tx) {
+              tx.executeSql(sql, [], function(tx, results) {console.log("success");}, 
+                           function(tx, results) {console.log("failure");});
+          }); 
+          
+          // Test to see if the audience table was actually changed
+          sql = "SELECT * from audience";
+          db.transaction(function (tx) {
+              tx.executeSql(sql, [], function (tx, results) {console.log(results);});
+          }); 
+          
       });
-      
-     // console.log($('input[name="audiencelist"]').length);
-     // $('input[name="audiencelist"]').each(function () {
-     //     var bttnID = $(this).attr('id');
-     //     console.log(bttnID);
-     //     $(document).on('click', '#' + bttnID, function(event) {
-     //         alert('You clicked' + $(this).val());
-     //         console.log('In click function');
-      //        console.log($(this).attr('id'));
-      //    });
-     // });
   
   }
 
