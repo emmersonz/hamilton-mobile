@@ -704,11 +704,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   
   }
 
-  // checkCurrentAudience 
-  function checkCurrentAudienceRadioBttn(tx, results) {
-      var currentAudience = results.rows.item(0)['appAudience'];
-      $('#choice-' + currentAudience).attr("checked",true).checkboxradio("refresh");
-  }
     
   // Selects the appAudience and aud id for the preferred audience in the audience table
   function checkAudienceRadioBttn(tx) {
@@ -717,6 +712,12 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       db.transaction(function(tx){
           tx.executeSql(sql, [], checkCurrentAudienceRadioBttn);
       });
+  }
+    
+  // checkCurrentAudience 
+  function checkCurrentAudienceRadioBttn(tx, results) {
+      var currentAudience = results.rows.item(0)['appAudience'];
+      $('#choice-' + currentAudience).attr("checked",true).checkboxradio("refresh");
   }
    
     
@@ -1148,51 +1149,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     db.transaction(function (tx) {
       tx.executeSql(navtoAudiencesql);
     });
-           
-      //old tables
-/*    var sql =
-      "CREATE TABLE IF NOT EXISTS pages ( " +
-      "id varchar(50) PRIMARY KEY, " +
-      "pagetitle VARCHAR(255), " +
-      "pagecontents VARCHAR(3000), " +
-      "pageActive bit, " +
-      "lastupdated date, " +
-      "lastupdatedusername VARCHAR(50)," +
-      "version int, " +
-      "packet VARCHAR(3000))";
-    db.transaction(function (tx) {
-      tx.executeSql(sql);
-    });
-    var navsql =
-      "CREATE TABLE IF NOT EXISTS appNavs ( " +
-      "id varchar(50) PRIMARY KEY, " +
-      "navTitle VARCHAR(200), " +
-      "navIcon VARCHAR(300), " +
-      "navAudience VARCHAR(300))";
-    db.transaction(function (tx) {
-      tx.executeSql(navsql);
-    });
-
-    var navtoAudiencesql =
-      "CREATE TABLE IF NOT EXISTS appNavToAudience  ( " +
-      "id varchar(50) PRIMARY KEY, " +
-      "navid VARCHAR(50), " +
-      "audid VARCHAR(50), " +
-      "navlink VARCHAR(300), " +
-      "navorder int )";
-    db.transaction(function (tx) {
-      tx.executeSql(navtoAudiencesql);
-    });
-
-    var pagetonavsql =
-      "CREATE TABLE IF NOT EXISTS appPageToNav ( " +
-      "id varchar(50) PRIMARY KEY, " +
-      "navid VARCHAR(50), " +
-      "pageid VARCHAR(50), " +
-      "pageorder int )";
-    db.transaction(function (tx) {
-      tx.executeSql(pagetonavsql);
-    });*/
   }
     
   /*
@@ -1250,7 +1206,8 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   }
   
 
-   function loadAudienceJson(data) {
+    // Builds the audience database table
+    function loadAudienceJson(data) {
     db.transaction(function (transaction) {
         //not sure exactly what this does, should we delete from audience?
       var len = data.length;
@@ -1267,6 +1224,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   }
   
 
+  // Builds the navigation table
   function loadNavigationJson(data) {
     db.transaction(function (transaction) {
       //pretty sure we need to delete from navigation (so we can check for new icons)
@@ -1286,7 +1244,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   }   
     
     
-
+  // Builds the navtoaud database table
   function loadNavToAudJson(data) {
     db.transaction(function (transaction) {
       //not sure if we should delete from navtoaud, if we do it allows us to change what audiences see dynamically
@@ -1305,7 +1263,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   }   
     
 
-
+  // Builds the appPageToNav database table
   function loadappPageToNavJson(data) {
     db.transaction(function (transaction) {
       var len = data.length;
