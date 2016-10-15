@@ -680,14 +680,14 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           var newAudience = $(this).attr('id').split('-')[1];
           console.log(newAudience);
           
-          // Clear the current audience
+          // De-activate the old audience
           var sql = "UPDATE audience SET isActive=0";
           db.transaction(function (tx) {
               tx.executeSql(sql, [], function(tx, results) {console.log("success");}, 
                            function(tx, results) {console.log("failure");});
           });
           
-          // Set the new audience to isActive
+          // Set the new audience to the active audience
           sql = "UPDATE audience SET isActive=1 WHERE appAudience="+newAudience;
           db.transaction(function (tx) {
               tx.executeSql(sql, [], function(tx, results) {console.log("success");}, 
@@ -705,10 +705,10 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   }
 
     
-  // Selects the appAudience and aud id for the preferred audience in the audience table
+  // Gets the current active audience and checks its radion button
   function checkAudienceRadioBttn(tx) {
       console.log("getting audiences");
-      var sql = "SELECT appAudience, id FROM audience where isActive = 1"; 
+      var sql = "SELECT appAudience FROM audience where isActive = 1"; 
       db.transaction(function(tx){
           tx.executeSql(sql, [], checkCurrentAudienceRadioBttn);
       });
