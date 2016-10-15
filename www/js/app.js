@@ -193,7 +193,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         // Currently does NOT include the hours that Commons is closed
         // during the day
         else if (key == 110) {
-            //console.log("MCEWENNNNNNNN")
+            console.log("MCEWENNNNNNNN")
             console.log(day);
             
             // Friday
@@ -238,6 +238,8 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         //console.log(cafe.dayparts[0]);
         //------------------------------------------------------------------
           
+        console.log("dayparts: " + cafe.dayparts[0]);
+          
     
         // Goes through each meal for a given dining hall on the current day
         $.each(cafe.dayparts[0], function (id, meal) { 
@@ -253,13 +255,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
 
             var xnow = moment();
-
-            
-            // Dead code
-            //if (id == 0) {
-                //cafeElement.find("a .dining-hall-block .hours-text").text(starttime12hr);
-            //}
-
         
           // Is the current meal being offered now?
           if (start.isBefore(xnow) && end.isAfter(xnow)) {
@@ -275,18 +270,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           //cafeElement.find("a .dining-hall-block .hours-text").append(document.createTextNode(" - " + endtime12hr));
           cafeElement.find("a").removeClass("ui-disabled");
         } 
-          /*else {
-            console.log(day);
-            if (key == 598 && day != 6 && day != 0) {
-                console.log("Pub meal object broken on weekday")
-            }
-            else {
-                console.log(key, " is closed");
-                cafeElement.find("a .dining-hall-block .hours-text").text("Closed Today");
-                cafeElement.find("a").addClass("ui-disabled");
-            }
-        }
-        */
 
         // Set the current cafe to closed or open depending on 
         // if the meal has been set
