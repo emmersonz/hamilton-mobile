@@ -1478,11 +1478,12 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           //get the content and add it.
           loadFullJson();               // Then create the other tables
           // checkPref();
-          getPrefAud();
+          getPrefAud();  // Get Audience pref and make appropriate homepage
         } else {
           console.log("callback != 0");
           //check versions then load whatever content you want here? or maybe just all for now just all
           loadFullJson();
+          getPrefAud(); // Get Audience pref and make appropriate homepage
         }
       }, table);
         
