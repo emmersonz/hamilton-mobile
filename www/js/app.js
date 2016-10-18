@@ -736,29 +736,16 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     
 //                         <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon con" href="#phonenums"><img src="icons/contacts.svg" class="imgResponsive svg-width svg"/><br>Contacts</a></li>
     
-//    var phonecontacts = [];
-//    for (var i = 0; i < items.rows.length; i++) {
-//      phonecontacts.push(items.rows.item(i));
-//    }
-//    var phonetemplate = '<li><a href="#" data-rel="dialog" id=${id}>${name}<br></li>';
-//    var permphones = '<li><a href="tel:1-315-859-4000"><span class="red">CAMPUS SAFETY (EMERGENCY)</span><br><span class="smgrey">315-859-4000</span></a</li><li><a href="tel:1-315-859-4141">Campus Safety (Non-Emergency)<br><span class="smgrey">315-859-4141</span></a></li><li><a href="tel:1-315-282-5426">Campus Safety (Tip Now) <br><span class="smgrey">315-282-5426</span></a></li><li><a href="tel:1-315-859-4340">Counseling Center<br><span class="smgrey">315-859-4340</span></a></li>';
-//    var pnlist = $('#phonenumlist');
-//    pnlist.html('');
-//    $.template("contactTemplate", phonetemplate);
-//    $.tmpl("contactTemplate", phonecontacts).appendTo('#phonenumlist');
-//    pnlist.prepend(permphones);
-//    pnlist.listview("refresh");    
     function makeHomePageFinal(tx, results) {
         var iconList = [];
         var len = results.rows.length;
         for (var i = 0; i < len; i++) {
+            console.log(results.rows.item(i));   
             iconList.push(results.rows.item(i));
         }
-        
-        //10/16/16 having a problem with templating. Can't use navicon to refer to a specific image. (can't concatenate icons/ and navicon in image source)
-        var iconTemplate = '<li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon con" href= ${navLink}><img src="icons/" + ${navicon} class="imgResponsive svg-width svg"/><br>${navTitle}</a></li>';
+        var iconTemplate = '<li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon con" href= ${navLink}><img src="icons/${navIcon}" class="imgResponsive svg-width svg"/><br>${navTitle}</a></li>';
         $.template("buttonTemplate", iconTemplate);
-        $.tmpl("buttonTemplate", iconList).appendTo('#home');
+        $.tmpl("buttonTemplate", iconList).appendTo('#home-all-icons');
         console.log('makehomePageFinal Complete');
     }
 
