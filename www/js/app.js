@@ -673,7 +673,50 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     });
   }
     
+  function getAudPref_success(tx, results) {
 
+  }
+
+  /* FUNCTION createAudienceForm
+     Dynamically creates the audience setting form before the page is shown. 
+     Pre-selects the radio button for the audience currently in use.
+     Adds click handlers to all of the radio buttons to save the user's selection
+     within the audPrefs table. */
+  function createAudienceForm(tx) {
+      var sql = "SELECT appAudience FROM audience WHERE isActive = 1";
+      db.transaction(function (tx) {
+      tx.executeSql(sql, [], createAudienceForm_success);
+    });
+      
+  }
+    
+  /* FUNCTION createAudienceForm_success
+     Dynamically creates the audience setting form. 
+     Executes when the SQL query in createAudienceForm is successful */
+  function createAudienceForm_success(tx, results) {
+      // Add the tuples from the results to an array 
+      // to be used in making a template
+      var audiences = [];
+      for (var i = 0; i < results.rows.length; i++) {
+          audiences.push(results.rows.item(i));
+      }
+      
+      // Add the audience buttons to the form via a template
+      var audienceTemplate = '<input type="radio" name="audiencelist" id="choice-${appAudience}" value="off"><label for="choice-${appAudience}">${appAudience}</label>'
+      var audForm = $('#audienceform');
+      audForm.html('');
+      $.template("audTemp", audienceTemplate)
+      $.tmpl("audTemp", audiences).appendTo('#audienceform');
+      $('#audienceform').trigger('create');
+      
+      // 'Check' the radio button for the audience that is currently in use
+      checkAudienceRadioBttn2();
+      // Add the click handlers to each button
+      audienceFormClickHandlers();
+      
+      
+  }
+    
   function audienceFormClickHandlers() {
       $('input[name="audiencelist"]').change(function () {
           console.log("CLICKED " + $(this).attr('id'));
@@ -705,20 +748,44 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   }
 
     
-  // Gets the current active audience and checks its radion button
-  function checkAudienceRadioBttn(tx) {
-      console.log("getting audiences");
-      var sql = "SELECT appAudience FROM audience where isActive = 1"; 
+  function checkAudienceRadioBttn2(tx) {
+      var sql = "SELECT audienceID FROM audPrefs"; 
       db.transaction(function(tx){
-          tx.executeSql(sql, [], checkCurrentAudienceRadioBttn);
+          tx.executeSql(sql, [], checkCurrentAudienceRadioBttn2);
       });
   }
     
+  function checkCurrentAudienceRadioBttn2(tx, results) {
+      var audID = results.rows.item(0)["audienceID"]
+      var sql = "SELECT appAudience FROM audience WHERE id='" + audID+"'";
+      db.transaction(function(tx){
+          tx.executeSql(sql, [], checkCurrentAudienceRadioBttn3);
+      });
+      
+  }
+                     
   // checkCurrentAudience 
-  function checkCurrentAudienceRadioBttn(tx, results) {
+  function checkCurrentAudienceRadioBttn3(tx, results) {
+    
       var currentAudience = results.rows.item(0)['appAudience'];
       $('#choice-' + currentAudience).attr("checked",true).checkboxradio("refresh");
   }
+    
+//  // Gets the current active audience and checks its radion button
+//  function checkAudienceRadioBttn(tx) {
+//      console.log("getting audiences");
+//      
+//      var sql = "SELECT appAudience FROM audience where isActive = 1"; 
+//      db.transaction(function(tx){
+//          tx.executeSql(sql, [], checkCurrentAudienceRadioBttn);
+//      });
+//  }
+//    
+//  // checkCurrentAudience 
+//  function checkCurrentAudienceRadioBttn(tx, results) {
+//      var currentAudience = results.rows.item(0)['appAudience'];
+//      $('#choice-' + currentAudience).attr("checked",true).checkboxradio("refresh");
+//  }
    
     
   function getscrollHTML() {
@@ -737,9 +804,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
 
 
-  function getAudPref_success(tx, results) {
-
-  }
+  
 
   function navorderCmp(fa, fb) {
     var a = fa.navorder;
@@ -1376,8 +1441,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   // Check the radio button for the current audience before showing the page
   // Adds click handler to each radio button to update the database
   $(document).on('pagebeforeshow','#changeaudience', function() {
-      checkAudienceRadioBttn();  
-      audienceFormClickHandlers();
+      createAudienceForm(); 
   });
     
   // CONTACT DETAILS

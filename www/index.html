@@ -54,7 +54,7 @@
                 <img src="icons/Hamilton.svg" class="imgResponsive hamTitle">
                 
                 <!-- Settings button-->
-               <a class="ui-btn-icon-right" id="settingsgear" href="#settings" data-icon="gear" data-role ="button" data-iconpos="notext" data-transition="none" style="position:absolute; top:5px;right:5px"></a>
+               <a class="ui-btn-icon-right" id="settingsgear" href="#settings" data-icon="gear" data-role ="button" data-iconpos="notext" data-transition="none" style="position:absolute; top:0px; right:8px"></a>
                 
             </div>
             
@@ -112,34 +112,28 @@
         </div>
         
         
-        <!-- Change Audience Page -->
+        <!-- AUDIENCE SETTINGS PAGE -->
         <div data-role="page" id="changeaudience">
             <div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false"  class="pageheader">
-                <a class="back-btn ui-link ui-btn" href="#home" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
+                <a class="back-btn ui-link ui-btn" href="#settings" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
                     <i class="fa fa-home fa-2x house" style="padding:0"></i>
                 </a>
                 <h1>Audience</h1>
             </div>
             
-            <!-- Radio form to select/change audience -->
-            <!-- In app.js, the current audience is determined and checked 
-                 before the page loads -->
+            <!-- Radio form to select/change audience which is dynamically 
+                 populated from the audience table in app.js -->
             <form>
+                
                 <fieldset data-role="controlgroup" id="audienceform">
-                <input type="radio" name="audiencelist" id="choice-Staff" value="off">
-                <label for="choice-Staff">Staff</label>
-                <input type="radio" name="audiencelist" id="choice-Students" value="off">
-                <label for="choice-Students">Students</label>
-                <input type="radio" name="audiencelist" id="choice-Alumni" value="other">
-                <label for="choice-Alumni">Alumni</label>
                 </fieldset>
+                
             </form>   
             
         </div>
-
+     
         
-        
-        <!-- END SETTINGS PAGE -->
+        <!-- END SETTINGS PAGES -->
 
         <!--CONTACTS PAGE-->
         <div data-role="page" id="phonenums">
