@@ -669,7 +669,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   Gets all the app audiences which are activated
   */
   function getActiveAud() {
-      var sql = "SELECT * FROM audience WHERE isActive=1";
+      var sql = "SELECT * FROM audPrefs";
       db.transaction(function (tx) {
         tx.executeSql(sql, [], getActiveAud_success, errorCBgetNumbers);
       });
@@ -678,43 +678,17 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   If the number of activated app audiences are more than one a pop up comes up that prompts you to choose your audience preference
   */
   function getActiveAud_success(tx, results){
-     if(results.rows.length > 1){
+     console.log(results.rows.length);
+     if(results.rows.length < 1){
          $("#myPopup").popup("open");
         };    
     }
-
-  // Sets one specific audience active in the audience table
-  // I (Emmerson) had written this function to set an audience preference but Lyndsay is writting another one
-/*
-  function setPref(num){
-    if(num==1){
-        var sql ="UPDATE audience SET isActive=0 WHERE appAudience='Students' OR appAudience='Alumni'";
-        db.transaction(function (tx) {
-        tx.executeSql(sql);
-      });
-    };
-    
-    if(num==2){
-        var sql ="UPDATE audience SET isActive=0 WHERE appAudience='Staff' OR appAudience='Alumni'";
-        db.transaction(function (tx) {
-        tx.executeSql(sql);
-      });
-    };
-      
-    if(num==3){
-        var sql ="UPDATE audience SET isActive=0 WHERE appAudience='Students' OR appAudience='Staff'";
-        db.transaction(function (tx) {
-        tx.executeSql(sql);
-      });
-    };  
-  }
-   */
     
    /* Author: Emmerson Zhaime
    Selects the appAudience and aud id for audience set to Active in the audience table
    */
   function getPrefAud(tx){
-      var sql = "SELECT appAudience, id FROM audience WHERE isActive=1 LIMIT 1"; // 'Limit 1'is there temporarily
+      var sql = "SELECT audienceID, id FROM audPrefs"; 
       db.transaction(function(tx){
           tx.executeSql(sql, [], getAudIcons);
       });
@@ -724,7 +698,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
    */
   function getAudIcons(tx, results){
       var audience = results.rows.item(0);
-      var audienceID = audience.id;
+      var audienceID = audience.audienceID;
       console.log (audience);
       var sql = "SELECT * FROM navtoaud as a CROSS JOIN navigation as b ON a.navid=b.id where a.audid='" + audienceID + "'";
       db.transaction(function(tx){
