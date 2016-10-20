@@ -117,69 +117,50 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           
         // DINER HOURS
         if (key == 512) {
-  
-          if (!(cafe.dayparts) || !(cafe.dayparts[0]) || cafe.dayparts[0].length == 0) {
-            
-              
-            // Saturday or Sunday
-            if (day == 6 || day == 0) {
+
+          // Saturday or Sunday
+          if (day == 6 || day == 0) {
                 
-                // Diner B or after 3pm
-                if (now.getHours() < 4 || now.getHours() > 15) {
-                    cafeElement.find(".open-indicator").addClass("open");
-                }
-                
-                else {
-                    cafeElement.find(".open-indicator").addClass("closed");
-                }
-                
-                // Diner and Diner B hours inserted into the HTML
-                cafeElement.find("a .dining-hall-block .hours-text").text("12:00am - 4:00am | 3:00pm - 12:00am");
-                console.log("HERE! SATURDAY OR SUNDAY")
-            } 
-              
-            // Friday 
-            else if (day == 5) {
-                if (now.getHours() < 4 || now.getHours() > 9) {
-                    cafeElement.find(".open-indicator").addClass("open");
-                } 
-                else {
-                    cafeElement.find(".open-indicator").addClass("closed");   
-                    }
-                
-                // Diner and Diner B hours inserted into the HTML
-                cafeElement.find("a .dining-hall-block .hours-text").text("12:00am - 4:00am | 9:00am - 12:00am");
-                console.log("HERE! FRIDAY")
+            // Diner B or after 3pm
+            if (now.getHours() < 4 || now.getHours() > 15) {
+              cafeElement.find(".open-indicator").addClass("open");
             }
-              
-            // Monday-Thursday
+                
             else {
-                if (now.getHours() > 9){
-                    cafeElement.find(".open-indicator").addClass("open");
-                }
-                else {
-                    cafeElement.find(".open-indicator").addClass("closed");
-                }
-                
-                // Diner weekday hours inserted into the HTML
-                cafeElement.find("a .dining-hall-block .hours-text").text("9:00am - 12:00am");
-                console.log("HERE! ANY DAY")
+              cafeElement.find(".open-indicator").addClass("closed");
             }
-          
+                
+            // Diner and Diner B hours inserted into the HTML
+            cafeElement.find("a .dining-hall-block .hours-text").text("12:00am - 4:00am | 3:00pm - 12:00am");
+            console.log("HERE! SATURDAY OR SUNDAY")
           } 
-            
+              
+          // Friday 
+          else if (day == 5) {
+            if (now.getHours() < 4 || now.getHours() > 9) {
+              cafeElement.find(".open-indicator").addClass("open");
+            } 
+            else {
+              cafeElement.find(".open-indicator").addClass("closed");   
+            }
+                
+            // Diner and Diner B hours inserted into the HTML
+            cafeElement.find("a .dining-hall-block .hours-text").text("12:00am - 4:00am | 9:00am - 12:00am");
+            console.log("HERE! FRIDAY")
+          }
+              
+          // Monday-Thursday
           else {
+            if (now.getHours() > 9){
+              cafeElement.find(".open-indicator").addClass("open");
+            }
+            else {
+              cafeElement.find(".open-indicator").addClass("closed");
+            }
                 
-            console.log("SEOMTHING");
-            // cafeElement.removeClass("ui-li-static").children().wrapAll("<a></a>");
-            // $('.dining-halls .diningmenuholder').listview("refresh");
-                
-//            cafeElement.children("a").click(function () {
-//                var id = $(this).parent().attr("data-bamco-id");
-//            initializeDiningHall(id);
-//            $(".dining-halls").css("display", "none");
-//                
-//            });
+            // Diner weekday hours inserted into the HTML
+              cafeElement.find("a .dining-hall-block .hours-text").text("9:00am - 12:00am");
+              console.log("HERE! ANY DAY")
           }
         }
         
