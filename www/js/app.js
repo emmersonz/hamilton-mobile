@@ -117,7 +117,9 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           
         // DINER HOURS
         if (key == 512) {
-          if (!(cafe.dayparts) || !(cafe.dayparts[0]) || cafe.dayparts[0].length == 0) {
+            
+          console.log("Dayparts: " + cafe.dayparts[0].length);    
+          if (!(cafe.dayparts) || !(cafe.dayparts[0]) || cafe.dayparts[0].length == 0 || true) {
             
               
             // Saturday or Sunday
@@ -169,7 +171,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
             
             else {
                 
-                
+                console.log("SEOMTHING");
                 cafeElement.removeClass("ui-li-static").children().wrapAll("<a></a>");
                 $('.dining-halls .diningmenuholder').listview("refresh");
                 
