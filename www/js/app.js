@@ -117,9 +117,8 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           
         // DINER HOURS
         if (key == 512) {
-            
-          console.log("Dayparts: " + cafe.dayparts[0].length);    
-          if (!(cafe.dayparts) || !(cafe.dayparts[0]) || cafe.dayparts[0].length == 0 || true) {
+  
+          if (!(cafe.dayparts) || !(cafe.dayparts[0]) || cafe.dayparts[0].length == 0) {
             
               
             // Saturday or Sunday
@@ -135,7 +134,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
                 }
                 
                 // Diner and Diner B hours inserted into the HTML
-                cafeElement.find(".dining-hall-block .hours-text").text("12:00am - 4:00am | 3:00pm - 12:00am");
+                cafeElement.find("a .dining-hall-block .hours-text").text("12:00am - 4:00am | 3:00pm - 12:00am");
                 console.log("HERE! SATURDAY OR SUNDAY")
             } 
               
@@ -149,7 +148,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
                     }
                 
                 // Diner and Diner B hours inserted into the HTML
-                cafeElement.find(".dining-hall-block .hours-text").text("12:00am - 4:00am | 9:00am - 12:00am");
+                cafeElement.find("a .dining-hall-block .hours-text").text("12:00am - 4:00am | 9:00am - 12:00am");
                 console.log("HERE! FRIDAY")
             }
               
@@ -163,24 +162,24 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
                 }
                 
                 // Diner weekday hours inserted into the HTML
-                cafeElement.find(".dining-hall-block .hours-text").text("9:00am - 12:00am");
+                cafeElement.find("a .dining-hall-block .hours-text").text("9:00am - 12:00am");
                 console.log("HERE! ANY DAY")
             }
           
           } 
             
-            else {
+          else {
                 
-                console.log("SEOMTHING");
-                cafeElement.removeClass("ui-li-static").children().wrapAll("<a></a>");
-                $('.dining-halls .diningmenuholder').listview("refresh");
+            console.log("SEOMTHING");
+            // cafeElement.removeClass("ui-li-static").children().wrapAll("<a></a>");
+            // $('.dining-halls .diningmenuholder').listview("refresh");
                 
-                cafeElement.children("a").click(function () {
-                    var id = $(this).parent().attr("data-bamco-id");
-                initializeDiningHall(id);
-                $(".dining-halls").css("display", "none");
-                
-            });
+//            cafeElement.children("a").click(function () {
+//                var id = $(this).parent().attr("data-bamco-id");
+//            initializeDiningHall(id);
+//            $(".dining-halls").css("display", "none");
+//                
+//            });
           }
         }
         
@@ -240,9 +239,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         //console.log(cafe.dayparts[0]);
         //------------------------------------------------------------------
           
-        console.log("dayparts: " + cafe.dayparts[0]);
-          
-    
         // Goes through each meal for a given dining hall on the current day
         $.each(cafe.dayparts[0], function (id, meal) { 
             // For each meal, parse the "dayparts" of the current meal
