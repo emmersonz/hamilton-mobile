@@ -645,7 +645,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
     };
     $.ajax({
-      url: "https://newsite.hamilton.edu/appPages/ajax/getappdata.cfm",
+      url: "https://www.hamilton.edu/apppages/ajax/getappdata.cfm",
       cache: 'true',
       dataType: 'json'
     }).done(jsonCallback);
@@ -679,7 +679,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   */
   function getActiveAud_success(tx, results){
      console.log(results.rows.length);
-     if(results.rows.length < 1){
+     if(results.rows.length == 1){
          $("#myPopup").popup("open");
         };    
     }
@@ -1225,7 +1225,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   /* Pull full JSON Feed */
   function loadFullJson() {
       console.log("loadfullJSON");
-    $.getJSON("https://newsite.hamilton.edu/apppages/ajax/getalldataforTy.cfm", function (data) {
+    $.getJSON("https://www.hamilton.edu/apppages/ajax/getalldataforTy.cfm", function (data) {
       if (data.audience.length > 0) {
         console.log("data.audience.length > 0");
         loadAudienceJson(data.audience);
@@ -1782,10 +1782,12 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   Calls a function that decides whether or not to show a pop up at the homepage
   */
   $(document).on('pageshow', '#home', function () {
+      console.log("what the fuck");
       getActiveAud();
   });
 
   $(document).on('pagebeforeshow', '#home', function (e, data) {
+      console.log("pagebefore show stuff");
       jQuery('img.svg').each(function(){
           var $img = jQuery(this);
           var imgID = $img.attr('id');
