@@ -645,7 +645,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
     };
     $.ajax({
-      url: "https://newsite.hamilton.edu/appPages/ajax/getappdata.cfm",
+      url: "https://www.hamilton.edu/apppages/ajax/getappdata.cfm",
       cache: 'true',
       dataType: 'json'
     }).done(jsonCallback);
@@ -683,7 +683,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
      Adds click handlers to all of the radio buttons to save the user's selection
      within the audPrefs table. */
   function createAudienceForm(tx) {
-      var sql = "SELECT appAudience FROM audience WHERE isActive = 1";
+      var sql = "SELECT appAudience FROM audience";// WHERE isActive = 1";
       db.transaction(function (tx) {
       tx.executeSql(sql, [], createAudienceForm_success);
     });
@@ -723,30 +723,29 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           var newAudience = $(this).attr('id').split('-')[1];
           console.log(newAudience);
           
-          // De-activate the old audience
-          var sql = "UPDATE audience SET isActive=0";
+          // Update the audPrefs table with the new preferred audience
+          var sql = "SELECT id FROM audience WHERE appAudience ='" + newAudience + "'";
           db.transaction(function (tx) {
-              tx.executeSql(sql, [], function(tx, results) {console.log("success");}, 
-                           function(tx, results) {console.log("failure");});
+              tx.executeSql(sql, [], updateAudiencePref);
           });
           
-          // Set the new audience to the active audience
-          sql = "UPDATE audience SET isActive=1 WHERE appAudience="+newAudience;
-          db.transaction(function (tx) {
-              tx.executeSql(sql, [], function(tx, results) {console.log("success");}, 
-                           function(tx, results) {console.log("failure");});
-          }); 
-          
-          // Test to see if the audience table was actually changed
-          sql = "SELECT * from audience";
-          db.transaction(function (tx) {
-              tx.executeSql(sql, [], function (tx, results) {console.log(results);});
-          }); 
           
       });
   
   }
 
+  function updateAudiencePref(tx, results) {
+      // Get the ID of the new audience
+      var newAudID = results.rows.item(0)["id"];
+      
+      // Clear out the old audience preference and insert the new one
+      db.transaction(function (tx) {
+      tx.executeSql('Delete from audPrefs');
+      var randID = guid();
+      tx.executeSql('INSERT INTO audPrefs (id,audienceID) VALUES (?,?)', [randID, newAudID]);
+    });
+      
+  }
     
   function checkAudienceRadioBttn2(tx) {
       var sql = "SELECT audienceID FROM audPrefs"; 
@@ -1256,7 +1255,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   /* Pull full JSON Feed */
   function loadFullJson() {
       console.log("loadfullJSON");
-    $.getJSON("https://newsite.hamilton.edu/apppages/ajax/getalldataforTy.cfm", function (data) {
+    $.getJSON("https://www.hamilton.edu/apppages/ajax/getalldataforTy.cfm", function (data) {
       if (data.audience.length > 0) {
         console.log("data.audience.length > 0");
         loadAudienceJson(data.audience);
