@@ -707,7 +707,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     
   // Selects the appAudience and aud id for the preferred audience in the audience table
   function getPrefAud(tx){
-      console.log("hi");
+      console.log("getPrefAud");
       var sql = "SELECT appAudience, id FROM audience WHERE isActive=1 LIMIT 1"; // 'Limit 1'is there temporarily
       db.transaction(function(tx){
           tx.executeSql(sql, [], getAudIcons);
@@ -717,7 +717,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   function getAudIcons(tx, results){
       var audience = results.rows.item(0);
       var audienceID = audience.id;
-      console.log (audience);
       var sql = "SELECT * FROM navtoaud as a CROSS JOIN navigation as b ON a.navid=b.id where a.audid='" + audienceID + "'";
       db.transaction(function(tx){
           tx.executeSql(sql, [], makeHomePageFinal);
@@ -742,13 +741,14 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         var iconList = [];
         var len = results.rows.length;
         for (var i = 0; i < len; i++) {
-            //console.log(results.rows.item(i));   
+            console.log(results.rows.item(i));   
             iconList.push(results.rows.item(i));
         }
         var iconTemplate = '<li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon ${navAddClass}" href= ${navLink}><img src="icons/${navIcon}" class="imgResponsive svg-width svg"/><br>${navTitle}</a></li>';
         $.template("buttonTemplate", iconTemplate);
         $.tmpl("buttonTemplate", iconList).appendTo('#home-all-icons');
-        //console.log('makehomePageFinal Complete');
+        console.log('makehomePageFinal Complete');
+        refreshHome();
     }
 
   function getscrollHTML() {
@@ -1143,7 +1143,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   }
 
   function BuildAudienceTable(tx) {
-      console.log("built audience table");
     var audsql =
       "CREATE TABLE IF NOT EXISTS audience ( " +  
       "appAudience VARCHAR(300), " +
@@ -1156,7 +1155,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
   // Content tables.
   function BuildContentTables(tx) {
-      console.log("built content tables")
 
 // new tables
     var navsql =
@@ -1270,7 +1268,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     
   /* Pull full JSON Feed */
   function loadFullJson() {
-      console.log("loadfullJSON");
     $.getJSON("https://www.hamilton.edu/apppages/ajax/getalldataforTy.cfm", function (data) {
       if (data.audience.length > 0) {
         console.log("data.audience.length > 0");
@@ -1481,7 +1478,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   //document.addEventListener('deviceready', onDeviceReady, false);
 
   // main worker event, find out if the db is there if the data is stale etc.
-  $(document).on('pagebeforecreate', 'body', function () {
+  $(document).on('pagebeforecreate', 'body', function (e, data) {
     //use this function to find out if the app has access to the internet
     checkConnection();
     if (connectionStatus === 'online') {
@@ -1822,9 +1819,16 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   });
 
   //KJD Necessary for SVG images (icons)
-  $(document).on('pageshow', '#home', function () {
+  $(document).on('pageshow', '#home', function (e, data) {
       checkPref();
   });
+    
+//    
+//  $(document).on('pageshow', '#home', function (e, data) {
+//      refreshHome(e, data);
+//  });
+    
+
 
 //HOME PAGE css?    
   $(document).on('pagebeforeshow', '#home', function (e, data) {
