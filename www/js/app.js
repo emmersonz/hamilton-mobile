@@ -645,7 +645,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
     };
     $.ajax({
-      url: "https://newsite.hamilton.edu/appPages/ajax/getappdata.cfm",
+      url: "https://www.hamilton.edu/appPages/ajax/getappdata.cfm",
       cache: 'true',
       dataType: 'json'
     }).done(jsonCallback);
@@ -737,16 +737,18 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 //                         <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon con" href="#phonenums"><img src="icons/contacts.svg" class="imgResponsive svg-width svg"/><br>Contacts</a></li>
     
     function makeHomePageFinal(tx, results) {
+        var homeAllIcons = $('#home-all-icons');
+        homeAllIcons.html('');
         var iconList = [];
         var len = results.rows.length;
         for (var i = 0; i < len; i++) {
-            console.log(results.rows.item(i));   
+            //console.log(results.rows.item(i));   
             iconList.push(results.rows.item(i));
         }
-        var iconTemplate = '<li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon con" href= ${navLink}><img src="icons/${navIcon}" class="imgResponsive svg-width svg"/><br>${navTitle}</a></li>';
+        var iconTemplate = '<li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon ${navAddClass}" href= ${navLink}><img src="icons/${navIcon}" class="imgResponsive svg-width svg"/><br>${navTitle}</a></li>';
         $.template("buttonTemplate", iconTemplate);
         $.tmpl("buttonTemplate", iconList).appendTo('#home-all-icons');
-        console.log('makehomePageFinal Complete');
+        //console.log('makehomePageFinal Complete');
     }
 
   function getscrollHTML() {
@@ -1258,6 +1260,10 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
                                   function(tx,results){console.log("Successfully Dropped5");},
                                   function(tx,error){console.log("Could not delete5");}
                                  );
+                     tx.executeSql("DROP TABLE audience",[],
+                                  function(tx,results){console.log("Successfully Dropped6");},
+                                  function(tx,error){console.log("Could not delete6");}
+                                 );
             });
     }    
 
@@ -1265,7 +1271,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   /* Pull full JSON Feed */
   function loadFullJson() {
       console.log("loadfullJSON");
-    $.getJSON("https://newsite.hamilton.edu/apppages/ajax/getalldataforTy.cfm", function (data) {
+    $.getJSON("https://www.hamilton.edu/apppages/ajax/getalldataforTy.cfm", function (data) {
       if (data.audience.length > 0) {
         console.log("data.audience.length > 0");
         loadAudienceJson(data.audience);
@@ -1486,7 +1492,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       ckTable(db, function (callBack) { // Check the validity of the pages table.
         if (callBack == 0) {            // If invalid, create the audience tables.
           //create db tables
-          console.log("callback == 0");
           BuildAudienceTable();
           BuildContentTables();
           //get the content and add it.
@@ -1820,8 +1825,43 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   $(document).on('pageshow', '#home', function () {
       checkPref();
   });
-    
+
+//HOME PAGE css?    
   $(document).on('pagebeforeshow', '#home', function (e, data) {
+        refreshHome(e, data);
+//      console.log('homepage recreation');
+//      jQuery('img.svg').each(function(){
+//          var $img = jQuery(this);
+//          var imgID = $img.attr('id');
+//          var imgClass = $img.attr('class');
+//          var imgURL = $img.attr('src');
+//
+//          jQuery.get(imgURL, function(data) {
+//              // Get the SVG tag, ignore the rest
+//              var $svg = jQuery(data).find('svg');
+//
+//              // Add replaced image's ID to the new SVG
+//              if(typeof imgID !== 'undefined') {
+//                  $svg = $svg.attr('id', imgID);
+//              }
+//              // Add replaced image's classes to the new SVG
+//              if(typeof imgClass !== 'undefined') {
+//                  $svg = $svg.attr('class', imgClass+' replaced-svg');
+//              }
+//
+//              // Remove any invalid XML tags as per http://validator.w3.org
+//              $svg = $svg.removeAttr('xmlns:a');
+//
+//              // Replace image with new SVG
+//              $img.replaceWith($svg);
+//
+//          }, 'xml');
+//
+//      });
+  });
+
+function refreshHome(e, data) {
+      console.log('homepage refresh');
       jQuery('img.svg').each(function(){
           var $img = jQuery(this);
           var imgID = $img.attr('id');
@@ -1850,7 +1890,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           }, 'xml');
 
       });
-  });
+}
 
    /*$(document).on('pagebeforeshow', '#audPref', function () {
        var popUp = '<div data-role="popup" id="myPopup"><div id="ham-home-img"class="title_bar" style="padding-bottom:0px;"><img src="icons/Hamilton.svg" class="imgResponsive hamTitle"></div><div data-role="header" ><h1>Select Audience Preference</h1></div><div data-role="main" class="ui-content"><ul data-role="listview"><li><a href="#home">Student</a></li><li><a href="#home">Alumni</a></li><li><a href="#home">Faculty</a></li></ul></div></div>';
