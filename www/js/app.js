@@ -715,6 +715,28 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           console.log(results.rows.item(i));   
         }
   }
+    
+  $("#myPopup").contextmenu(function(){
+    console.log("hey there");  
+  });
+    
+  $(".selector").popup({
+    create: function(event, ui){
+        console.log("dab!");
+    }
+  });
+  $(".selector").on('popupcreate', function(event, ui){
+      console.log("aye");
+      $('#audlist li a').each(function(){
+        var elementID = $(this).attr('id'); 
+      $(document).on('click', '#'+elementID, function(event){
+          if(event.handled !== true){ // This will prevent event triggering more then once
+          $.mobile.changePage( "#home", { transition: "slide"} );
+          event.handled = true;
+          }
+        });
+      });
+  });
 
   function getscrollHTML() {
     $.ajax({
