@@ -671,7 +671,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   function getActiveAud() {
       var sql = "SELECT * FROM audPrefs";
       db.transaction(function (tx) {
-        tx.executeSql(sql, [], getActiveAud_success, errorCBgetNumbers);
+        tx.executeSql(sql, [], getActiveAud_success);
       });
   }
  /* Author: Emmerson Zhaime
@@ -711,32 +711,45 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   function makeHomePage(tx, results){
     var len = results.rows.length;
     console.log("length: "+ len);
-    for (var i = 0; i < len; i++) {
-          console.log(results.rows.item(i));   
-        }
+  }
+  
+  function deleteAudPref(audience){
+    db.transaction(function(tx){
+        tx.executeSql("DELETE FROM audPrefs");
+    });
+     var sql = "SELECT id from audience where appAudience='"+ audience +"'";
+     db.transaction(function(tx){
+         tx.executeSql(sql, [], insertAudPref);
+     });   
   }
     
-  $("#myPopup").contextmenu(function(){
-    console.log("hey there");  
-  });
+  function insertAudPref(tx, results){
+    var audience = results.rows.item(0);
+    var audienceID = audience.id;
+    console.log(audienceID);
+    var thisid = guid();
+    var stuid = audienceID;
+    db.transaction(function(tx){
+       tx.executeSql('INSERT INTO audPrefs (id,audienceID) VALUES (?,?)', [thisid, stuid]);
+    });
+  }
     
-  $(".selector").popup({
-    create: function(event, ui){
-        console.log("dab!");
-    }
-  });
-  $(".selector").on('popupcreate', function(event, ui){
-      console.log("aye");
-      $('#audlist li a').each(function(){
+  /* Author: Emmerson Zhaime
+  This function has click handlers for the popup menu that comes up when you open the app for the first time
+  */
+  function popupClickHandlers (){
+    $('#audlist li a').each(function(){
         var elementID = $(this).attr('id'); 
       $(document).on('click', '#'+elementID, function(event){
           if(event.handled !== true){ // This will prevent event triggering more then once
+           console.log("clicked " + elementID);
+           deleteAudPref(elementID);
           $.mobile.changePage( "#home", { transition: "slide"} );
           event.handled = true;
           }
         });
       });
-  });
+  }
 
   function getscrollHTML() {
     $.ajax({
@@ -1473,7 +1486,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           BuildContentTables();
           //get the content and add it.
           loadFullJson();               // Then create the other tables
-          // checkPref();
+          
           getPrefAud();  // Get Audience pref and make appropriate homepage
         } else {
           console.log("callback != 0");
@@ -1804,12 +1817,11 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   Calls a function that decides whether or not to show a pop up at the homepage
   */
   $(document).on('pageshow', '#home', function () {
-      console.log("what the fuck");
       getActiveAud();
   });
 
   $(document).on('pagebeforeshow', '#home', function (e, data) {
-      console.log("pagebefore show stuff");
+      popupClickHandlers(); // Set click handlers for the popup menu
       jQuery('img.svg').each(function(){
           var $img = jQuery(this);
           var imgID = $img.attr('id');
