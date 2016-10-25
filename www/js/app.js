@@ -409,35 +409,31 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     }
 
     var data = diningJSON;
-
-    // Function to lookup and return the description of FoodItem given itemID
-    var lookupFoodItem = function (itemID, extra) {
-      var item = data.items[itemID];
-      var display = item.label;
-      var cor_lookup = {"humane": "hm", "vegan": "vg", "vegetarian" : "v", "made without gluten-containing ingredients": "gf", "farm to fork": "f2f", "seafood watch": "sw"};
-      // Add the description of the item to what is going to be displayed if it exists
-      if (item.description) {
-        display += '<span class="item-description">' + item.description + '</span>';
-      }
-      // If the FoodItem falls into categories like glutten-free, add that category to the description
-      if (extra && item.cor_icon != []) {
-        /*for (var id in item.cor_icon) {
-          display = '<img height="16" width="16" src="' + data.cor_icons[id].image + '" class="ui-li-icon">'
-                    + display;
-        }*/
-        display += '<span class="ui-li-aside">';
-        for (var id in item.cor_icon) {
-          display += cor_lookup[item.cor_icon[id]] + " ";
+      
+    // Lookup the fooditem from the db query and return an HTML string with the
+    // properly formatted info.
+    var lookupFoodItem = function(itemID) {
+        
+        var fooditem = data.items[itemID];        
+        var cor_lookup = {"humane": "images/menu-item-type-humane.png", "vegan": "images/menu-item-type-vegan.png", "vegetarian" : "images/menu-item-type-vegetarian.png", "made without gluten-containing ingredients": "images/menu-item-type-gluten-free.png", "farm to fork": "images/menu-item-type-farm-to-fork.png", "seafood watch": "images/menu-item-type-seafood.png", "Well-Being": "images/menu-item-type-well-being.png", "halal": "images/menu-item-type-halal.png"};
+        
+        var fooditemHTML = "<a href='#'>";
+        fooditemHTML += "<h1>" + fooditem.label + "</h1>"; // The name of dish
+        
+        if (fooditem.cor_icon != []) {
+          fooditemHTML += "<span class='item-description'>";
+          for (var id in fooditem.cor_icon) {
+            fooditemHTML += '<img class="sticker" src="' + cor_lookup[fooditem.cor_icon[id]] + '"/> ';
+          }
+            
+          fooditemHTML += "</span>";
         }
-
-        display += '</span>';
-        /*if (item.nutrition.kcal) {
-          display += '<span class="ui-li-count">' + item.nutrition.kcal + ' cal</span>';
-        }*/
-      }
-      return display;
-    };
-    
+        
+        fooditemHTML += "</a>";
+        
+        return fooditemHTML;
+    };  
+      
     // cafe has the Json Object with all the data for a given dining hall
     var cafe = data.days[0].cafes[targetDiningHall];
 
@@ -449,7 +445,12 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         $(".items .diningmenuholder").append('<li data-role="list-divider">' + station.label + "</li>");
         $.each(station.items, function (id, item) {
 
-          $(".items .diningmenuholder").append("<li>" + lookupFoodItem(item, true) + "</li>").enhanceWithin();
+          // Build the list item html
+          var fooditemHTML = "<li data-icon='false'>";
+          fooditemHTML += lookupFoodItem(item);
+          fooditemHTML += "</li>";
+            
+          $(".items .diningmenuholder").append(fooditemHTML).enhanceWithin();
         });
       });
       $('.items ul').listview("refresh");

@@ -1,0 +1,18 @@
+/* Dining menu items.
+
+    This file contains a stylesheet to make it possible that
+    the gluten-free, vegan etc. markers appear on the left of
+    each menu listview item.
+    
+*/
+
+.sticker {
+    width:20px;
+}
+
+/* 
+  Make it so that the menu legend is spaced nicely
+*/
+.legend {
+    padding-left:1em;
+}
