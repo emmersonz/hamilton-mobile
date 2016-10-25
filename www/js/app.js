@@ -117,68 +117,50 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           
         // DINER HOURS
         if (key == 512) {
-          if (!(cafe.dayparts) || !(cafe.dayparts[0]) || cafe.dayparts[0].length == 0) {
-            
-              
-            // Saturday or Sunday
-            if (day == 6 || day == 0) {
+
+          // Saturday or Sunday
+          if (day == 6 || day == 0) {
                 
-                // Diner B or after 3pm
-                if (now.getHours() < 4 || now.getHours() > 15) {
-                    cafeElement.find(".open-indicator").addClass("open");
-                }
-                
-                else {
-                    cafeElement.find(".open-indicator").addClass("closed");
-                }
-                
-                // Diner and Diner B hours inserted into the HTML
-                cafeElement.find(".dining-hall-block .hours-text").text("12:00am - 4:00am | 3:00pm - 12:00am");
-                console.log("HERE! SATURDAY OR SUNDAY")
-            } 
-              
-            // Friday 
-            else if (day == 5) {
-                if (now.getHours() < 4 || now.getHours() > 9) {
-                    cafeElement.find(".open-indicator").addClass("open");
-                } 
-                else {
-                    cafeElement.find(".open-indicator").addClass("closed");   
-                    }
-                
-                // Diner and Diner B hours inserted into the HTML
-                cafeElement.find(".dining-hall-block .hours-text").text("12:00am - 4:00am | 9:00am - 12:00am");
-                console.log("HERE! FRIDAY")
+            // Diner B or after 3pm
+            if (now.getHours() < 4 || now.getHours() > 15) {
+              cafeElement.find(".open-indicator").addClass("open");
             }
-              
-            // Monday-Thursday
+                
             else {
-                if (now.getHours() > 9){
-                    cafeElement.find(".open-indicator").addClass("open");
-                }
-                else {
-                    cafeElement.find(".open-indicator").addClass("closed");
-                }
-                
-                // Diner weekday hours inserted into the HTML
-                cafeElement.find(".dining-hall-block .hours-text").text("9:00am - 12:00am");
-                console.log("HERE! ANY DAY")
+              cafeElement.find(".open-indicator").addClass("closed");
             }
-          
+                
+            // Diner and Diner B hours inserted into the HTML
+            cafeElement.find("a .dining-hall-block .hours-text").text("12:00am - 4:00am | 3:00pm - 12:00am");
+            console.log("HERE! SATURDAY OR SUNDAY")
           } 
-            
+              
+          // Friday 
+          else if (day == 5) {
+            if (now.getHours() < 4 || now.getHours() > 9) {
+              cafeElement.find(".open-indicator").addClass("open");
+            } 
             else {
+              cafeElement.find(".open-indicator").addClass("closed");   
+            }
                 
+            // Diner and Diner B hours inserted into the HTML
+            cafeElement.find("a .dining-hall-block .hours-text").text("12:00am - 4:00am | 9:00am - 12:00am");
+            console.log("HERE! FRIDAY")
+          }
+              
+          // Monday-Thursday
+          else {
+            if (now.getHours() > 9){
+              cafeElement.find(".open-indicator").addClass("open");
+            }
+            else {
+              cafeElement.find(".open-indicator").addClass("closed");
+            }
                 
-                cafeElement.removeClass("ui-li-static").children().wrapAll("<a></a>");
-                $('.dining-halls .diningmenuholder').listview("refresh");
-                
-                cafeElement.children("a").click(function () {
-                    var id = $(this).parent().attr("data-bamco-id");
-                initializeDiningHall(id);
-                $(".dining-halls").css("display", "none");
-                
-            });
+            // Diner weekday hours inserted into the HTML
+              cafeElement.find("a .dining-hall-block .hours-text").text("9:00am - 12:00am");
+              console.log("HERE! ANY DAY")
           }
         }
         
@@ -193,7 +175,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         // Currently does NOT include the hours that Commons is closed
         // during the day
         else if (key == 110) {
-            //console.log("MCEWENNNNNNNN")
+            console.log("MCEWENNNNNNNN")
             console.log(day);
             
             // Friday
@@ -238,7 +220,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         //console.log(cafe.dayparts[0]);
         //------------------------------------------------------------------
           
-    
         // Goes through each meal for a given dining hall on the current day
         $.each(cafe.dayparts[0], function (id, meal) { 
             // For each meal, parse the "dayparts" of the current meal
@@ -253,13 +234,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
 
             var xnow = moment();
-
-            
-            // Dead code
-            //if (id == 0) {
-                //cafeElement.find("a .dining-hall-block .hours-text").text(starttime12hr);
-            //}
-
         
           // Is the current meal being offered now?
           if (start.isBefore(xnow) && end.isAfter(xnow)) {
@@ -275,18 +249,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           //cafeElement.find("a .dining-hall-block .hours-text").append(document.createTextNode(" - " + endtime12hr));
           cafeElement.find("a").removeClass("ui-disabled");
         } 
-          /*else {
-            console.log(day);
-            if (key == 598 && day != 6 && day != 0) {
-                console.log("Pub meal object broken on weekday")
-            }
-            else {
-                console.log(key, " is closed");
-                cafeElement.find("a .dining-hall-block .hours-text").text("Closed Today");
-                cafeElement.find("a").addClass("ui-disabled");
-            }
-        }
-        */
 
         // Set the current cafe to closed or open depending on 
         // if the meal has been set
