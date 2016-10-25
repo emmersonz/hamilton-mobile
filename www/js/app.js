@@ -683,7 +683,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
      Adds click handlers to all of the radio buttons to save the user's selection
      within the audPrefs table. */
   function createAudienceForm(tx) {
-      var sql = "SELECT appAudience FROM audience";// WHERE isActive = 1";
+      var sql = "SELECT appAudience FROM audience WHERE isActive = 1";
       db.transaction(function (tx) {
       tx.executeSql(sql, [], createAudienceForm_success);
     });
@@ -1401,6 +1401,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       table = 'audPrefs';
       ckTable(db, function (callBack) { // Check validity of audience tables
         if (callBack == 0) {
+            console.log('CALLBACK 0');
           //if the pref table doesn't exist - show audience choice for now just enter student aud.
           setAudiencePrefTable();
           //populate pref table ( later will be based on the user choice)
@@ -1408,7 +1409,10 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           //getNavigationandPages();
         } else {
           //it exists get all the pages.
-          PopulateAudiencePrefTable();
+          console.log('CALLBACK !0');
+            
+          
+          //PopulateAudiencePrefTable();
           // this function builds the pages and the navigation
           //getNavigationandPages();
         }
