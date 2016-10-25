@@ -645,7 +645,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
     };
     $.ajax({
-      url: "https://newsite.hamilton.edu/appPages/ajax/getappdata.cfm",
+      url: "https://www.hamilton.edu/apppages/ajax/getappdata.cfm",
       cache: 'true',
       dataType: 'json'
     }).done(jsonCallback);
@@ -665,15 +665,92 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       tx.executeSql(sql, [], getNumbers_success, errorCBgetNumbers);
     });
   }
-
-  function getAudPref(tx) {
-    var sql = "SELECT * FROM audPrefs as a CROSS JOIN" +
-              "audNavtoAudience as b ON a.audienceID = b.audid";
-    db.transaction(function (tx) {
-      tx.executeSql(sql, [], getAudPref_success);
+  /* Author: Emmerson Zhaime
+  Gets all the app audiences which are activated
+  */
+  function getActiveAud() {
+      var sql = "SELECT * FROM audPrefs";
+      db.transaction(function (tx) {
+        tx.executeSql(sql, [], getActiveAud_success);
+      });
+  }
+ /* Author: Emmerson Zhaime
+  If the number of activated app audiences are more than one a pop up comes up that prompts you to choose your audience preference
+  */
+  function getActiveAud_success(tx, results){
+     console.log(results.rows.length);
+     if(results.rows.length == 1){
+         $("#myPopup").popup("open");
+        };    
+    }
+    
+   /* Author: Emmerson Zhaime
+   Selects the appAudience and aud id for audience set to Active in the audience table
+   */
+  function getPrefAud(tx){
+      var sql = "SELECT audienceID, id FROM audPrefs"; 
+      db.transaction(function(tx){
+          tx.executeSql(sql, [], getAudIcons);
+      });
+  }
+  /* Author: Emmerson Zhaime    
+  // Gets all the information for the icons for a given audience preference and calls a function to make the homepage
+   */
+  function getAudIcons(tx, results){
+      var audience = results.rows.item(0);
+      var audienceID = audience.audienceID;
+      console.log (audience);
+      var sql = "SELECT * FROM navtoaud as a CROSS JOIN navigation as b ON a.navid=b.id where a.audid='" + audienceID + "'";
+      db.transaction(function(tx){
+          tx.executeSql(sql, [], makeHomePage);
+      });
+  }
+   /* Author: Emmerson Zhaime
+  This is supposed to be the function that makes a homepage from a list of icon information. Now it is just printing all the icons information in the console
+  */
+  function makeHomePage(tx, results){
+    var len = results.rows.length;
+    console.log("length: "+ len);
+  }
+  
+  function deleteAudPref(audience){
+    db.transaction(function(tx){
+        tx.executeSql("DELETE FROM audPrefs");
+    });
+     var sql = "SELECT id from audience where appAudience='"+ audience +"'";
+     db.transaction(function(tx){
+         tx.executeSql(sql, [], insertAudPref);
+     });   
+  }
+    
+  function insertAudPref(tx, results){
+    var audience = results.rows.item(0);
+    var audienceID = audience.id;
+    console.log(audienceID);
+    var thisid = guid();
+    var stuid = audienceID;
+    db.transaction(function(tx){
+       tx.executeSql('INSERT INTO audPrefs (id,audienceID) VALUES (?,?)', [thisid, stuid]);
     });
   }
     
+  /* Author: Emmerson Zhaime
+  This function has click handlers for the popup menu that comes up when you open the app for the first time
+  */
+  function popupClickHandlers (){
+    $('#audlist li a').each(function(){
+        var elementID = $(this).attr('id'); 
+      $(document).on('click', '#'+elementID, function(event){
+          if(event.handled !== true){ // This will prevent event triggering more then once
+           console.log("clicked " + elementID);
+           deleteAudPref(elementID);
+          $.mobile.changePage( "#home", { transition: "slide"} );
+          event.handled = true;
+          }
+        });
+      });
+  }
+
   function getscrollHTML() {
     $.ajax({
                 type:'post',url:'https://www.hamilton.edu/thescroll/appview.cfm'
@@ -686,12 +763,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
                      $('#scrollcontent').iscrollview("refresh");
                   //  console.log("scroll view refresh");
                 });
-  }
-
-
-
-  function getAudPref_success(tx, results) {
-
   }
 
   function navorderCmp(fa, fb) {
@@ -1065,10 +1136,11 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   }
 
   function BuildAudienceTable(tx) {
+      console.log("built audience table");
     var audsql =
-      "CREATE TABLE IF NOT EXISTS appAudiences ( " +
+      "CREATE TABLE IF NOT EXISTS audience ( " +  
+      "appAudience VARCHAR(300), " +
       "id varchar(50) PRIMARY KEY, " +
-      "appAudience VARCHAR(300)," +
       "isActive BIT)";
     db.transaction(function (tx) {
       tx.executeSql(audsql);
@@ -1077,7 +1149,33 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
   // Content tables.
   function BuildContentTables(tx) {
-    var sql =
+      console.log("built content tables")
+
+// new tables
+    var navsql =
+      "CREATE TABLE IF NOT EXISTS navigation ( " +
+      "id varchar(50) PRIMARY KEY, " +
+      "navAddClass VARCHAR(300), " +
+      "navIcon VARCHAR(300), " +
+      "navLink VARCHAR(300), " + 
+      "navTitle VARCHAR(200) " +
+      ")";
+    db.transaction(function (tx) {
+      tx.executeSql(navsql);
+    });
+
+    var navtoAudiencesql =
+      "CREATE TABLE IF NOT EXISTS navtoaud  ( " +
+      "audid VARCHAR(50), " +
+      "id varchar(50) PRIMARY KEY, " +
+      "navid VARCHAR(50), " +
+      "navorder int )";
+    db.transaction(function (tx) {
+      tx.executeSql(navtoAudiencesql);
+    });
+           
+      //old tables
+/*    var sql =
       "CREATE TABLE IF NOT EXISTS pages ( " +
       "id varchar(50) PRIMARY KEY, " +
       "pagetitle VARCHAR(255), " +
@@ -1119,12 +1217,63 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       "pageorder int )";
     db.transaction(function (tx) {
       tx.executeSql(pagetonavsql);
-    });
-
+    });*/
   }
+    
+  /*
+  Author: Ty Torregrosa 
+  Cite: Jim Thomson
+  
+  Description: This function is a repurposed version of the function named "BuildContentTables2" in clearit.html.
+  It is used to drop old tables that will no longer be used in the database (but are somehow still present in the database, despite no longer being created by any part of the code).
+  
+  Takes: Nothing
+  Returns: Nothing
+  */
+  function clearTables(tx) {
+    db.transaction(function (tx)
+                   {
+                    tx.executeSql("DROP TABLE appNavs",[],
+                                  function(tx,results){console.log("Successfully Dropped");},
+                                  function(tx,error){console.log("Could not delete");}
+                                 );
+                    tx.executeSql("DROP TABLE appNavToAudience",[],
+                                  function(tx,results){console.log("Successfully Dropped2");},
+                                  function(tx,error){console.log("Could not delete2");}
+                                 );
+                    tx.executeSql("DROP TABLE appPageToNav",[],
+                                  function(tx,results){console.log("Successfully Dropped3");},
+                                  function(tx,error){console.log("Could not delete3");}
+                                 );
+                    tx.executeSql("DROP TABLE pages",[],
+                                  function(tx,results){console.log("Successfully Dropped4");},
+                                  function(tx,error){console.log("Could not delete4");}
+                                 );
+                     tx.executeSql("DROP TABLE appAudiences",[],
+                                  function(tx,results){console.log("Successfully Dropped5");},
+                                  function(tx,error){console.log("Could not delete5");}
+                                 );
+            });
+    }    
 
     
   /* Pull full JSON Feed */
+  function loadFullJson() {
+      console.log("loadfullJSON");
+    $.getJSON("https://www.hamilton.edu/apppages/ajax/getalldataforTy.cfm", function (data) {
+      if (data.audience.length > 0) {
+        console.log("data.audience.length > 0");
+        loadAudienceJson(data.audience);
+      }
+      if (data.navigation.length > 0) {
+        loadNavigationJson(data.navigation);
+      }
+      if (data.navtoaud.length > 0) {
+        loadNavToAudJson(data.navtoaud);
+      }
+    });
+  }
+  /*OLD PULL FULL JSON
   function loadFullJson() {
     $.getJSON("https://www.hamilton.edu/appPages/ajax/getpages.cfm", function (data) {
       if (data.audience.length > 0) {
@@ -1143,11 +1292,12 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         loadappPageToNavJson(data.pagetonav);
       }
     });
-  }
-
+  }*/
+    
+/*OLD loadPagesJson
   /* insert feed parts in to dbs and update accordingly */
   // Populate the pages DB with the pages portion of full JSON string.
-  function loadPagesJson(data) {
+ /* function loadPagesJson(data) {
     db.transaction(function (transaction) {
       var len = data.length;
       if (len > 0) {
@@ -1165,9 +1315,26 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         transaction.executeSql('INSERT INTO pages (id,pagetitle, pagecontents, pageActive, lastupdated, lastupdatedusername,version,packet) VALUES (?,?,?,?,?,?,?,?)', [id, pagetitle, pagecontents, pageactive, lastupdated, lastupdatedusername, version, packet]);
       }
     });
-  }
+  }*/
 
+   function loadAudienceJson(data) {
+    db.transaction(function (transaction) {
+        //not sure exactly what this does, should we delete from audience?
+      var len = data.length;
+      if (len > 0) {
+        transaction.executeSql('Delete from audience');
+      }
+      for (var i = 0; i < len; i++) {
+        var id = data[i].id;
+        var appAudience = data[i].appAudience;
+        var isActive = data[i].isActive;
+        transaction.executeSql('INSERT INTO audience (id,appAudience,isActive) VALUES (?,?,?)', [id, appAudience, isActive]);
+      }
+    });
+  }
+  
   // Populate the app audience DB with the pages portion of full JSON string.
+/*  OLD LoadAppAudJson
   function loadAppAudJson(data) {
     db.transaction(function (transaction) {
       var len = data.length;
@@ -1181,10 +1348,30 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         transaction.executeSql('INSERT INTO appAudiences (id,appAudience,isActive) VALUES (?,?,?)', [id, appAudience, isActive]);
       }
     });
-  }
+  }*/
 
+  function loadNavigationJson(data) {
+    db.transaction(function (transaction) {
+      //pretty sure we need to delete from navigation (so we can check for new icons)
+      var len = data.length;
+      if (len > 0) {
+        transaction.executeSql('Delete from navigation');
+      }
+      for (var i = 0; i < len; i++) {
+        var id = data[i].id;
+        var navTitle = data[i].navTitle;
+        var navIcon = data[i].navIcon;
+        var navAddClass = data[i].navAddClass;
+        var navLink = data[i].navLink;
+        transaction.executeSql('INSERT INTO navigation (id, navTitle, navIcon, navAddClass, navLink) VALUES (?,?,?,?,?)', [id, navTitle, navIcon, navAddClass, navLink]);
+      }
+    });
+  }   
+    
+    
+  //OLD loadNavJson
   // Some currently undisplayed icons are populated.
-  function loadNavJson(data) {
+/*  function loadNavJson(data) {
     db.transaction(function (transaction) {
       var len = data.length;
       if (len > 0) {
@@ -1198,10 +1385,28 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         transaction.executeSql('INSERT INTO appNavs (id, navTitle, navIcon, navAudience) VALUES (?,?,?,?)', [id, navTitle, navIcon, navAudience]);
       }
     });
-  }
+  }*/
 
+  function loadNavToAudJson(data) {
+    db.transaction(function (transaction) {
+      //not sure if we should delete from navtoaud, if we do it allows us to change what audiences see dynamically
+      var len = data.length;
+      if (len > 0) {
+        transaction.executeSql('Delete from navtoaud');
+      }
+      for (var i = 0; i < len; i++) {
+        var id = data[i].id;
+        var navid = data[i].navid;
+        var audid = data[i].audid;
+        var navorder = data[i].navorder;
+        transaction.executeSql('INSERT INTO navtoaud (id, navid, audid, navorder) VALUES (?,?,?,?)', [id, navid, audid, navorder]);
+      }
+    });
+  }   
+    
+  //OLD appNavToAudienceJson
   // For the audiences. 
-  function loadappNavToAudienceJson(data) {
+  /*function loadappNavToAudienceJson(data) {
     db.transaction(function (transaction) {
       var len = data.length;
       if (len > 0) {
@@ -1216,7 +1421,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         transaction.executeSql('INSERT INTO appNavToAudience (id, navid, audid, navorder, navlink) VALUES (?,?,?,?,?)', [id, navid, audid, navorder, navlink]);
       }
     });
-  }
+  }*/
 
   function loadappPageToNavJson(data) {
     db.transaction(function (transaction) {
@@ -1269,19 +1474,25 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     //use this function to find out if the app has access to the internet
     checkConnection();
     if (connectionStatus === 'online') {
+        console.log("online");  
       setupDB(); // Allocate space for the dbs.
-      phoneChecks(); // Setup athe phonenumbers and diningmenu dbs.
+      phoneChecks(); // Setup the phonenumbers and diningmenu dbs.
       var table = 'pages';
       ckTable(db, function (callBack) { // Check the validity of the pages table.
         if (callBack == 0) {            // If invalid, create the audience tables.
           //create db tables
+          console.log("callback == 0");
           BuildAudienceTable();
           BuildContentTables();
           //get the content and add it.
           loadFullJson();               // Then create the other tables
+          
+          getPrefAud();  // Get Audience pref and make appropriate homepage
         } else {
+          console.log("callback != 0");
           //check versions then load whatever content you want here? or maybe just all for now just all
           loadFullJson();
+          getPrefAud(); // Get Audience pref and make appropriate homepage
         }
       }, table);
         
@@ -1602,10 +1813,15 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   });
 
   //KJD Necessary for SVG images (icons)
+  /* Author: Emmerson Zhaime
+  Calls a function that decides whether or not to show a pop up at the homepage
+  */
   $(document).on('pageshow', '#home', function () {
-      $("#myPopup").popup("open");
+      getActiveAud();
   });
+
   $(document).on('pagebeforeshow', '#home', function (e, data) {
+      popupClickHandlers(); // Set click handlers for the popup menu
       jQuery('img.svg').each(function(){
           var $img = jQuery(this);
           var imgID = $img.attr('id');
