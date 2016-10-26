@@ -442,19 +442,38 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       var meal = cafe.dayparts[0][mealID];
       $(".items .diningmenuholder").html('');
       $.each(meal.stations, function (id, station) {
-        $(".items .diningmenuholder").append('<li data-role="list-divider">' + station.label + "</li>");
+          
+        // A dynamic station ID. Useful for when we need to remove a station if the contents
+        // would be empty.
+          
+        var stationID = "station-" + station.label.replace(/\s+/g, '-').toLowerCase();
+        $(".items .diningmenuholder").append('<li data-role="list-divider" id="' + stationID + '">' + station.label + "</li>");
+        var specialsExist = false;
         $.each(station.items, function (id, item) {
 
-          // Build the list item html
-          var fooditemHTML = "<li data-icon='false'>";
-          fooditemHTML += lookupFoodItem(item);
-          fooditemHTML += "</li>";
+          // We only care about the specials. Specials in the JSON are either 1 or 0.
+          if (data.items[item].special == "1"){
             
-          $(".items .diningmenuholder").append(fooditemHTML).enhanceWithin();
+            specialsExist = true;  
+              
+            // Build the list item html
+            var fooditemHTML = "<li data-icon='false'>";
+            fooditemHTML += lookupFoodItem(item);
+            fooditemHTML += "</li>";
+            
+            // Add the list item to the container
+            $(".items .diningmenuholder").append(fooditemHTML).enhanceWithin();
+          }
         });
+        
+        // Get rid of the station list divider if it is empty.
+        if (!specialsExist){
+            $(("#" + stationID)).remove();
+        }
       });
       $('.items ul').listview("refresh");
     };
+
     var defaultMealSet = false; // assume that no meal is going on now
 
     $('.apageheader.menu-show').html('<div id="meals-navbarcont" data-role="navbar"></div>');
