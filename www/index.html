@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="css/font-awesome.min.css">
     <link rel="stylesheet" href="css/bbplayer.css">
     <link rel="stylesheet" href="css/simpleweather.css">
-
+    <link rel="stylesheet" href="css/diningstickers.css">
 
     <link href='https://fonts.googleapis.com/css?family=Titillium+Web:200' rel='stylesheet' type='text/css'>
 
@@ -286,10 +286,10 @@
                 <!-- Each Dining hall name currently contains three parts: An open indicator, 
                      the name, and the hours hard-coded. -->
                 <ul data-role="listview" class="widelist diningmenuholder">
-                    <li data-bamco-id="109"><a><span class="open-indicator"></span><span class="dining-hall-block">Soper Commons<span class="hours-text">7:30 - 8:00</span></span></a></li>
-                    <li data-bamco-id="110"><a><span class="open-indicator closed"></span><span class="dining-hall-block">McEwen Cafe<span class="hours-text">Closed</span></span></a></li>
-                    <li data-bamco-id="598"><a><span class="open-indicator closed"></span><span class="dining-hall-block">The Little Pub<span class="hours-text">Closed</span></span></a></li>
-                    <li data-bamco-id="512"><span class="open-indicator closed"></span><span class="dining-hall-block"><b>The Howard Diner</b><span class="hours-text">Closed</span></span></li>
+                    <li data-bamco-id="109"><a><span class="open-indicator"></span><span class="dining-hall-block">Soper Commons<span class="hours-text"></span></span></a></li>
+                    <li data-bamco-id="110"><a><span class="open-indicator"></span><span class="dining-hall-block">McEwen Cafe<span class="hours-text"></span></span></a></li>
+                    <li data-bamco-id="598"><a><span class="open-indicator"></span><span class="dining-hall-block">The Little Pub<span class="hours-text"></span></span></a></li>
+                    <li data-bamco-id="512"><a><span class="open-indicator"></span><span class="dining-hall-block">The Howard Diner<span class="hours-text"></span></span></a></li>
                 </ul>
             </div>
             
@@ -302,8 +302,18 @@
             <!-- Filled by javascript. This listview is populated with the menu for that 
                  dining hall. -->
             <div data-iscroll="" data-role="content" class="ui-content items">
-                <ul data-role="listview" class="widelist diningmenuholder" data-filter="true">
-
+                <div data-role="content" style="text-align:center" id="sticker-key">
+                    <img class="legend sticker" src="images/menu-item-type-vegetarian.png"/> Vegetarian
+                    <img class="legend sticker" src="images/menu-item-type-vegan.png"/> Vegan
+                    <img class="legend sticker" src="images/menu-item-type-gluten-free.png"/> Gluten Free 
+                    <img class="legend sticker" src="images/menu-item-type-seafood.png"/> Seafood Watch
+                    <img class="legend sticker" src="images/menu-item-type-humane.png"/> Humane
+                    <img class="legend sticker" src="images/menu-item-type-well-being.png"/> Well Being
+                    <img class="legend sticker" src="images/menu-item-type-halal.png"/> Halal
+                    <img class="legend sticker" src="images/menu-item-type-inbalance.png"/> In Balance
+                </div>
+                <ul data-role="listview" class="widelist diningmenuholder" data-filter="false">
+                
                 </ul>
             </div>
             

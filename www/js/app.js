@@ -117,68 +117,50 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           
         // DINER HOURS
         if (key == 512) {
-          if (!(cafe.dayparts) || !(cafe.dayparts[0]) || cafe.dayparts[0].length == 0) {
-            
-              
-            // Saturday or Sunday
-            if (day == 6 || day == 0) {
+
+          // Saturday or Sunday
+          if (day == 6 || day == 0) {
                 
-                // Diner B or after 3pm
-                if (now.getHours() < 4 || now.getHours() > 15) {
-                    cafeElement.find(".open-indicator").addClass("open");
-                }
-                
-                else {
-                    cafeElement.find(".open-indicator").addClass("closed");
-                }
-                
-                // Diner and Diner B hours inserted into the HTML
-                cafeElement.find(".dining-hall-block .hours-text").text("12:00am - 4:00am | 3:00pm - 12:00am");
-                console.log("HERE! SATURDAY OR SUNDAY")
-            } 
-              
-            // Friday 
-            else if (day == 5) {
-                if (now.getHours() < 4 || now.getHours() > 9) {
-                    cafeElement.find(".open-indicator").addClass("open");
-                } 
-                else {
-                    cafeElement.find(".open-indicator").addClass("closed");   
-                    }
-                
-                // Diner and Diner B hours inserted into the HTML
-                cafeElement.find(".dining-hall-block .hours-text").text("12:00am - 4:00am | 9:00am - 12:00am");
-                console.log("HERE! FRIDAY")
+            // Diner B or after 3pm
+            if (now.getHours() < 4 || now.getHours() > 15) {
+              cafeElement.find(".open-indicator").addClass("open");
             }
-              
-            // Monday-Thursday
+                
             else {
-                if (now.getHours() > 9){
-                    cafeElement.find(".open-indicator").addClass("open");
-                }
-                else {
-                    cafeElement.find(".open-indicator").addClass("closed");
-                }
-                
-                // Diner weekday hours inserted into the HTML
-                cafeElement.find(".dining-hall-block .hours-text").text("9:00am - 12:00am");
-                console.log("HERE! ANY DAY")
+              cafeElement.find(".open-indicator").addClass("closed");
             }
-          
+                
+            // Diner and Diner B hours inserted into the HTML
+            cafeElement.find("a .dining-hall-block .hours-text").text("12:00am - 4:00am | 3:00pm - 12:00am");
+            console.log("HERE! SATURDAY OR SUNDAY")
           } 
-            
+              
+          // Friday 
+          else if (day == 5) {
+            if (now.getHours() < 4 || now.getHours() > 9) {
+              cafeElement.find(".open-indicator").addClass("open");
+            } 
             else {
+              cafeElement.find(".open-indicator").addClass("closed");   
+            }
                 
+            // Diner and Diner B hours inserted into the HTML
+            cafeElement.find("a .dining-hall-block .hours-text").text("12:00am - 4:00am | 9:00am - 12:00am");
+            console.log("HERE! FRIDAY")
+          }
+              
+          // Monday-Thursday
+          else {
+            if (now.getHours() > 9){
+              cafeElement.find(".open-indicator").addClass("open");
+            }
+            else {
+              cafeElement.find(".open-indicator").addClass("closed");
+            }
                 
-                cafeElement.removeClass("ui-li-static").children().wrapAll("<a></a>");
-                $('.dining-halls .diningmenuholder').listview("refresh");
-                
-                cafeElement.children("a").click(function () {
-                    var id = $(this).parent().attr("data-bamco-id");
-                initializeDiningHall(id);
-                $(".dining-halls").css("display", "none");
-                
-            });
+            // Diner weekday hours inserted into the HTML
+              cafeElement.find("a .dining-hall-block .hours-text").text("9:00am - 12:00am");
+              console.log("HERE! ANY DAY")
           }
         }
         
@@ -193,7 +175,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         // Currently does NOT include the hours that Commons is closed
         // during the day
         else if (key == 110) {
-            //console.log("MCEWENNNNNNNN")
+            console.log("MCEWENNNNNNNN")
             console.log(day);
             
             // Friday
@@ -238,7 +220,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         //console.log(cafe.dayparts[0]);
         //------------------------------------------------------------------
           
-    
         // Goes through each meal for a given dining hall on the current day
         $.each(cafe.dayparts[0], function (id, meal) { 
             // For each meal, parse the "dayparts" of the current meal
@@ -253,13 +234,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
 
             var xnow = moment();
-
-            
-            // Dead code
-            //if (id == 0) {
-                //cafeElement.find("a .dining-hall-block .hours-text").text(starttime12hr);
-            //}
-
         
           // Is the current meal being offered now?
           if (start.isBefore(xnow) && end.isAfter(xnow)) {
@@ -275,18 +249,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           //cafeElement.find("a .dining-hall-block .hours-text").append(document.createTextNode(" - " + endtime12hr));
           cafeElement.find("a").removeClass("ui-disabled");
         } 
-          /*else {
-            console.log(day);
-            if (key == 598 && day != 6 && day != 0) {
-                console.log("Pub meal object broken on weekday")
-            }
-            else {
-                console.log(key, " is closed");
-                cafeElement.find("a .dining-hall-block .hours-text").text("Closed Today");
-                cafeElement.find("a").addClass("ui-disabled");
-            }
-        }
-        */
 
         // Set the current cafe to closed or open depending on 
         // if the meal has been set
@@ -447,35 +409,31 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     }
 
     var data = diningJSON;
-
-    // Function to lookup and return the description of FoodItem given itemID
-    var lookupFoodItem = function (itemID, extra) {
-      var item = data.items[itemID];
-      var display = item.label;
-      var cor_lookup = {"humane": "hm", "vegan": "vg", "vegetarian" : "v", "made without gluten-containing ingredients": "gf", "farm to fork": "f2f", "seafood watch": "sw"};
-      // Add the description of the item to what is going to be displayed if it exists
-      if (item.description) {
-        display += '<span class="item-description">' + item.description + '</span>';
-      }
-      // If the FoodItem falls into categories like glutten-free, add that category to the description
-      if (extra && item.cor_icon != []) {
-        /*for (var id in item.cor_icon) {
-          display = '<img height="16" width="16" src="' + data.cor_icons[id].image + '" class="ui-li-icon">'
-                    + display;
-        }*/
-        display += '<span class="ui-li-aside">';
-        for (var id in item.cor_icon) {
-          display += cor_lookup[item.cor_icon[id]] + " ";
+      
+    // Lookup the fooditem from the db query and return an HTML string with the
+    // properly formatted info.
+    var lookupFoodItem = function(itemID) {
+        
+        var fooditem = data.items[itemID];        
+        var cor_lookup = {"humane": "images/menu-item-type-humane.png", "vegan": "images/menu-item-type-vegan.png", "vegetarian" : "images/menu-item-type-vegetarian.png", "made without gluten-containing ingredients": "images/menu-item-type-gluten-free.png", "farm to fork": "images/menu-item-type-farm-to-fork.png", "seafood watch": "images/menu-item-type-seafood.png", "Well-Being": "images/menu-item-type-well-being.png", "halal": "images/menu-item-type-halal.png"};
+        
+        var fooditemHTML = "<a href='#'>";
+        fooditemHTML += "<h1>" + fooditem.label + "</h1>"; // The name of dish
+        
+        if (fooditem.cor_icon != []) {
+          fooditemHTML += "<span class='item-description'>";
+          for (var id in fooditem.cor_icon) {
+            fooditemHTML += '<img class="sticker" src="' + cor_lookup[fooditem.cor_icon[id]] + '"/> ';
+          }
+            
+          fooditemHTML += "</span>";
         }
-
-        display += '</span>';
-        /*if (item.nutrition.kcal) {
-          display += '<span class="ui-li-count">' + item.nutrition.kcal + ' cal</span>';
-        }*/
-      }
-      return display;
-    };
-    
+        
+        fooditemHTML += "</a>";
+        
+        return fooditemHTML;
+    };  
+      
     // cafe has the Json Object with all the data for a given dining hall
     var cafe = data.days[0].cafes[targetDiningHall];
 
@@ -484,14 +442,38 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       var meal = cafe.dayparts[0][mealID];
       $(".items .diningmenuholder").html('');
       $.each(meal.stations, function (id, station) {
-        $(".items .diningmenuholder").append('<li data-role="list-divider">' + station.label + "</li>");
+          
+        // A dynamic station ID. Useful for when we need to remove a station if the contents
+        // would be empty.
+          
+        var stationID = "station-" + station.label.replace(/\s+/g, '-').toLowerCase();
+        $(".items .diningmenuholder").append('<li data-role="list-divider" id="' + stationID + '">' + station.label + "</li>");
+        var specialsExist = false;
         $.each(station.items, function (id, item) {
 
-          $(".items .diningmenuholder").append("<li>" + lookupFoodItem(item, true) + "</li>").enhanceWithin();
+          // We only care about the specials. Specials in the JSON are either 1 or 0.
+          if (data.items[item].special == "1"){
+            
+            specialsExist = true;  
+              
+            // Build the list item html
+            var fooditemHTML = "<li data-icon='false'>";
+            fooditemHTML += lookupFoodItem(item);
+            fooditemHTML += "</li>";
+            
+            // Add the list item to the container
+            $(".items .diningmenuholder").append(fooditemHTML).enhanceWithin();
+          }
         });
+        
+        // Get rid of the station list divider if it is empty.
+        if (!specialsExist){
+            $(("#" + stationID)).remove();
+        }
       });
       $('.items ul').listview("refresh");
     };
+
     var defaultMealSet = false; // assume that no meal is going on now
 
     $('.apageheader.menu-show').html('<div id="meals-navbarcont" data-role="navbar"></div>');
@@ -645,7 +627,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
     };
     $.ajax({
-      url: "https://newsite.hamilton.edu/appPages/ajax/getappdata.cfm",
+      url: "https://www.hamilton.edu/apppages/ajax/getappdata.cfm",
       cache: 'true',
       dataType: 'json'
     }).done(jsonCallback);
