@@ -741,12 +741,17 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         var iconList = [];
         var len = results.rows.length;
         for (var i = 0; i < len; i++) {
-            console.log(results.rows.item(i));   
+            //console.log(results.rows.item(i));   
             iconList.push(results.rows.item(i));
         }
         var iconTemplate = '<li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon ${navAddClass}" href= ${navLink}><img src="icons/${navIcon}" class="imgResponsive svg-width svg"/><br>${navTitle}</a></li>';
         $.template("buttonTemplate", iconTemplate);
         $.tmpl("buttonTemplate", iconList).appendTo('#home-all-icons');
+        
+//        $('#home').append($.html('<link rel="stylesheet" type="text/css" href="css/buff_blue_color.css" title="blue"'));
+//        $('#home').append($.html('<link rel="alternate stylesheet" type="text/css" href="css/color_icons.css" title="muli">'));
+//        $('#home').append($.html('<link rel="alternate stylesheet" type="text/css" href="css/large.css" title="large">'));
+//        
         console.log('makehomePageFinal Complete');
         refreshHome();
     }
@@ -777,7 +782,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     return ((a < b) ? -1 : ((a > b) ? 1 : 0));
   }
 
-    //look here Ty
   function getNavigationandPages(tx) {
     var sql = "select audienceID from audPrefs";
     db.transaction(function (tx) {
