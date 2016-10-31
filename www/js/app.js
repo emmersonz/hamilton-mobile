@@ -736,7 +736,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 //                         <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon con" href="#phonenums"><img src="icons/contacts.svg" class="imgResponsive svg-width svg"/><br>Contacts</a></li>
     
     function makeHomePageFinal(tx, results) {
-        var homeAllIcons = $('#home-all-icons');
+        var homeAllIcons = $('#home-all-icons'); //$.getElementById('home-all-icons').innerHTML;
         homeAllIcons.html('');
         var iconList = [];
         var len = results.rows.length;
@@ -748,10 +748,10 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         $.template("buttonTemplate", iconTemplate);
         $.tmpl("buttonTemplate", iconList).appendTo('#home-all-icons');
         
-//        $('#home').append($.html('<link rel="stylesheet" type="text/css" href="css/buff_blue_color.css" title="blue"'));
-//        $('#home').append($.html('<link rel="alternate stylesheet" type="text/css" href="css/color_icons.css" title="muli">'));
-//        $('#home').append($.html('<link rel="alternate stylesheet" type="text/css" href="css/large.css" title="large">'));
-//        
+//        home-all-icons.append($.html('<link rel="stylesheet" type="text/css" href="css/buff_blue_color.css" title="blue"'));
+//        home-all-icons.append($.html('<link rel="alternate stylesheet" type="text/css" href="css/color_icons.css" title="muli">'));
+//        home-all-icons.append($.html('<link rel="alternate stylesheet" type="text/css" href="css/large.css" title="large">'));  
+        
         console.log('makehomePageFinal Complete');
         refreshHome();
     }
@@ -1502,7 +1502,12 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         } else {
           console.log("callback != 0");
           //check versions then load whatever content you want here? or maybe just all for now just all
-          loadFullJson();
+          BuildAudienceTable();
+          BuildContentTables();
+          //get the content and add it.
+          loadFullJson();               // Then create the other tables
+          // checkPref();
+          getPrefAud();
         }
       }, table);
         
