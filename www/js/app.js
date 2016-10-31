@@ -741,10 +741,10 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         var iconList = [];
         var len = results.rows.length;
         for (var i = 0; i < len; i++) {
-            //console.log(results.rows.item(i));   
+            console.log(results.rows.item(i));   
             iconList.push(results.rows.item(i));
         }
-        var iconTemplate = '<li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon ${navAddClass}" href= ${navLink}><img src="icons/${navIcon}" class="imgResponsive svg-width svg"/><br>${navTitle}</a></li>';
+        var iconTemplate = '<li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon ${navAddClass}" href= ${navLink}><img src="icons/${navIcon}" class="imgResponsive ${navAddClass}-width svg"/><br>${navTitle}</a></li>';
         $.template("buttonTemplate", iconTemplate);
         $.tmpl("buttonTemplate", iconList).appendTo('#home-all-icons');
         
