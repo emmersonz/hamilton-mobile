@@ -516,7 +516,7 @@ a.homeicon.ui-btn {
 }
 
 .maphome-width{
-    padding-top: 8px; !important
+    padding-top: 8px;
     width: 37px !important;
 }
 .reunion-width{
@@ -524,6 +524,7 @@ a.homeicon.ui-btn {
     width: 33px !important;
 }
 .web-width{
+    padding-top: -10px !important;
     width: 37px !important;   
 }
 .fall-width{
