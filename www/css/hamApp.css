@@ -584,7 +584,7 @@ ul.diningmenuholder > li.ui-li-static.ui-body-inherit.ui-last-child {
     font-weight: normal;
 }
 
-#radio #song-container {
+#radio .whcl-item {
     font-size: 20pt;
     font-family: sans-serif;
     margin-top:20px
