@@ -189,7 +189,10 @@
                 <h1>WHCL Radio</h1>
             </div>
             <div style="text-align:center">
-            
+
+                <!-- The current show -->
+                <div id="current-whcl-show"></div>
+                
                 <!-- An open source audio player named bbplayer. -->
                 <div class="bbplayer">
                     <span class="bb-play"></span>
@@ -198,7 +201,17 @@
                     <audio src="http://150.209.66.147:8000/stream/1/" preload="auto">
                     </audio>
                 </div>
+                
+                <!-- Song name -->
                 <div id="song-container"></div>
+                
+                <!-- Schedule -->
+                <div id="whcl-schedule">
+                    <ul data-role="listview" class="widelist" id="whcl-schedule-list">
+                        
+                    </ul>
+                </div>
+                
             </div>
             <!-- /content -->
         </div>
