@@ -1573,7 +1573,19 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
     }, true, 1);
   };
+    
+  function calculateDay(){
+    var daysOfWeek = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+    
+    var d = new Date();
+    var indexOfCurrentDay = d.getDay() - 1;
+    return daysOfWeek[indexOfCurrentDay];
+  }
+    
+  
+    
   $(document).on('pagebeforeshow', '#radio', function (e, data) {
+    calculateDay();
     updateSong();
     songUpdateInterval = setInterval(updateSong, 3800);
 

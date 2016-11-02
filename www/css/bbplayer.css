@@ -5,7 +5,7 @@ Optional styling for bbplayer elements.
 @import url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700);
 
 .bbplayer {
-  padding-top:200px;
+/*  padding-top:200px;*/
   font: 200 16px/1.5 Lato,"Helvetica Neue",Helvetica,Arial,sans-serif;
   color: #898989;
   display: inline-block;

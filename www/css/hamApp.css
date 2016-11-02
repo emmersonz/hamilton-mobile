@@ -585,9 +585,13 @@ ul.diningmenuholder > li.ui-li-static.ui-body-inherit.ui-last-child {
 }
 
 #radio .whcl-item {
-    font-size: 20pt;
+    font-size: 15pt;
     font-family: sans-serif;
     margin-top:20px
+}
+
+#radio .whcl-song-title {
+    font-size: 12pt;
 }
 
 .firstHeading {
