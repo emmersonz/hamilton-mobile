@@ -1582,7 +1582,13 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     return daysOfWeek[indexOfCurrentDay];
   }
     
-  
+  var updateSched(){
+    $.ajax({
+      url: "https://www.hamilton.edu/appPages/ajax/getWhclSched.cfm",
+      cache: "true",
+      dataType: "json"
+    }).done(schedJSONCallback);
+  }
     
   $(document).on('pagebeforeshow', '#radio', function (e, data) {
     calculateDay();
