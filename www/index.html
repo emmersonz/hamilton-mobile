@@ -53,13 +53,11 @@
             <div id="ham-home-img" class="title_bar" style="padding-bottom:0px;">
                 <img src="icons/Hamilton.svg" class="imgResponsive hamTitle">
                 
-               <a class="ui-btn-icon-right" id="settings" href="#settings" data-icon="gear" data-transition="none" style="position:absolute; top:30px;right:5px"></a>
+                <!-- Settings button-->
+               <a class="ui-btn-icon-right" id="settingsgear" href="#settings" data-icon="gear" data-role ="button" data-iconpos="notext" data-transition="none" style="position:absolute; top:0px; right:8px"></a>
                 
             </div>
             
-            <!--<div id = "settings-button">
-            <a class="ui-btn-icon-right" id="settings" href="" data-icon="gear" data-transition="none">Settings</a>
-            </div>-->
             
             <div id="home-gradient"></div>
             <!-- <hr class="home-divider">
@@ -78,7 +76,8 @@
                     <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon feedb" href="#scroll"><img src="icons/Scroll.svg" class="imgResponsive scroll-width svg" /><br>The Scroll</a></li>
                     <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon maphome" href="#webcam"><img src="icons/webcam.svg" class="imgResponsive web-width svg" /><br>Webcam</a></li>
                     <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon feedb" href="#feedback-page"><img src="icons/comment.svg" class="imgResponsive svg-width svg" /><br>Feedback</a></li>
-                      <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon fallcoming" href="http://www.hamilton.edu/fall-weekend/schedule"><img src="icons/Fallcoming.svg" class="imgResponsive fall-width svg" /><br>Fallcoming</a></li>
+                      <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon fallcoming" href="http://www.hamilton.edu/fall-weekend/schedule"><img src="icons/Fallcoming.svg" class="imgResponsive fall-width svg" /><br>Fallcoming</a></li> 
+                    <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon fallcoming" href="https://hamilton-sp.blackboard.com/eAccounts/AnonymousHome.aspx"><img src="icons/Fallcoming.svg" class="imgResponsive fall-width svg" /><br>Fallcoming</a></li>
                     <li class="icon-float ui-block-2x-height centeralign"><a class="ui-btn homeicon weather-anchor"><div id="weather"></div></a></li>  
                 </ul>
 
@@ -108,15 +107,34 @@
             <!-- Settings Menu Options -->
             <div data-iscroll="" data-role="content" class="ui-content">
                 <ul data-role="listview" class="widelist" id="settingsmenu" data-filter="false" data-autodividers="false">
-                    <li><a id="changeaud" href="#">Change Audience</a></li>
-                    <li><a id="changeicons" href="#">Manage Icons</a></li>
+                    <li><a id="audiencepref" href="#changeaudience">Change Audience</a></li> 
                 </ul>
-                <br>
             </div>
         </div>
         
         
-        <!-- END SETTINGS PAGE -->
+        <!-- AUDIENCE SETTINGS PAGE -->
+        <div data-role="page" id="changeaudience">
+            <div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false"  class="pageheader">
+                <a class="back-btn ui-link ui-btn" href="#settings" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
+                    <i class="fa fa-home fa-2x house" style="padding:0"></i>
+                </a>
+                <h1>Audience</h1>
+            </div>
+            
+            <!-- Radio form to select/change audience which is dynamically 
+                 populated from the audience table in app.js -->
+            <form>
+                
+                <fieldset data-role="controlgroup" id="audienceform">
+                </fieldset>
+                
+            </form>   
+            
+        </div>
+     
+        
+        <!-- END SETTINGS PAGES -->
 
         <!--CONTACTS PAGE-->
         <div data-role="page" id="phonenums">
