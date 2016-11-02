@@ -1378,10 +1378,11 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       // Allocate space for the DBs
       setupDB(); 
       // Setup the phonenumbers and dining menu DBs
-      phoneChecks(); // Setup the phonenumbers and diningmenu dbs.
+      phoneChecks(); 
         
       // Check the validity of the pages table, 
       // If invalid, create the audience tables. 
+      clearTables();
       var table = 'pages';
       ckTable(db, function (callBack) { // Check the validity of the pages table.
         if (callBack == 0) {            // If invalid, create the audience tables.
