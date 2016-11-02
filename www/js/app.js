@@ -79,6 +79,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     
   // Database global variable
   var db;
+  var audDB;
 
   // Opens the application's database and returns a new database object
   // window.openDatabase(name, version, display name, size)
@@ -87,6 +88,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 //      second field in opendatabase = version (switch to empty to allow it to persist over multiple versions)
 //      can store audience based, even through versions      
     db = window.openDatabase("appContentsDB", "1.0", "HamiltonCollege", 200000);
+    audDB = window.openDatabase("appAudience", "", "HamiltonCollege", 200000);
   }
 
   // Global variable to keep track of the state of JSON and AJAX requests
@@ -666,22 +668,12 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     });
   }
 
-  function getAudPref(tx) {
-    var sql = "select audienceID from audPrefs";
-    db.transaction(function (tx) {
-      tx.executeSql(sql, [], getAudPref_success);
-    });
-  }
-    
-  function getAudPref_success(tx, results) {
-
-  }
-
   /* FUNCTION createAudienceForm
-     Dynamically creates the audience setting form before the page is shown. 
-     Pre-selects the radio button for the audience currently in use.
-     Adds click handlers to all of the radio buttons to save the user's selection
-     within the audPrefs table. */
+     Queries the database to dynamically create the audience setting 
+     form before the page is shown. 
+     Only audiences that are active in the audience table will appear
+     as options in the settings menu.
+  */
   function createAudienceForm(tx) {
       var sql = "SELECT appAudience FROM audience WHERE isActive = 1";
       db.transaction(function (tx) {
@@ -709,14 +701,49 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       $.tmpl("audTemp", audiences).appendTo('#audienceform');
       $('#audienceform').trigger('create');
       
-      // 'Check' the radio button for the audience that is currently in use
-      checkAudienceRadioBttn2();
+      // Preselect the radio button for the audience that is currently in use
+      selectAudienceRadioBttn();
       // Add the click handlers to each button
       audienceFormClickHandlers();
       
       
   }
+
+ /* FUNCTION selectAudienceRadioBttn
+    Queries the audPrefs database to get the ID of current audience.
+ */
+ function selectAudienceRadioBttn(tx) {
+      var sql = "SELECT audienceID FROM audPrefs"; 
+      audDB.transaction(function(tx){
+          tx.executeSql(sql, [], selectAudienceRadioBttn_success);
+      });
+  }
     
+  /* FUNCTION selectAudienceRadioBttn_success 
+     Queries the audience table to find the name of the current audience. 
+  */
+  function selectAudienceRadioBttn_success(tx, results) {
+      var audID = results.rows.item(0)["audienceID"]
+      var sql = "SELECT appAudience FROM audience WHERE id='" + audID+"'";
+      db.transaction(function(tx){
+          tx.executeSql(sql, [], selectCurrentAudience);
+      });
+      
+  }
+                     
+  /* FUNCTION selectCurrentAudience
+     Preselects the current audience in the settings menu. 
+  */
+  function selectCurrentAudience(tx, results) {
+      var currentAudience = results.rows.item(0)['appAudience'];
+      $('#choice-' + currentAudience).attr("checked",true).checkboxradio("refresh");
+  }
+   
+  /* FUNCTION audienceFormClickHandlers
+     Adds the click handlers to the radio buttons in the audience 
+     settings menu form. When a new audience is select, the 
+     audPrefs table is update with the new audience. 
+  */
   function audienceFormClickHandlers() {
       $('input[name="audiencelist"]').change(function () {
           console.log("CLICKED " + $(this).attr('id'));
@@ -733,13 +760,16 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       });
   
   }
-
+  
+  /* FUNCTION updateAudiencePref
+     Updates the audPrefs table with the new audience for the app. 
+  */
   function updateAudiencePref(tx, results) {
       // Get the ID of the new audience
       var newAudID = results.rows.item(0)["id"];
       
       // Clear out the old audience preference and insert the new one
-      db.transaction(function (tx) {
+      audDB.transaction(function (tx) {
       tx.executeSql('Delete from audPrefs');
       var randID = guid();
       tx.executeSql('INSERT INTO audPrefs (id,audienceID) VALUES (?,?)', [randID, newAudID]);
@@ -747,46 +777,8 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       
   }
     
-  function checkAudienceRadioBttn2(tx) {
-      var sql = "SELECT audienceID FROM audPrefs"; 
-      db.transaction(function(tx){
-          tx.executeSql(sql, [], checkCurrentAudienceRadioBttn2);
-      });
-  }
     
-  function checkCurrentAudienceRadioBttn2(tx, results) {
-      var audID = results.rows.item(0)["audienceID"]
-      var sql = "SELECT appAudience FROM audience WHERE id='" + audID+"'";
-      db.transaction(function(tx){
-          tx.executeSql(sql, [], checkCurrentAudienceRadioBttn3);
-      });
-      
-  }
-                     
-  // checkCurrentAudience 
-  function checkCurrentAudienceRadioBttn3(tx, results) {
-    
-      var currentAudience = results.rows.item(0)['appAudience'];
-      $('#choice-' + currentAudience).attr("checked",true).checkboxradio("refresh");
-  }
-    
-//  // Gets the current active audience and checks its radion button
-//  function checkAudienceRadioBttn(tx) {
-//      console.log("getting audiences");
-//      
-//      var sql = "SELECT appAudience FROM audience where isActive = 1"; 
-//      db.transaction(function(tx){
-//          tx.executeSql(sql, [], checkCurrentAudienceRadioBttn);
-//      });
-//  }
-//    
-//  // checkCurrentAudience 
-//  function checkCurrentAudienceRadioBttn(tx, results) {
-//      var currentAudience = results.rows.item(0)['appAudience'];
-//      $('#choice-' + currentAudience).attr("checked",true).checkboxradio("refresh");
-//  }
-   
-    
+
   function getscrollHTML() {
     $.ajax({
                 type:'post',url:'https://www.hamilton.edu/thescroll/appview.cfm'
@@ -1064,6 +1056,17 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     });
   }
 
+  function ckAudTable(tx, callBack, table) {
+    var sql = "SELECT CASE WHEN tbl_name = '" + table + "' THEN 1 ELSE 0 END FROM sqlite_master WHERE tbl_name = '" + table + "' AND type = 'table'";
+    var result = [];
+    audDB.transaction(function (tx) {
+      tx.executeSql(sql, [], function (tx, rs) {
+        var newcount = rs.rows.length;
+        callBack(newcount);
+      }, callback_error);
+    });
+  }
+    
   function callback_error(db, error) {
     alert("Table Check Error: " + error);
   }
@@ -1154,24 +1157,28 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     }
   }
 
-  // Audience preferences. Create the table if it exists? 
-  // We should remove.
+  /* FUNCTION setAudiencePrefTable 
+     Builds the audPrefs table in the audDB */
   function setAudiencePrefTable() {
     var sql =
       "CREATE TABLE IF NOT EXISTS audPrefs ( " +
       "id varchar(50) PRIMARY KEY, " +
       "audienceID VARCHAR(50))";
-    db.transaction(function (tx) {
+    audDB.transaction(function (tx) {
       tx.executeSql(sql);
     });
   }
-  // TODO - this is ugly, make sure you change this to be none static
+  
+    
+  /* FUNCTION PopulateAudiencePrefTable
+     Initially populates the audience table when it is 
+     created with a null aud ID.
+  */
   function PopulateAudiencePrefTable() {
-    db.transaction(function (tx) {
+    audDB.transaction(function (tx) {
       tx.executeSql('Delete from audPrefs');
       var thisid = guid();
-      var stuid = '7F62FAC8-933A-5D40-4682FC3F251CF26D';
-      tx.executeSql('INSERT INTO audPrefs (id,audienceID) VALUES (?,?)', [thisid, stuid]);
+      tx.executeSql('INSERT INTO audPrefs (id,audienceID) VALUES (?,?)', [thisid, null]);
     });
   }
 
@@ -1248,7 +1255,13 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
                                   function(tx,results){console.log("Successfully Dropped5");},
                                   function(tx,error){console.log("Could not delete5");}
                                  );
+                     tx.executeSql("DROP TABLE audPrefs",[],
+                                  function(tx,results){console.log("Successfully Dropped5");},
+                                  function(tx,error){console.log("Could not delete5");}
+                                 );
+        
             });
+      
     }    
 
     
@@ -1379,9 +1392,14 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     //use this function to find out if the app has access to the internet
     checkConnection();
     if (connectionStatus === 'online') {
-        console.log("online");  
-      setupDB(); // Allocate space for the dbs.
+      console.log("online");  
+      // Allocate space for the DBs
+      setupDB(); 
+      // Setup the phonenumbers and dining menu DBs
       phoneChecks(); // Setup the phonenumbers and diningmenu dbs.
+        
+      // Check the validity of the pages table, 
+      // If invalid, create the audience tables. 
       var table = 'pages';
       ckTable(db, function (callBack) { // Check the validity of the pages table.
         if (callBack == 0) {            // If invalid, create the audience tables.
@@ -1397,25 +1415,18 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           loadFullJson();
         }
       }, table);
-        
+    
+      // Check the validity of the audPrefs table
       table = 'audPrefs';
-      ckTable(db, function (callBack) { // Check validity of audience tables
+      ckAudTable(audDB, function (callBack) { 
         if (callBack == 0) {
-            console.log('CALLBACK 0');
-          //if the pref table doesn't exist - show audience choice for now just enter student aud.
+          // Audience table does not exist - create it
           setAudiencePrefTable();
-          //populate pref table ( later will be based on the user choice)
-          PopulateAudiencePrefTable();
-          //getNavigationandPages();
-        } else {
-          //it exists get all the pages.
-          console.log('CALLBACK !0');
             
-          
-          //PopulateAudiencePrefTable();
-          // this function builds the pages and the navigation
-          //getNavigationandPages();
-        }
+          // Populate the audience table - audience ID is NULL  
+          // upon table creation (i.e no audience has been set yet)
+          PopulateAudiencePrefTable();
+        } 
       }, table);
         
       //Color CSS Switcher- unsure if necessary    
