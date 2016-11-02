@@ -970,40 +970,46 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       // Clear the listview of any items by filling it in with empty string
       contactDetailsListview.html('');
       
-      // For office hours, we split the string by the | delimiter.
-      var officeHours = detailsRow.officehours;
-      var officeHoursPieces = officeHours.split("|"); // Split the officeHours 
-                                                      // by the | delimiter
-      // Build up the HTML and put a break between every piece of officeHoursPieces
-      var officeHoursHTML = '<li data-icon="false"><a>Hours<br><span class="smgrey">';
-      for (var i = 1; i < officeHoursPieces.length; i++) { // Start at one so "Office Hours"
-                                                           // isn't
-          officeHoursHTML = officeHoursHTML + officeHoursPieces[i] + "<br>";
-      }
-      officeHoursHTML = officeHoursHTML + "</span></a></li>";
-      
-      // Put the Hours into its listview item
-      contactDetailsListview.append(officeHoursHTML);
-      
-      
-      // The others are trivial; just get the data item from the db
+      // Just get the data item from the db
       // and update the html for their listview items.
       var phoneNumber = detailsRow.phone;
       var phoneNumberHTML = '<li><a href=tel:' + phoneNumber + '>Phone<br><span class="smgrey">' 
                             + phoneNumber + '<br></span></a></li>';      
       contactDetailsListview.append(phoneNumberHTML);
       
+      
+      // Phone numbers
       var emailAddress = detailsRow.email;
-      var emailAddressHTML = '<li><a href=mailto:' + emailAddress + '>Email<br><span class="smgrey">' 
+      
+      // If there is an email address in the DB
+      if (emailAddress.length > 0){
+        var emailAddressHTML = '<li><a href=mailto:' + emailAddress + '>Email<br><span class="smgrey">' 
                             + emailAddress + '<br></span></a></li>';
-      contactDetailsListview.append(emailAddressHTML);
+        contactDetailsListview.append(emailAddressHTML);
+      }
       
       var websiteURL = detailsRow.url;
-      
-      console.log(websiteURL);
-      
       var websiteURLHTML = '<li><a href="http://hamilton.edu' + websiteURL + '">Webpage</a></li>';
       contactDetailsListview.append(websiteURLHTML);
+      
+      // For office hours, we split the string by the | delimiter.
+      var officeHours = detailsRow.officehours;
+      
+      // If the are office hours in the DB at all...
+      if (officeHours.length > 0){
+        var officeHoursPieces = officeHours.split("|"); // Split the officeHours 
+                                                      // by the | delimiter
+        // Build up the HTML and put a break between every piece of officeHoursPieces
+        var officeHoursHTML = '<li data-icon="false"><a>Hours<br><span class="smgrey">';
+        for (var i = 1; i < officeHoursPieces.length; i++) { // Start at one so "Office Hours"
+                                                           // isn't displayed
+          officeHoursHTML = officeHoursHTML + officeHoursPieces[i] + "<br>";
+        }
+        officeHoursHTML = officeHoursHTML + "</span></a></li>";
+      
+        // Put the Hours into its listview
+        contactDetailsListview.append(officeHoursHTML);
+      }
       
       contactDetailsListview.listview("refresh");
   }
