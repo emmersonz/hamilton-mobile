@@ -481,6 +481,7 @@ a.homeicon.ui-btn {
     width: 38px !important;
 }
 
+/*due to templating, icons must be templated manually*/
 .con-width {
     width: 38px !important;
 }

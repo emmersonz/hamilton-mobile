@@ -719,41 +719,34 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       var audienceID = audience.id;
       var sql = "SELECT * FROM navtoaud as a CROSS JOIN navigation as b ON a.navid=b.id where a.audid='" + audienceID + "'";
       db.transaction(function(tx){
-          tx.executeSql(sql, [], makeHomePageFinal);
+          tx.executeSql(sql, [], makeHomePage);
       });
   }
-   
-  function makeHomePage(tx, results){
-    var len = results.rows.length;
-    console.log("length: "+ len);
-    for (var i = 0; i < len; i++) {
-          console.log(results.rows.item(i));   
-        }
-  }
-
-    //look here
     
-//                         <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon con" href="#phonenums"><img src="icons/contacts.svg" class="imgResponsive svg-width svg"/><br>Contacts</a></li>
-    
-    function makeHomePageFinal(tx, results) {
-        var homeAllIcons = $('#home-all-icons'); //$.getElementById('home-all-icons').innerHTML;
+    function makeHomePage(tx, results) {
+        //referencing container for all icons
+        var homeAllIcons = $('#home-all-icons'); 
+        
+        //clearing container for all icons (don't want to add duplicates)
         homeAllIcons.html('');
+        
+        //adding the all information for correct icons from database, based on audience
         var iconList = [];
         var len = results.rows.length;
         for (var i = 0; i < len; i++) {
             console.log(results.rows.item(i));   
             iconList.push(results.rows.item(i));
         }
+        
+        //code to be templated
         var iconTemplate = '<li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon ${navAddClass}" href= ${navLink}><img src="icons/${navIcon}" class="imgResponsive ${navAddClass}-width svg"/><br>${navTitle}</a></li>';
+        
+        //creating templated code, adding to icon container on homepage
         $.template("buttonTemplate", iconTemplate);
-        $.tmpl("buttonTemplate", iconList).appendTo('#home-all-icons');
+        $.tmpl("buttonTemplate", iconList).appendTo('#home-all-icons'); 
         
-//        home-all-icons.append($.html('<link rel="stylesheet" type="text/css" href="css/buff_blue_color.css" title="blue"'));
-//        home-all-icons.append($.html('<link rel="alternate stylesheet" type="text/css" href="css/color_icons.css" title="muli">'));
-//        home-all-icons.append($.html('<link rel="alternate stylesheet" type="text/css" href="css/large.css" title="large">'));  
-        
-        console.log('makehomePageFinal Complete');
-        refreshHome();
+        //formatting icon svgs
+        refreshSVGs();
     }
 
   function getscrollHTML() {
@@ -921,7 +914,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           });
         });
     }
-//look here Ty    
+    
   var loadPhoneList = function (items) {
     var phonecontacts = [];
     for (var i = 0; i < items.rows.length; i++) {
@@ -944,7 +937,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     loadPhoneList(results);
   }
     
- //look here Ty
   // Load the contact details. Populate the listview with phone number,
   // hours, email, and website
   var populateContactDetails = function (details) {
@@ -1832,16 +1824,12 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       checkPref();
   });
     
-//    
-//  $(document).on('pageshow', '#home', function (e, data) {
-//      refreshHome(e, data);
-//  });
     
 
 
 //HOME PAGE css?    
   $(document).on('pagebeforeshow', '#home', function (e, data) {
-        refreshHome(e, data);
+        refreshSVGs(e, data);
 //      console.log('homepage recreation');
 //      jQuery('img.svg').each(function(){
 //          var $img = jQuery(this);
@@ -1873,8 +1861,8 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 //      });
   });
 
-function refreshHome(e, data) {
-      console.log('homepage refresh');
+//Ty's Note: I took this code out of an event listener because it needs to happen after icons are created.
+function refreshSVGs(e, data) {
       jQuery('img.svg').each(function(){
           var $img = jQuery(this);
           var imgID = $img.attr('id');
