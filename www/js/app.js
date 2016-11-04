@@ -1313,7 +1313,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       if (data.navtoaud.length > 0) {
         loadNavToAudJson(data.navtoaud);
       }
-      getPrefAud();
     });
   }
   
@@ -1446,7 +1445,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           //get the content and add it.
           loadFullJson();               // Then create the other tables
           //check pref
-          //getPrefAud();
+          getPrefAud();
         } else {
           console.log("callback != 0");
           //check versions then load whatever content you want here? or maybe just all for now just all
