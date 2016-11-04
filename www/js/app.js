@@ -759,18 +759,26 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       
   }
 
-   // Selects the appAudience and aud id for the preferred audience in the audience table
-  function getPrefAud(tx){
+   // Selects the aud id for the preferred audience in the audPrefs table
+    function getPrefAud(tx){
       console.log("getPrefAud");
-      var sql = "SELECT appAudience, id FROM audience WHERE isActive=1 LIMIT 1"; // 'Limit 1'is there temporarily
-      db.transaction(function(tx){
+      var sql = "SELECT id, audienceID FROM audPrefs"; 
+      audDB.transaction(function(tx){
           tx.executeSql(sql, [], getAudIcons);
       });
   }
     
+//  function getPrefAud(tx){
+//      console.log("getPrefAud");
+//      var sql = "SELECT appAudience, id FROM audience WHERE isActive=1 LIMIT 1"; // 'Limit 1'is there temporarily
+//      db.transaction(function(tx){
+//          tx.executeSql(sql, [], getAudIcons);
+//      });
+//  }
+    
   function getAudIcons(tx, results){
       var audience = results.rows.item(0);
-      var audienceID = audience.id;
+      var audienceID = audience.audienceID;
       var sql = "SELECT * FROM navtoaud as a CROSS JOIN navigation as b ON a.navid=b.id where a.audid='" + audienceID + "'";
       db.transaction(function(tx){
           tx.executeSql(sql, [], makeHomePage);
