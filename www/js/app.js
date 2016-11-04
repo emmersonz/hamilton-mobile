@@ -758,7 +758,53 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     });
       
   }
+
+   // Selects the appAudience and aud id for the preferred audience in the audience table
+  function getPrefAud(tx){
+      console.log("getPrefAud");
+      var sql = "SELECT appAudience, id FROM audience WHERE isActive=1 LIMIT 1"; // 'Limit 1'is there temporarily
+      db.transaction(function(tx){
+          tx.executeSql(sql, [], getAudIcons);
+      });
+  }
     
+  function getAudIcons(tx, results){
+      var audience = results.rows.item(0);
+      var audienceID = audience.id;
+      var sql = "SELECT * FROM navtoaud as a CROSS JOIN navigation as b ON a.navid=b.id where a.audid='" + audienceID + "'";
+      db.transaction(function(tx){
+          tx.executeSql(sql, [], makeHomePage);
+      });
+  }
+    
+    function makeHomePage(tx, results) {
+        //referencing container for all icons
+        console.log("entered makehomepage");
+        var homeAllIcons = $('#home-all-icons'); 
+        
+        //clearing container for all icons (don't want to add duplicates)
+        homeAllIcons.html('');
+        
+        //adding the all information for correct icons from database, based on audience
+        var iconList = [];
+        var len = results.rows.length;
+        for (var i = 0; i < len; i++) {
+            console.log(results.rows.item(i));   
+            iconList.push(results.rows.item(i));
+        }
+        
+        //code to be templated
+        var iconTemplate = '<li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon ${navAddClass}" href= ${navLink}><img src="icons/${navIcon}" class="imgResponsive svg-width ${navAddClass}-width svg"/><br>${navTitle}</a></li>';
+        
+        //creating templated code, adding to icon container on homepage
+        $.template("buttonTemplate", iconTemplate);
+        $.tmpl("buttonTemplate", iconList).appendTo('#home-all-icons'); 
+        
+        //formatting icon svgs
+        refreshSVGs();
+        console.log("exited makehomepage");
+    }
+
     
 
   function getscrollHTML() {
@@ -1398,6 +1444,8 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           BuildContentTables();
           //get the content and add it.
           loadFullJson();               // Then create the other tables
+          //check pref
+          getPrefAud();
         } else {
           console.log("callback != 0");
           //check versions then load whatever content you want here? or maybe just all for now just all
@@ -1726,6 +1774,10 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
   //KJD Necessary for SVG images (icons)
   $(document).on('pagebeforeshow', '#home', function (e, data) {
+      refreshSVGs(e, data);
+  });
+      
+  function refreshSVGs(e, data) {
       jQuery('img.svg').each(function(){
           var $img = jQuery(this);
           var imgID = $img.attr('id');
@@ -1754,7 +1806,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           }, 'xml');
 
       });
-  });
+  }
 
 
     
