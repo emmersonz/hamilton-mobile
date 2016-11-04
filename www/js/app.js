@@ -1782,7 +1782,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
   //KJD Necessary for SVG images (icons)
   $(document).on('pagebeforeshow', '#home', function (e, data) {
-      //getPref(e, data);
+      getPrefAud(e, data);
       refreshSVGs(e, data);
   });
       
