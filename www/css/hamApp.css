@@ -477,28 +477,17 @@ a.homeicon.ui-btn {
     /*width:90px*/
 }
 
+
+/* The following widths size icons on the home page.
+   All icons have the tag svg-width (default),
+   along with a tag structured with their navAddClass + "-width" tag for specific formatting*/
 .svg-width {
     width: 38px !important;
 }
 
-/*due to templating, icons must be templated manually*/
-.con-width {
-    width: 38px !important;
-}
-
-.cal-width {
-    width: 38px !important;
-}
-
-.clubs-width {
-    width: 38px !important;
-}
-
-.din-width {
-    width: 38px !important;
-}
 
 .whcl-width {
+    padding-top: 2px;
     width: 38px !important;
 }
 
@@ -507,17 +496,13 @@ a.homeicon.ui-btn {
     width: 31px !important;   
 }
 
-.feedb-width {
-    width: 38px !important;
-}
-
 .newshome-width{
-    padding-top: 10px;
+    padding-top: 8px;
     width: 33px !important;
 }
 
 .maphome-width{
-    padding-top: 8px;
+    padding-top: 6px;
     width: 37px !important;
 }
 .reunion-width{

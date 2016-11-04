@@ -739,7 +739,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         }
         
         //code to be templated
-        var iconTemplate = '<li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon ${navAddClass}" href= ${navLink}><img src="icons/${navIcon}" class="imgResponsive ${navAddClass}-width svg"/><br>${navTitle}</a></li>';
+        var iconTemplate = '<li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon ${navAddClass}" href= ${navLink}><img src="icons/${navIcon}" class="imgResponsive svg-width ${navAddClass}-width svg"/><br>${navTitle}</a></li>';
         
         //creating templated code, adding to icon container on homepage
         $.template("buttonTemplate", iconTemplate);
