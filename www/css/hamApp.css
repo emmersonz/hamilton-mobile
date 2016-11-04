@@ -477,7 +477,14 @@ a.homeicon.ui-btn {
     /*width:90px*/
 }
 
+/* The following -width tag references resize icons on the home page.
+   All icons have the tag svg-width (default), along with a tag structured with their navAddClass + "-width" tag for specific formatting */
 .svg-width {
+    width: 38px !important;
+}
+
+.whcl-width {
+    padding-top: 2px;
     width: 38px !important;
 }
 
@@ -486,13 +493,13 @@ a.homeicon.ui-btn {
     width: 31px !important;   
 }
 
-.news-width{
-    padding-top: 10px;
+.newshome-width{
+    padding-top: 8px;
     width: 33px !important;
 }
 
-.map-width{
-    padding-top: 8px;
+.maphome-width{
+    padding-top: 6px;
     width: 37px !important;
 }
 .reunion-width{
@@ -500,6 +507,7 @@ a.homeicon.ui-btn {
     width: 33px !important;
 }
 .web-width{
+    padding-top: -10px !important;
     width: 37px !important;   
 }
 .fall-width{
