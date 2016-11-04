@@ -779,7 +779,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     
     function makeHomePage(tx, results) {
         //referencing container for all icons
-        console.log("entered makehomepage");
+        //console.log("entered makehomepage");
         var homeAllIcons = $('#home-all-icons'); 
         
         //clearing container for all icons (don't want to add duplicates)
@@ -789,7 +789,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         var iconList = [];
         var len = results.rows.length;
         for (var i = 0; i < len; i++) {
-            console.log(results.rows.item(i));   
+            //console.log(results.rows.item(i));   
             iconList.push(results.rows.item(i));
         }
         
@@ -802,7 +802,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         
         //formatting icon svgs
         refreshSVGs();
-        console.log("exited makehomepage");
+        //console.log("exited makehomepage");
     }
 
     
@@ -1774,6 +1774,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
   //KJD Necessary for SVG images (icons)
   $(document).on('pagebeforeshow', '#home', function (e, data) {
+      //getPref(e, data);
       refreshSVGs(e, data);
   });
       
