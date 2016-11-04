@@ -1457,6 +1457,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       table = 'audPrefs';
       ckAudTable(audDB, function (callBack) { 
         if (callBack == 0) {
+            console.log("callback == 0");
           // Audience table does not exist - create it
           setAudiencePrefTable();
             
@@ -1820,9 +1821,9 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 });
     
   
-//    })();
-//;
-//    
+    })();
+;
+    
 var contactListObject = {
     itemID : null
 }
