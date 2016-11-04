@@ -1484,6 +1484,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       var table = 'pages';
       ckTable(db, function (callBack) { // Check the validity of the pages table.
         if (callBack == 0) {            // If invalid, create the audience tables.
+          console.log("callback = 0");
           //create db tables
           BuildAudienceTable();
           BuildContentTables();
