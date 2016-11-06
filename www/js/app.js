@@ -650,6 +650,152 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     });
   }
 
+   /* Author: Emmerson Zhaime
+  Checks to see if the Audience preference is already set
+  */
+  function checkAudSet() {
+      var sql = "SELECT * FROM audPrefs";
+      db.transaction(function (tx) {
+        tx.executeSql(sql, [], checkAudSet_success, checkAudSet_fail);
+      });
+  }
+ /* Author: Emmerson Zhaime
+  If the Audience pref is already, this function is called and does nothing
+  */
+  function checkAudSet_success(tx, results){
+    if(results.rows.length == 0){
+      $("#myPopup").popup("open");   
+    }
+    else{
+      console.log("Audience pref was set already");  
+        }        
+    }
+    
+  function checkAudSet_fail(tx, results){
+      console.log("Audience pref was not set");
+      // $("#myPopup").popup("open");   
+  }
+  
+  
+    
+   /* Author: Emmerson Zhaime
+   Selects the appAudience and aud id for audience set to Active in the audience table
+   */
+  function getPrefAud(tx){
+      var sql = "SELECT audienceID, id FROM audPrefs"; 
+      db.transaction(function(tx){
+          tx.executeSql(sql, [], getAudIcons);
+      });
+  }
+  /* Author: Emmerson Zhaime    
+  // Gets all the information for the icons for a given audience preference and calls a function to make the homepage
+   */
+  function getAudIcons(tx, results){
+      var audience = results.rows.item(0);
+      var audienceID = audience.audienceID;
+      console.log (audience);
+      var sql = "SELECT * FROM navtoaud as a CROSS JOIN navigation as b ON a.navid=b.id where a.audid='" + audienceID + "'";
+      db.transaction(function(tx){
+          tx.executeSql(sql, [], makeHomePage);
+      });
+  }
+    
+  
+   /* Author: Emmerson Zhaime
+  This is supposed to be the function that makes a homepage from a list of icon information. Now it is just printing all the icons information in the console
+  */
+  function makeHomePage(tx, results){
+    var len = results.rows.length;
+    console.log("length: "+ len);
+  }
+  
+
+/*
+  This function deleted the audience preference that exists and calls a function that insert a new audience preference
+  */
+function deleteAudPref(audience){
+    db.transaction(function(tx){
+        tx.executeSql("DELETE FROM audPrefs");
+    });
+    var sql = "SELECT id from audience where appAudience='"+ audience +"'";
+    db.transaction(function(tx){
+        tx.executeSql(sql, [], insertAudPref);
+    });   
+}
+    
+  /*
+  This function inserts the newly selected audience into the audPrefs table
+  */
+function insertAudPref(tx, results){
+    var audience = results.rows.item(0);
+    var audienceID = audience.id;
+    console.log(audienceID);
+    var thisid = guid();
+    var stuid = audienceID;
+    db.transaction(function(tx){
+       tx.executeSql('INSERT INTO audPrefs (id,audienceID) VALUES (?,?)', [thisid, stuid]);
+    });
+  }
+    
+
+$(document).on('click','#audlist li a',function(event){
+     var elementID = $(this).attr('id'); 
+          if(event.handled !== true){ // This will prevent event triggering more then once
+            console.log("clicked " + elementID);
+            // stuff();
+            deleteAudPref(elementID);
+            $.mobile.changePage( "#home", { transition: "slide"} );
+            event.handled = true;
+          }
+});
+
+  /* Author: Emmerson Zhaime
+  This function has click handlers for the popup menu that comes up when you open the app for the first time
+  */
+  function popupClickHandlers (){
+    $('#audlist li a').each(function(){
+        var elementID = $(this).attr('id'); 
+      $(document).on('click', '#'+elementID, function(event){
+          if(event.handled !== true){ // This will prevent event triggering more then once
+           console.log("clicked " + elementID);
+           deleteAudPref(elementID);
+          $.mobile.changePage( "#home", { transition: "slide"} );
+          event.handled = true;
+          }
+        });
+      });
+  }
+    
+  /* FUNCTION createAudiencePopup
+     Dynamically creates the audience popup menu before the popup appears. 
+      */
+  function createAudiencePopup(tx) {
+      var sql = "SELECT appAudience FROM audience";// WHERE isActive = 1";
+      db.transaction(function (tx) {
+      tx.executeSql(sql, [], createAudiencePopup_success);
+    });
+      
+  }
+    
+  /* FUNCTION createAudiencePopup_success
+     Dynamically creates the audience setting form. 
+     Executes when the SQL query in createAudienceForm is successful */
+  function createAudiencePopup_success(tx, results) {
+      // Add the tuples from the results to an array 
+      // to be used in making a template
+      var audiences = [];
+      for (var i = 0; i < results.rows.length; i++) {
+          audiences.push(results.rows.item(i));
+      }
+      
+      // Add the audience buttons to the form via a template
+      var audienceTemplate = '<li><a href="#" id="${appAudience}">${appAudience}</a></li>';
+      var audPopup = $('#audlist');
+      audPopup.html('');
+      $.template("audTemp", audienceTemplate)
+      $.tmpl("audTemp", audiences).appendTo('#audlist');
+      audPopup.listview("refresh");
+  }
   /* FUNCTION createAudienceForm
      Queries the database to dynamically create the audience setting 
      form before the page is shown. 
