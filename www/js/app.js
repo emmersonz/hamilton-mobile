@@ -655,7 +655,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   */
   function checkAudSet() {
       var sql = "SELECT * FROM audPrefs";
-      db.transaction(function (tx) {
+      audDB.transaction(function (tx) {
         tx.executeSql(sql, [], checkAudSet_success, checkAudSet_fail);
       });
   }
@@ -663,7 +663,8 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   If the Audience pref is already, this function is called and does nothing
   */
   function checkAudSet_success(tx, results){
-    if(results.rows.length == 0){
+    var audience = results.rows.item(0);
+    if(audience.audienceID == null){
       $("#myPopup").popup("open");   
     }
     else{
@@ -683,7 +684,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
    */
   function getPrefAud(tx){
       var sql = "SELECT audienceID, id FROM audPrefs"; 
-      db.transaction(function(tx){
+      audDB.transaction(function(tx){
           tx.executeSql(sql, [], getAudIcons);
       });
   }
@@ -714,7 +715,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   This function deleted the audience preference that exists and calls a function that insert a new audience preference
   */
 function deleteAudPref(audience){
-    db.transaction(function(tx){
+    audDB.transaction(function(tx){
         tx.executeSql("DELETE FROM audPrefs");
     });
     var sql = "SELECT id from audience where appAudience='"+ audience +"'";
@@ -732,13 +733,13 @@ function insertAudPref(tx, results){
     console.log(audienceID);
     var thisid = guid();
     var stuid = audienceID;
-    db.transaction(function(tx){
+    audDB.transaction(function(tx){
        tx.executeSql('INSERT INTO audPrefs (id,audienceID) VALUES (?,?)', [thisid, stuid]);
     });
   }
     
 
-$(document).on('click','#audlist li a',function(event){
+$(document).on('click','#audlist li a',function(event, data){
      var elementID = $(this).attr('id'); 
           if(event.handled !== true){ // This will prevent event triggering more then once
             console.log("clicked " + elementID);
@@ -748,23 +749,6 @@ $(document).on('click','#audlist li a',function(event){
             event.handled = true;
           }
 });
-
-  /* Author: Emmerson Zhaime
-  This function has click handlers for the popup menu that comes up when you open the app for the first time
-  */
-  function popupClickHandlers (){
-    $('#audlist li a').each(function(){
-        var elementID = $(this).attr('id'); 
-      $(document).on('click', '#'+elementID, function(event){
-          if(event.handled !== true){ // This will prevent event triggering more then once
-           console.log("clicked " + elementID);
-           deleteAudPref(elementID);
-          $.mobile.changePage( "#home", { transition: "slide"} );
-          event.handled = true;
-          }
-        });
-      });
-  }
     
   /* FUNCTION createAudiencePopup
      Dynamically creates the audience popup menu before the popup appears. 
@@ -1587,8 +1571,9 @@ $(document).on('click','#audlist li a',function(event){
       phoneChecks(); 
         
       // Check the validity of the pages table, 
-      // If invalid, create the audience tables. 
+      // If invalid, create the audience tables.
       clearTables();
+      // PopulateAudiencePrefTable();
       var table = 'pages';
       ckTable(db, function (callBack) { // Check the validity of the pages table.
         if (callBack == 0) {            // If invalid, create the audience tables.
@@ -1599,7 +1584,7 @@ $(document).on('click','#audlist li a',function(event){
           //get the content and add it.
           loadFullJson();               // Then create the other tables
           //check pref
-          getPrefAud();
+          // getPrefAud();
         } else {
           console.log("callback != 0");
           //check versions then load whatever content you want here? or maybe just all for now just all
@@ -1637,6 +1622,14 @@ $(document).on('click','#audlist li a',function(event){
       // do something else
     }
   });
+ function dropAudPref(){
+     audDB.transaction(function (tx){
+        tx.executeSql("DROP TABLE audPrefs",[],
+                                  function(tx,results){console.log("Successfully Dropped5");},
+                                  function(tx,error){console.log("Could not delete5");}
+                                 );
+     });
+ }
 
   // Load the phone numbers for the contacts menu. Gets info from db.
   $(document).on('pagebeforeshow', '#phonenums', function (e, data) {
@@ -1924,6 +1917,13 @@ $(document).on('click','#audlist li a',function(event){
   });
   $(document).on('pagehide', '#radio', function(e, data) {
     clearInterval(songUpdateInterval);
+  });
+    
+$(document).on('pageshow', '#home', function (e, data) {
+      console.log("inside the page show");
+      // $("#myPopup").popup("open");
+      createAudiencePopup();
+      checkAudSet();
   });
 
   //KJD Necessary for SVG images (icons)
