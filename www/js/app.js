@@ -1575,23 +1575,83 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   };
     
   function calculateDay(){
-    var daysOfWeek = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
-    
     var d = new Date();
-    var indexOfCurrentDay = d.getDay() - 1;
-    return daysOfWeek[indexOfCurrentDay];
+      
+    console.log("calc day: " +  d.getDay());  
+      
+    return d.getDay();
   }
     
-  var updateSched(){
+  // Return a Date object for the input given    
+  function parseDate(dateString){
+      var parts = dateString.match(/(\d+)/g);
+      // only care about the hours
+      return new Date(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5]);
+  }
+    
+  function updateSched(){
+    // Fill in data to html
+    var schedJSONCallback = function (data) {
+
+        $("#current-whcl-show").text("I hate oranges");
+        var len = data.length;
+        var thisDayCode =  calculateDay();    
+        
+        // An array for the shows today. We'll add all the shows that match today's
+        // Daycode and sort this list. Then add them to the listview.
+        var thisDaysShows = [];
+        for (var i = 0; i < len; i++) {
+          if (thisDayCode == data[i].Daycode)
+              thisDaysShows.push(data[i]);
+        }
+        
+    
+        
+        // Now sort today's shows by the start time.
+        thisDaysShows.sort(
+          function(a, b){
+            return parseDate(a.Time).getHours() - parseDate(b.Time).getHours();
+          }
+        )
+        
+        
+        
+        // Finally add them to the listview.
+        for (var j = 0; j < thisDaysShows.length; j++){
+            
+            var title = thisDaysShows[j].Title;
+            var start = parseDate(thisDaysShows[j].Time).getHours();
+            var start_am_pm = "pm";
+            
+            console.log("name: " + title);
+            console.log("start: " + start);
+            
+            if (start < 12)
+              start_am_pm = "am";
+            
+            if (start > 12)
+              start -= 12;
+            else if (start == 0)
+              start = 12;
+    
+          
+            
+            var showHTML = "<li><a class='ui-btn'>" + title + "<br><span class='smgrey'>" + 
+                            start + start_am_pm + "</a></li>";
+            $("#whcl-schedule-list").append(showHTML);
+        }
+        
+    };
     $.ajax({
       url: "https://www.hamilton.edu/appPages/ajax/getWhclSched.cfm",
-      cache: "true",
-      dataType: "json"
+      cache: 'true',
+      dataType: 'json'
     }).done(schedJSONCallback);
+
   }
     
   $(document).on('pagebeforeshow', '#radio', function (e, data) {
-    calculateDay();
+    updateSched();
     updateSong();
     songUpdateInterval = setInterval(updateSong, 3800);
 
