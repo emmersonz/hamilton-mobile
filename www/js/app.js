@@ -1587,6 +1587,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     // It must be a new day. update the Sched.
     if (currentHour < showStart){
       updateSched();
+      return;
     }
       
     // If the current hour is different from showStart then it's time for a different show.
@@ -1624,7 +1625,8 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     // Fill in data to html
     var schedJSONCallback = function (data) {
 
-       
+        // Clear html of any old schedule
+        $("#whcl-schedule-list").html("");
         
         var thisDayCode = calculateDay(); 
         
