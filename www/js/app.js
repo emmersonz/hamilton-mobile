@@ -1576,7 +1576,8 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   };
     
   var showStart;
-  var thisDaysShows;    
+  var thisDaysShows;
+  var showUpdateInterval;
   var updateShow = function() {
     
     // Set the current show to current playing name. First, find it.
@@ -1696,10 +1697,12 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     updateSched();
     updateSong();
     songUpdateInterval = setInterval(updateSong, 3800);
+    showUpdateInterval = setInterval(updateShow, 3800);
 
   });
   $(document).on('pagehide', '#radio', function(e, data) {
     clearInterval(songUpdateInterval);
+    clearInterval(showUpdateInterval);
   });
 
   //KJD Necessary for SVG images (icons)
