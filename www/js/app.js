@@ -1594,8 +1594,18 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     var schedJSONCallback = function (data) {
 
         $("#current-whcl-show").text("I hate oranges");
-        var len = data.length;
-        var thisDayCode =  calculateDay();    
+        
+        var thisDayCode = calculateDay(); 
+        
+        // Add today's day of the week as the header
+        var days = ["Monday", "Tuesday", "Wednesday", "Thursday", 
+                        "Friday", "Saturday", "Sunday"];
+        $("#whcl-schedule-list").append("<li data-role='list-divider' role='heading'" + 
+                                        " class='ui-li-divider ui-bar-inherit'>" + 
+                                        days[thisDayCode - 1] + "</li>")
+        
+        // Add the schedule to the page's listview.
+        var len = data.length;   
         
         // An array for the shows today. We'll add all the shows that match today's
         // Daycode and sort this list. Then add them to the listview.
@@ -1605,16 +1615,12 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
               thisDaysShows.push(data[i]);
         }
         
-    
-        
         // Now sort today's shows by the start time.
         thisDaysShows.sort(
           function(a, b){
             return parseDate(a.Time).getHours() - parseDate(b.Time).getHours();
           }
         )
-        
-        
         
         // Finally add them to the listview.
         for (var j = 0; j < thisDaysShows.length; j++){
