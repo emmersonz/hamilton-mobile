@@ -1575,6 +1575,33 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     }, true, 1);
   };
     
+  var showStart;
+  var thisDaysShows;    
+  var updateShow = function() {
+    
+    // Set the current show to current playing name. First, find it.
+    
+    var currentHour = calculateHour();
+    
+    // It must be a new day. update the Sched.
+    if (currentHour < showStart){
+      updateSched();
+    }
+      
+    // If the current hour is different from showStart then it's time for a different show.
+    if (currentHour != showStart){
+        
+      var currentShowIndex = 0; // The current show.
+      while (currentHour > parseDate(thisDaysShows[currentShowIndex].Time).getHours()){
+        currentShowIndex += 1; 
+      }
+        
+      // Now set it.
+      $("#current-whcl-show").text(thisDaysShows[currentShowIndex].Title);
+    }
+    
+  }
+    
   function calculateDay(){
     var d = new Date();      
     return d.getDay();
@@ -1592,7 +1619,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       return new Date(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5]);
   }
     
-  var thisDaysShows;    
   function updateSched(){
     // Fill in data to html
     var schedJSONCallback = function (data) {
@@ -1649,6 +1675,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         // Set the current show to current playing name. First, find it.
         var currentShowIndex = 0; // The current show.
         var currentHour = calculateHour();
+        showStart = currentHour;
         
         while (currentHour > parseDate(thisDaysShows[currentShowIndex].Time).getHours()){
           currentShowIndex += 1; 
