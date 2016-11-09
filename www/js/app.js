@@ -1628,6 +1628,11 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         // Clear html of any old schedule
         $("#whcl-schedule-list").html("");
         
+        // Failed to get the json
+        if (data.length === 0){
+          return;
+        }
+        
         var thisDayCode = calculateDay(); 
         
         // Add today's day of the week as the header
@@ -1690,8 +1695,9 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     $.ajax({
       url: "https://www.hamilton.edu/appPages/ajax/getWhclSched.cfm",
       cache: 'true',
-      dataType: 'json'
-    }).done(schedJSONCallback);
+      dataType: 'json',
+      success: schedJSONCallback
+    });
 
   }
     
