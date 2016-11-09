@@ -1762,6 +1762,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   });
     
 //RADIO 
+  
   var songUpdateInterval;
   var updateSong = function() {
     grabRssFeed('http://spinitron.com/public/rss.php?station=whcl', function(data){
@@ -1771,13 +1772,146 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
     }, true, 1);
   };
+    
+  var showStart;
+  var thisDaysShows;
+  var showUpdateInterval;
+  var updateShow = function() {
+    
+    // Set the current show to current playing name. First, find it.
+    
+    var currentHour = calculateHour();
+    
+    // It must be a new day. update the Sched.
+    if (currentHour < showStart){
+      updateSched();
+      return;
+    }
+      
+    // If the current hour is different from showStart then it's time for a different show.
+    if (currentHour != showStart){
+        
+      var currentShowIndex = 0; // The current show.
+      while (currentHour > parseDate(thisDaysShows[currentShowIndex].Time).getHours()){
+        currentShowIndex += 1; 
+      }
+        
+      // Now set it.
+      $("#current-whcl-show").text(thisDaysShows[currentShowIndex].Title);
+    }
+    
+  }
+    
+  function calculateDay(){
+    var d = new Date();      
+    return d.getDay();
+  }
+    
+  function calculateHour(){
+    var d = new Date();
+    return d.getHours();
+  }
+    
+  // Return a Date object for the input given    
+  function parseDate(dateString){
+      var parts = dateString.match(/(\d+)/g);
+      // only care about the hours
+      return new Date(parts[0], parts[1], parts[2], parts[3], parts[4], parts[5]);
+  }
+    
+  function updateSched(){
+    // Fill in data to html
+    var schedJSONCallback = function (data) {
+
+        // Clear html of any old schedule
+        $("#whcl-schedule-list").html("");
+        
+        // Failed to get the json
+        if (data.length === 0){
+          return;
+        }
+        
+        var thisDayCode = calculateDay(); 
+        
+        // Add today's day of the week as the header
+        var days = ["Monday", "Tuesday", "Wednesday", "Thursday", 
+                        "Friday", "Saturday", "Sunday"];
+        $("#whcl-schedule-list").append("<li data-role='list-divider' role='heading'" + 
+                                        " class='ui-li-divider ui-bar-inherit'>" + 
+                                        days[thisDayCode - 1] + "</li>")
+        
+        // Add the schedule to the page's listview.
+        var len = data.length;   
+        
+        // An array for the shows today. We'll add all the shows that match today's
+        // Daycode and sort this list. Then add them to the listview.
+        thisDaysShows = [];
+        for (var i = 0; i < len; i++) {
+          if (thisDayCode == data[i].Daycode)
+              thisDaysShows.push(data[i]);
+        }
+        
+        // Now sort today's shows by the start time.
+        thisDaysShows.sort(
+          function(a, b){
+            return parseDate(a.Time).getHours() - parseDate(b.Time).getHours();
+          }
+        )
+        
+        // Finally add them to the listview.
+        for (var j = 0; j < thisDaysShows.length; j++){
+            
+            var title = thisDaysShows[j].Title;
+            var start = parseDate(thisDaysShows[j].Time).getHours();
+            var start_am_pm = "pm";
+            
+            if (start < 12)
+              start_am_pm = "am";
+            
+            if (start > 12)
+              start -= 12;
+            else if (start == 0)
+              start = 12;
+            
+            var showHTML = "<li><a class='ui-btn'>" + title + "<br><span class='smgrey'>" + 
+                            start + start_am_pm + "</a></li>";
+            $("#whcl-schedule-list").append(showHTML);
+        }
+        
+        // Set the current show to current playing name. First, find it.
+        var currentShowIndex = 0; // The current show.
+        var currentHour = calculateHour();
+        showStart = currentHour;
+        
+        while (currentHour > parseDate(thisDaysShows[currentShowIndex].Time).getHours()){
+          currentShowIndex += 1; 
+        }
+        
+        // Now set it.
+        $("#current-whcl-show").text(thisDaysShows[currentShowIndex].Title);
+        
+        $("#whcl-schedule-list").listview("refresh");
+        
+    };
+    $.ajax({
+      url: "https://www.hamilton.edu/appPages/ajax/getWhclSched.cfm",
+      cache: 'true',
+      dataType: 'json',
+      success: schedJSONCallback
+    });
+
+  }
+    
   $(document).on('pagebeforeshow', '#radio', function (e, data) {
+    updateSched();
     updateSong();
     songUpdateInterval = setInterval(updateSong, 3800);
+    showUpdateInterval = setInterval(updateShow, 3800);
 
   });
   $(document).on('pagehide', '#radio', function(e, data) {
     clearInterval(songUpdateInterval);
+    clearInterval(showUpdateInterval);
   });
 
   //KJD Necessary for SVG images (icons)

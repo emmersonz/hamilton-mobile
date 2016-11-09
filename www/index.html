@@ -238,17 +238,30 @@
 
                 <h1>WHCL Radio</h1>
             </div>
-            <div style="text-align:center">
-            
+            <div>
+                
                 <!-- An open source audio player named bbplayer. -->
-                <div class="bbplayer">
+                <div class="bbplayer" style="padding-left:10px">
                     <span class="bb-play"></span>
                     
                     <!-- Get the audio stream from here. Downloads a stream pkg. -->
                     <audio src="http://150.209.66.147:8000/stream/1/" preload="auto">
                     </audio>
                 </div>
-                <div id="song-container"></div>
+                
+                <!-- The current show -->
+                <div class="whcl-item" id="current-whcl-info">
+                    <span id="current-whcl-show"></span>
+                    <br>
+                    <span class="whcl-song-title smgrey" id="song-container"></span>
+                </div>
+                
+                <!-- Schedule -->
+                <div data-iscroll="" data-role="content" class="ui-content" id="whcl-schedule">
+                    <ul data-role="listview" class="widelist" style="padding-bottom:150px" id="whcl-schedule-list">
+                    </ul>
+                </div>
+                
             </div>
             <!-- /content -->
         </div>
