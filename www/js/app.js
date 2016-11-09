@@ -1691,6 +1691,9 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         
         // Now set it.
         $("#current-whcl-show").text(thisDaysShows[currentShowIndex].Title);
+        
+        $("#whcl-schedule-list").listview("refresh");
+        
     };
     $.ajax({
       url: "https://www.hamilton.edu/appPages/ajax/getWhclSched.cfm",
