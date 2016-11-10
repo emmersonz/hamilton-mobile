@@ -768,21 +768,15 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       });
   }
     
-//  function getPrefAud(tx){
-//      console.log("getPrefAud");
-//      var sql = "SELECT appAudience, id FROM audience WHERE isActive=1 LIMIT 1"; // 'Limit 1'is there temporarily
-//      db.transaction(function(tx){
-//          tx.executeSql(sql, [], getAudIcons);
-//      });
-//  }
-    
   function getAudIcons(tx, results){
-      var audience = results.rows.item(0);
-      var audienceID = audience.audienceID;
-      var sql = "SELECT * FROM navtoaud as a CROSS JOIN navigation as b ON a.navid=b.id where a.audid='" + audienceID + "'";
-      db.transaction(function(tx){
-          tx.executeSql(sql, [], makeHomePage);
-      });
+      if (results != null) {
+        var audience = results.rows.item(0);
+        var audienceID = audience.audienceID;
+        var sql = "SELECT * FROM navtoaud as a CROSS JOIN navigation as b ON a.navid=b.id where a.audid='" + audienceID + "'";
+        db.transaction(function(tx){
+            tx.executeSql(sql, [], makeHomePage);
+        });
+      }
   }
     
     function makeHomePage(tx, results) {
@@ -1440,10 +1434,10 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       // Setup the phonenumbers and dining menu DBs
       phoneChecks(); 
         
-      // Check the validity of the pages table, 
+      // Check the validity of the icon tables (audience), 
       // If invalid, create the audience tables. 
       clearTables();
-      var table = 'pages';
+      var table = 'audience';
       ckTable(db, function (callBack) { // Check the validity of the pages table.
         if (callBack == 0) {            // If invalid, create the audience tables.
           //create db tables
@@ -1452,8 +1446,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           BuildContentTables();
           //get the content and add it.
           loadFullJson();               // Then create the other tables
-          //check pref
-          getPrefAud();
         } else {
           console.log("callback != 0");
           //check versions then load whatever content you want here? or maybe just all for now just all
@@ -1473,21 +1465,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           PopulateAudiencePrefTable();
         } 
       }, table);
-        
-      //Color CSS Switcher- unsure if necessary    
-      var table = 'colors'; // Set the colors table appropriately
-      ckTable(db, function (callBack) {
-        if (callBack == 0) {
-          //create db tables
-          BuildColorTable();
-          
-        } else {
-          //table exists, use preferred css colors
-          LoadColors();
-        }
-      }, table);
-
-    } else {
+    } else { //if not online do... nothing
       // do something else
     }
   });
@@ -1917,7 +1895,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   //KJD Necessary for SVG images (icons)
   $(document).on('pagebeforeshow', '#home', function (e, data) {
       getPrefAud(e, data);
-      refreshSVGs(e, data);
+      //refreshSVGs(e, data);
   });
       
   function refreshSVGs(e, data) {
