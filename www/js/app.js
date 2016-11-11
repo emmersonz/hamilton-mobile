@@ -1568,19 +1568,10 @@ $(document).on('click','#audlist li a',function(event, data){
       setupDB(); 
       // Setup the phonenumbers and dining menu DBs
       phoneChecks(); 
-        
-<<<<<<< HEAD
       // Check the validity of the icon tables (audience), 
       // If invalid, create the audience tables. 
       clearTables();
       var table = 'audience';
-=======
-      // Check the validity of the pages table, 
-      // If invalid, create the audience tables.
-      // clearTables();
-      PopulateAudiencePrefTable();
-      var table = 'pages';
->>>>>>> Emmerson-final-edits
       ckTable(db, function (callBack) { // Check the validity of the pages table.
         if (callBack == 0) {            // If invalid, create the audience tables.
           //create db tables
@@ -1589,11 +1580,6 @@ $(document).on('click','#audlist li a',function(event, data){
           BuildContentTables();
           //get the content and add it.
           loadFullJson();               // Then create the other tables
-<<<<<<< HEAD
-=======
-          //check pref
-          // getPrefAud();
->>>>>>> Emmerson-final-edits
         } else {
           console.log("callback != 0");
           //check versions then load whatever content you want here? or maybe just all for now just all
