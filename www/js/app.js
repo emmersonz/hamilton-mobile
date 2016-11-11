@@ -1579,7 +1579,6 @@ $(document).on('click','#audlist li a',function(event, data){
       // If invalid, create the audience tables.
       // clearTables();
       PopulateAudiencePrefTable();
-      // dropAudPref();
       var table = 'pages';
       ckTable(db, function (callBack) { // Check the validity of the pages table.
         if (callBack == 0) {            // If invalid, create the audience tables.
