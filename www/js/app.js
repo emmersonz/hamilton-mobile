@@ -650,6 +650,141 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     });
   }
 
+   /* Author: Emmerson Zhaime
+  Checks to see if the Audience preference is already set
+  */
+  function checkAudSet() {
+      var sql = "SELECT * FROM audPrefs";
+      audDB.transaction(function (tx) {
+        tx.executeSql(sql, [], checkAudSet_success, checkAudSet_fail);
+      });
+  }
+ /* Author: Emmerson Zhaime
+  If the Audience pref is already, this function is called and does nothing
+  */
+  function checkAudSet_success(tx, results){
+    var audience = results.rows.item(0);
+    if(audience.audienceID == null){
+      $("#myPopup").popup("open");   
+    }
+    else{
+      console.log("Audience pref was set already");  
+        }        
+    }
+    
+  function checkAudSet_fail(tx, results){
+      console.log("Audience pref was not set");
+      // $("#myPopup").popup("open");   
+  }
+  
+  
+    
+   /* Author: Emmerson Zhaime
+   Selects the appAudience and aud id for audience set to Active in the audience table
+   */
+  function getPrefAud(tx){
+      var sql = "SELECT audienceID, id FROM audPrefs"; 
+      audDB.transaction(function(tx){
+          tx.executeSql(sql, [], getAudIcons);
+      });
+  }
+  /* Author: Emmerson Zhaime    
+  // Gets all the information for the icons for a given audience preference and calls a function to make the homepage
+   */
+  function getAudIcons(tx, results){
+      var audience = results.rows.item(0);
+      var audienceID = audience.audienceID;
+      console.log (audience);
+      var sql = "SELECT * FROM navtoaud as a CROSS JOIN navigation as b ON a.navid=b.id where a.audid='" + audienceID + "'";
+      db.transaction(function(tx){
+          tx.executeSql(sql, [], makeHomePage);
+      });
+  }
+    
+  
+   /* Author: Emmerson Zhaime
+  This is supposed to be the function that makes a homepage from a list of icon information. Now it is just printing all the icons information in the console
+  */
+  function makeHomePage(tx, results){
+    var len = results.rows.length;
+    console.log("length: "+ len);
+  }
+  
+
+/*
+  This function deleted the audience preference that exists and calls a function that insert a new audience preference
+  */
+function deleteAudPref(audience){
+    audDB.transaction(function(tx){
+        tx.executeSql("DELETE FROM audPrefs");
+    });
+    var sql = "SELECT id from audience where appAudience='"+ audience +"'";
+    db.transaction(function(tx){
+        tx.executeSql(sql, [], insertAudPref);
+    });   
+}
+    
+  /*
+  This function inserts the newly selected audience into the audPrefs table
+  */
+function insertAudPref(tx, results){
+    var audience = results.rows.item(0);
+    var audienceID = audience.id;
+    console.log(audienceID);
+    var thisid = guid();
+    var stuid = audienceID;
+    audDB.transaction(function(tx){
+       tx.executeSql('INSERT INTO audPrefs (id,audienceID) VALUES (?,?)', [thisid, stuid]);
+    });
+  }
+    
+
+$(document).on('click','#audlist li a',function(event, data){
+     var elementID = $(this).attr('id'); 
+          if(event.handled !== true){ // This will prevent event triggering more then once
+            console.log("clicked " + elementID);
+            // stuff();
+            deleteAudPref(elementID);
+            // getPrefAud(e, data);
+            // refreshSVGs(e, data);
+            // location.reload();
+            $.mobile.changePage( "#hamiltonPage", { transition: "slide"} );
+            event.handled = true;
+          }
+});
+    
+
+    
+  /* FUNCTION createAudiencePopup
+     Dynamically creates the audience popup menu before the popup appears. 
+      */
+  function createAudiencePopup(tx) {
+      var sql = "SELECT appAudience FROM audience";// WHERE isActive = 1";
+      db.transaction(function (tx) {
+      tx.executeSql(sql, [], createAudiencePopup_success);
+    });
+      
+  }
+    
+  /* FUNCTION createAudiencePopup_success
+     Dynamically creates the audience setting form. 
+     Executes when the SQL query in createAudienceForm is successful */
+  function createAudiencePopup_success(tx, results) {
+      // Add the tuples from the results to an array 
+      // to be used in making a template
+      var audiences = [];
+      for (var i = 0; i < results.rows.length; i++) {
+          audiences.push(results.rows.item(i));
+      }
+      
+      // Add the audience buttons to the form via a template
+      var audienceTemplate = '<li><a href="#" id="${appAudience}">${appAudience}</a></li>';
+      var audPopup = $('#audlist');
+      audPopup.html('');
+      $.template("audTemp", audienceTemplate)
+      $.tmpl("audTemp", audiences).appendTo('#audlist');
+      audPopup.listview("refresh");
+  }
   /* FUNCTION createAudienceForm
      Queries the database to dynamically create the audience setting 
      form before the page is shown. 
@@ -1412,7 +1547,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   // either killed by OS or user.
   $(document).on("pagecontainerbeforechange", function (event, ui) {
     onDeviceReady(); // Wait for the device to be safe to use
-    handleExternalURLs(); // Set the means of how to open new pages.
+    handleExternalURLs();// Set the means of how to open new pages.
   });
     
   // A pageshow handler for the phonenums db. Currently empty cuz.
@@ -1434,10 +1569,18 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       // Setup the phonenumbers and dining menu DBs
       phoneChecks(); 
         
+<<<<<<< HEAD
       // Check the validity of the icon tables (audience), 
       // If invalid, create the audience tables. 
       clearTables();
       var table = 'audience';
+=======
+      // Check the validity of the pages table, 
+      // If invalid, create the audience tables.
+      // clearTables();
+      PopulateAudiencePrefTable();
+      var table = 'pages';
+>>>>>>> Emmerson-final-edits
       ckTable(db, function (callBack) { // Check the validity of the pages table.
         if (callBack == 0) {            // If invalid, create the audience tables.
           //create db tables
@@ -1446,6 +1589,11 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           BuildContentTables();
           //get the content and add it.
           loadFullJson();               // Then create the other tables
+<<<<<<< HEAD
+=======
+          //check pref
+          // getPrefAud();
+>>>>>>> Emmerson-final-edits
         } else {
           console.log("callback != 0");
           //check versions then load whatever content you want here? or maybe just all for now just all
@@ -1469,6 +1617,14 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       // do something else
     }
   });
+ function dropAudPref(){
+     audDB.transaction(function (tx){
+        tx.executeSql("DROP TABLE audPrefs",[],
+                                  function(tx,results){console.log("Successfully Dropped5");},
+                                  function(tx,error){console.log("Could not delete5");}
+                                 );
+     });
+ }
 
   // Load the phone numbers for the contacts menu. Gets info from db.
   $(document).on('pagebeforeshow', '#phonenums', function (e, data) {
@@ -1890,6 +2046,17 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   $(document).on('pagehide', '#radio', function(e, data) {
     clearInterval(songUpdateInterval);
     clearInterval(showUpdateInterval);
+  });
+    
+$(document).on('pageshow', '#home', function (e, data) {
+      console.log("inside the page show");
+      // $("#myPopup").popup("open");
+      createAudiencePopup();
+      checkAudSet();
+  });
+    
+$(document).on('pageshow', '#hamiltonPage', function (){
+              $.mobile.changePage( "#home", { transition: "none"} );
   });
 
   //KJD Necessary for SVG images (icons)

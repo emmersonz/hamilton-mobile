@@ -50,6 +50,20 @@
     <div>
         <!-- HOME PAGE -->
         <div data-role="page" id="home" style="background-color:transparent!important">
+            
+            <!--Popup at the beginning of the app -->
+            <div data-role="popup" id="myPopup" data-history="false">
+                <div id="ham-home-img"class="title_bar" style="padding-bottom:0px;"><img src="icons/Hamilton.svg" class="imgResponsive hamTitle">
+                </div>
+                <div data-role="header">
+                   <h1>Select Audience Preference</h1>
+                </div>
+                <div data-role="main" class="ui-content">
+               <ul data-role="listview" id="audlist">
+               </ul>
+              </div>
+           </div>
+            
             <div id="ham-home-img" class="title_bar" style="padding-bottom:0px;">
                 <img src="icons/Hamilton.svg" class="imgResponsive hamTitle">
                 
@@ -64,23 +78,6 @@
             STATIC BACKGROUND HEIGHT- not good? -->
             <div class="home-icon-wrapper">
                 <ul id="home-all-icons" style="list-style:none; padding:0; padding-left:10px; padding-right:10px; text-align:center;">
-                    <!-- static icons -->
-<!--
-                     <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon con" href="#phonenums"><img src="icons/contacts.svg" class="imgResponsive svg-width svg"/><br>Contacts</a></li>
-                    <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon cal" href="#collegeCalendar"><img src="icons/academiccalendar.svg" class="imgResponsive svg-width svg"/><br>Academic<br>Calendar</a></li>
-                    <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon clubs" href="#events"><img src="icons/calender.svg" class="imgResponsive svg-width svg"/><br>Events</a></li>            
-                    <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon din" href="#diningmenus"><img src="icons/dining.svg" class="imgResponsive svg-width svg"/><br>Dining</a></li>
-                    <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon ath" href="#athleticEvents"><img src="icons/AthleticsH.svg" class="imgResponsive svg ath-width"/><br>Athletics</a></li> 
-                    <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon maphome" href="#map"><img src="icons/map.svg" class="imgResponsive map-width svg"/><br>Map</a></li>
-                     <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon newshome" href="#ham-news"><img src="icons/news.svg" class="imgResponsive svg news-width"/><br>News</a></li>
-                    <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon whcl" href="#radio"><img src="icons/radio.svg" class="imgResponsive svg-width svg"/><br>WHCL</a></li>              
-                    <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon feedb" href="#scroll"><img src="icons/Scroll.svg" class="imgResponsive scroll-width svg" /><br>The Scroll</a></li>
-                    <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon maphome" href="#webcam"><img src="icons/webcam.svg" class="imgResponsive web-width svg" /><br>Webcam</a></li>
-                    <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon feedb" href="#feedback-page"><img src="icons/comment.svg" class="imgResponsive svg-width svg" /><br>Feedback</a></li>
-                      <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon fallcoming" href="http://www.hamilton.edu/fall-weekend/schedule"><img src="icons/Fallcoming.svg" class="imgResponsive fall-width svg" /><br>Fallcoming</a></li> 
-                    <li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon fallcoming" href="https://hamilton-sp.blackboard.com/eAccounts/AnonymousHome.aspx"><img src="icons/Fallcoming.svg" class="imgResponsive fall-width svg" /><br>Fallcoming</a></li>
-                    <li class="icon-float ui-block-2x-height centeralign"><a class="ui-btn homeicon weather-anchor"><div id="weather"></div></a></li>  
--->
                 </ul>
 
                 <div id="cupola-bkg">
@@ -95,6 +92,21 @@
 
         </div>
         <!-- END HOME PAGE -->
+        
+        <!-- Page after you click Popup -->
+        <div data-role="page" id="hamiltonPage" style="background-color:transparent!important">
+            
+            <div id="ham-home-img" class="title_bar" style="padding-bottom:0px;">
+                <img src="icons/Hamilton.svg" class="imgResponsive hamTitle">  
+            </div>
+            <div id="home-gradient"></div>
+            <div class="home-icon-wrapper">
+                <div id="cupola-bkg">
+                </div>
+                <div id="bkg">
+                </div>
+            </div>
+        </div>
         
         <!-- SETTINGS PAGE -->
         <div data-role="page" id="settings">
