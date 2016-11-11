@@ -745,10 +745,15 @@ $(document).on('click','#audlist li a',function(event, data){
             console.log("clicked " + elementID);
             // stuff();
             deleteAudPref(elementID);
-            $.mobile.changePage( "#home", { transition: "slide"} );
+            // getPrefAud(e, data);
+            // refreshSVGs(e, data);
+            // location.reload();
+            $.mobile.changePage( "#hamiltonPage", { transition: "slide"} );
             event.handled = true;
           }
 });
+    
+
     
   /* FUNCTION createAudiencePopup
      Dynamically creates the audience popup menu before the popup appears. 
@@ -1548,7 +1553,7 @@ $(document).on('click','#audlist li a',function(event, data){
   // either killed by OS or user.
   $(document).on("pagecontainerbeforechange", function (event, ui) {
     onDeviceReady(); // Wait for the device to be safe to use
-    handleExternalURLs(); // Set the means of how to open new pages.
+    handleExternalURLs();// Set the means of how to open new pages.
   });
     
   // A pageshow handler for the phonenums db. Currently empty cuz.
@@ -1572,8 +1577,9 @@ $(document).on('click','#audlist li a',function(event, data){
         
       // Check the validity of the pages table, 
       // If invalid, create the audience tables.
-      clearTables();
-      // PopulateAudiencePrefTable();
+      // clearTables();
+      PopulateAudiencePrefTable();
+      // dropAudPref();
       var table = 'pages';
       ckTable(db, function (callBack) { // Check the validity of the pages table.
         if (callBack == 0) {            // If invalid, create the audience tables.
@@ -1924,6 +1930,10 @@ $(document).on('pageshow', '#home', function (e, data) {
       // $("#myPopup").popup("open");
       createAudiencePopup();
       checkAudSet();
+  });
+    
+$(document).on('pageshow', '#hamiltonPage', function (){
+              $.mobile.changePage( "#home", { transition: "none"} );
   });
 
   //KJD Necessary for SVG images (icons)

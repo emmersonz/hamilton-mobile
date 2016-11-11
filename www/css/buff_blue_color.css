@@ -79,6 +79,14 @@ svg path, svg circle, svg rect{
     background: linear-gradient(#001d52, rgb(0,47,134)); /* Standard syntax (must be last) */
 }
 
+#hamPage-gradient{
+   height: 45px;
+    background: -webkit-linear-gradient(#001d52, rgb(0,47,134)); /* For Safari 5.1 to 6.0 */
+    background: -o-linear-gradient(#001d52, rgb(0,47,134)); /* For Opera 11.1 to 12.0 */
+    background: -moz-linear-gradient(#001d52, rgb(0,47,134)); /* For Firefox 3.6 to 15 */
+    background: linear-gradient(#001d52, rgb(0,47,134)); /* Standard syntax (must be last) */ 
+}
+
 
 #cap{
     color: rgb(0,  47,  134) ;
