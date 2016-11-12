@@ -1,10 +1,11 @@
-// JSON Callback global variable
+// Global varibles for dining JSON callback
 var diningJSONCallback; 
-
 var diningJSON = null;
 
-// Finds the title element in the song-container div in
-// the radio page
+
+/* FUNCION gotSong
+   Finds the title element in the song-container div in
+   the radio page */
 var gotSong = function(data) {
   $(data).find("item").first(function() {
     var el = $(this);
@@ -14,9 +15,11 @@ var gotSong = function(data) {
   });
 };
 
-// Sends a JSON request for the RSS Feed (probably for The Scroll?)
-// Checks if there was an error fulfilling the request
-// Outputs the error to the console 
+
+/* FUNCTION grabRssFeed
+   Sends a JSON request for the RSS Feed    
+   Checks if there was an error fulfilling the request 
+   Outputs the error to the console if it exists */
 var grabRssFeed = function(url, callback, cacheBust, limit) {
   console.log("start");
   var fxurl = url + (cacheBust ? ("&_=" + Math.round(new Date().getTime() / 1000)) : '');
@@ -31,19 +34,17 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
       // Check for error
       if (data.responseStatus == 200) {
-
         callback(data.responseData);
 
       } else {
-
         // Handle error if required
         var msg = data.responseDetails;
         console.log(msg);
-        //$(e).html('<div class="rssError"><p>'+ msg +'</p></div>');
       }
     }
   );
 };
+
 
 // A function for logging error messages
 (function () {
@@ -55,61 +56,35 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   };
     
     
-// A lot of scrap code
-    
-  /*function rewriteClass() {
-    $('h4 a').addClass("external");
-    $('#news').find('.iscroll-content').attr("style", "");
-    $('.newsholder').iscrollview('refresh');
-  }
-  function rewriteClassHamNews() {
-    $('h4 a').addClass("external");
-    $('#ham-news').find('.iscroll-content').attr("style", "");
-    $('#ham-news .newsholder').iscrollview('refresh');
-  }*/
+// Database global variables
+// db is the database for dining, contact information, and navigation tables
+// audDB contains a single table, audPrefs, which stores the users audience preference
+var db;
+var audDB;
 
-  function rewriteClassEvents(name) {
-    console.log(name);
-    //$(name+" h4 a").addClass("external");
-    //$(name).find('.iscroll-content').attr("style", "");
-    //$(name+' .eventsholder').iscrollview('refresh');
-      
-  }
-    
-    
-  // Database global variable
-  var db;
-  var audDB;
-
-  // Opens the application's database and returns a new database object
-  // window.openDatabase(name, version, display name, size)
-  // If version is "", database will persist over many versions/audiences
-  function setupDB() {
-//      second field in opendatabase = version (switch to empty to allow it to persist over multiple versions)
-//      can store audience based, even through versions      
+/* FUNCTION setupDB
+    Allocates space for each WebSQL database and initializes it.
+    window.openDatabase(name, version, display name, size)
+    If version is "", database will persist over many versions/audiences
+    */
+function setupDB() {    
     db = window.openDatabase("appContentsDB", "1.0", "HamiltonCollege", 200000);
-    audDB = window.openDatabase("appAudience", "", "HamiltonCollege", 200000);
+    audDB = window.openDatabase("appAudience", "", "HamiltonCollege", 50000);
   }
 
-  // Global variable to keep track of the state of JSON and AJAX requests
-  var jsonNotLoadedInitially = false;
-  var loadDiningAJAXRequest;
+//-------------------------DINING MENU FUNCTIONS---------------------------------//
+    
+// Global variable to keep track of the state of JSON and AJAX requests
+var jsonNotLoadedInitially = false;
+var loadDiningAJAXRequest;
     
     
-  // Updates the hours and open-closed icons for the dining halls
-  var updateDiningHallHours = function(data) {
+/* FUNCTION updateDiningHallHours
+   Updates the hours and open-closed icons for the dining halls */
+var updateDiningHallHours = function(data) {
    
     for (var key in data.days[0].cafes) {
-        //TESTING- issue with Date object here
-        /*console.log("CAFE: ");
-        console.log(key);
-        
-        console.log("DATA.DAYS[0].length: ");
-        console.log(data.days[0].cafes.$110);
-        console.log(data.days[0].date);
-        */
-        
-      if (data.days[0].cafes.hasOwnProperty(key)) {
+        if (data.days[0].cafes.hasOwnProperty(key)) {
           
         var now = new Date();
         var cafe = data.days[0].cafes[key];
@@ -216,18 +191,12 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           
         var mealSet = false;
         var endtime12hr = "";
-
-        // TESTING ---------------------------------------------------------  
-        //console.log("HERE NOW, TIME TO GO THROUGH MEALS")
-        //console.log(cafe.dayparts[0]);
-        //------------------------------------------------------------------
           
         // Goes through each meal for a given dining hall on the current day
         $.each(cafe.dayparts[0], function (id, meal) { 
             // For each meal, parse the "dayparts" of the current meal
             // into JavaScript dates 
         
-          
             // Convert the time
             var start = moment(meal.starttime,'HH:mma');
             //var starttime12hr = start.format('h:mma');
@@ -247,20 +216,15 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           
         
         if (cafe.dayparts[0].length != 0) {
-          console.log(key, " not closed");
-          //cafeElement.find("a .dining-hall-block .hours-text").append(document.createTextNode(" - " + endtime12hr));
           cafeElement.find("a").removeClass("ui-disabled");
         } 
 
         // Set the current cafe to closed or open depending on 
         // if the meal has been set
-        // Maybe why McEwen and Pub are always closed?
         if (mealSet) {
-
           cafeElement.find("a .open-indicator").addClass("open");
         } 
           else {
-
           cafeElement.find("a .open-indicator").addClass("closed");
         }
       }
@@ -268,12 +232,11 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
   };
     
-  // PRE: Data is JSON to check <- Old comment, I don't know what this means
-  // POST: Determines whether menu data should be stored 
-  //       (i.e it is up to date, etc.)
-  //       Updates warnings/error to reflect the data retrieved
+  
+  /* FUNCTION diningDataCheck 
+     Determines whether menu data should be stored (i.e it is up to date, etc.)
+     Updates warnings/error to reflect the data retrieved */   
   var diningDataCheck = function(data) {
-    console.log("starting checks");
       
     if (data.hasOwnProperty("status") && data.status === false) {
       $(".menu-not-loaded").fadeIn();
@@ -316,14 +279,14 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       $.mobile.loading( "hide" );
     }
 
-    //updateDiningHallHours(data);
-    //have the calling function decide whether to update dining hall hours or not
-
     return menuCurrentDate;
   };
     
 
-  var diningJSONLoadOffline = function() {
+/* FUNCTION diningJSONLoadOffline
+   Gets the JSON dining data from the DB when the phone is offline.
+*/
+var diningJSONLoadOffline = function() {
       
     // Get the JSON data from the dining menu database
     var sql = "SELECT jsonData FROM diningmenu";
@@ -359,6 +322,9 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   };
 
   
+  /* FUNCTION updateDiningMenu
+     Updates the dining menu.
+  */
   var updateDiningMenu = function (adata) {
     if (diningJSON != null) {
       diningJSON = adata;
@@ -379,7 +345,8 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   };
 
   var lastDiningHall = null;
-    
+   
+  
   diningJSONCallback = function (adata) {
     if (diningDataCheck(adata)) { // we are not checking this offline
       console.log("updating database with new dining menu");
@@ -480,10 +447,9 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
     $('.apageheader.menu-show').html('<div id="meals-navbarcont" data-role="navbar"></div>');
     $('#meals-navbarcont').html('<ul class="meals xnavbar"></ul>');
-    //$('.meals.xnavbar').html('<li class="back-cont"><a class="go-back ui-btn-icon-left" data-icon="arrow-l">Back</a></li>');
     $('#diningmenus > .pageheader > .back-btn').hide();
     $('#diningmenus > .pageheader > .dining-back-btn').show();
-    console.log(cafe);
+    
     $.each(cafe.dayparts[0], function (id, meal) { // for each meal
       // convert times
       var start = moment(meal.starttime,'HH:mm a');
@@ -494,10 +460,10 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       $("ul.meals.xnavbar").append('<li><a data-meal-id="' + id + '">' + meal.label + '<p class="meal-times">' +
                                    starttime12hr + '-' + endtime12hr + '</p></a></li>');
 
-      if (!defaultMealSet) { // if current meal has already been set, there is no need need to parse
+      // if current meal has already been set, there is no need need to parse
+      if (!defaultMealSet) { 
         // parse the dayparts of this meal into javascript dates
         var xnow = moment();
-
 
         // is this meal going on now?
         if (start.isBefore(xnow) && end.isAfter(xnow)) {
@@ -514,25 +480,30 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     $(".items").css("display", "block");
 
 
-    $(".meals li a").click(function(){ // initialize meal when navbar link is pressed
+    // initialize meal when navbar link is pressed
+    $(".meals li a").click(function(){ 
       initializeMeal($(this).data("meal-id"));
     });
 
-    if (!defaultMealSet && cafe.dayparts[0].length > 0) { // no meals going on now
+    // no meals going on now
+    if (!defaultMealSet && cafe.dayparts[0].length > 0) { 
       $(".items .diningmenuholder").html('<li><font style="white-space:normal"><div class="alert info always tight">There are no current meals at this dining hall, please select one above.</div></font></li>');
       $('.items .diningmenuholder').listview("refresh");
     }
-    else if (cafe.dayparts[0].length === 0) { // no meals in the day at all
+    
+    // no meals in the day at all
+    else if (cafe.dayparts[0].length === 0) { 
       $(".items .diningmenuholder").html('<li><font style="white-space:normal"><div class="alert info always tight">We could not find any meals today for this dining hall.</div></font></li>');
       $('.items .diningmenuholder').listview("refresh");
     }
 
-    $('[data-role="navbar"]').navbar(); // necessary to apply styling to navbar (meal buttons)
+    // necessary to apply styling to navbar (meal buttons)
+    $('[data-role="navbar"]').navbar(); 
 
     $(".meals").css("display", "block");
-    //$('.meals li a.go-back').removeClass('ui-btn-icon-top');
 
-    var goBack = function(){ // leave the meals/items view and return to dining hall list
+    // leave the meals/items view and return to dining hall list
+    var goBack = function(){ 
       $("#diningmenus .menu-show").css("display", "none");
       $("#diningmenus .menu-hide").css("display", "block");
       $(".menu-out-of-date").addClass("navmargin");
@@ -548,18 +519,14 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       $(".dining-halls .diningmenuholder").css("display", "block");
       $('.dining-halls .diningmenuholder').listview("refresh");
 
-      lastDiningHall = null; // if we go back, then student unselected dining hall
+      // if we go back, then student unselected dining hall
+      lastDiningHall = null; 
 
       $(document).off("backbutton", goBack);
     };
 
 
-
     $('#diningmenus > .pageheader > .dining-back-btn').click(goBack);
-
-    //$(".meals li.back-cont").click(goBack);
-
-    //document.addEventListener("backbutton", goBack, false);
     $(document).bind("backbutton", goBack);
 
 
@@ -573,7 +540,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       dayDelta = 0;
     }
 
-    
     if (connectionStatus == "online") {
       console.log('delta', dayDelta);
       var thisDay = moment(new Date()).add(dayDelta, 'd');
@@ -601,9 +567,12 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       }
     }
   }
+    
+//---------------------PHONE CONTACTS PAGE FUNCTIONS--------------------------------//
 
   function phoneChecks(tx) {
     var sql = "CREATE TABLE IF NOT EXISTS phonenumbers (id varchar(50) PRIMARY KEY, letter varchar(255), name varchar(255), email varchar(255), phone varchar(255), url varchar(255), officehours varchar(255))";
+      
     db.transaction(function (tx) {
       tx.executeSql(sql);
     });
@@ -650,6 +619,8 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     });
   }
 
+ //--------------------AUDIENCE POPUP SELECTOR-----------------------------//
+    
    /* Author: Emmerson Zhaime
   Checks to see if the Audience preference is already set
   */
@@ -659,6 +630,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
         tx.executeSql(sql, [], checkAudSet_success, checkAudSet_fail);
       });
   }
+    
  /* Author: Emmerson Zhaime
   If the Audience pref is already, this function is called and does nothing
   */
@@ -677,7 +649,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       // $("#myPopup").popup("open");   
   }
   
-  
     
    /* Author: Emmerson Zhaime
    Selects the appAudience and aud id for audience set to Active in the audience table
@@ -688,6 +659,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           tx.executeSql(sql, [], getAudIcons);
       });
   }
+    
   /* Author: Emmerson Zhaime    
   // Gets all the information for the icons for a given audience preference and calls a function to make the homepage
    */
@@ -718,6 +690,7 @@ function deleteAudPref(audience){
     audDB.transaction(function(tx){
         tx.executeSql("DELETE FROM audPrefs");
     });
+    
     var sql = "SELECT id from audience where appAudience='"+ audience +"'";
     db.transaction(function(tx){
         tx.executeSql(sql, [], insertAudPref);
@@ -753,22 +726,22 @@ $(document).on('click','#audlist li a',function(event, data){
           }
 });
     
-
-    
+   
   /* FUNCTION createAudiencePopup
      Dynamically creates the audience popup menu before the popup appears. 
       */
   function createAudiencePopup(tx) {
-      var sql = "SELECT appAudience FROM audience";// WHERE isActive = 1";
+      var sql = "SELECT appAudience FROM audience WHERE isActive = 1";
       db.transaction(function (tx) {
       tx.executeSql(sql, [], createAudiencePopup_success);
     });
       
   }
     
+    
   /* FUNCTION createAudiencePopup_success
-     Dynamically creates the audience setting form. 
-     Executes when the SQL query in createAudienceForm is successful */
+     Dynamically creates the audience popup form. 
+     Executes when the SQL query in createAudiencePopup is successful */
   function createAudiencePopup_success(tx, results) {
       // Add the tuples from the results to an array 
       // to be used in making a template
@@ -785,6 +758,10 @@ $(document).on('click','#audlist li a',function(event, data){
       $.tmpl("audTemp", audiences).appendTo('#audlist');
       audPopup.listview("refresh");
   }
+    
+    
+//---------------------SETTINGS MENU AUDIENCE SELECTOR-----------------------//
+    
   /* FUNCTION createAudienceForm
      Queries the database to dynamically create the audience setting 
      form before the page is shown. 
@@ -822,8 +799,7 @@ $(document).on('click','#audlist li a',function(event, data){
       selectAudienceRadioBttn();
       // Add the click handlers to each button
       audienceFormClickHandlers();
-      
-      
+          
   }
 
  /* FUNCTION selectAudienceRadioBttn
@@ -835,6 +811,7 @@ $(document).on('click','#audlist li a',function(event, data){
           tx.executeSql(sql, [], selectAudienceRadioBttn_success);
       });
   }
+    
     
   /* FUNCTION selectAudienceRadioBttn_success 
      Queries the audience table to find the name of the current audience. 
@@ -889,13 +866,17 @@ $(document).on('click','#audlist li a',function(event, data){
       audDB.transaction(function (tx) {
       tx.executeSql('Delete from audPrefs');
       var randID = guid();
-      tx.executeSql('INSERT INTO audPrefs (id,audienceID) VALUES (?,?)', [randID, newAudID]);
+      tx.executeSql('INSERT INTO audPrefs (id,audienceID) VALUES (?,?)', 
+                    [randID, newAudID]);
     });
       
   }
 
-   // Selects the aud id for the preferred audience in the audPrefs table
-    function getPrefAud(tx){
+//---------------------------DYNAMIC HOMESCREEN----------------------//
+
+
+// Selects the aud id for the preferred audience in the audPrefs table
+function getPrefAud(tx){
       console.log("getPrefAud");
       var sql = "SELECT id, audienceID FROM audPrefs"; 
       audDB.transaction(function(tx){
@@ -903,7 +884,7 @@ $(document).on('click','#audlist li a',function(event, data){
       });
   }
     
-  function getAudIcons(tx, results){
+function getAudIcons(tx, results){
       if (results != null) {
         var audience = results.rows.item(0);
         var audienceID = audience.audienceID;
@@ -914,32 +895,29 @@ $(document).on('click','#audlist li a',function(event, data){
       }
   }
     
-    function makeHomePage(tx, results) {
-        //referencing container for all icons
-        //console.log("entered makehomepage");
+function makeHomePage(tx, results) {
+        // Referencing container for all icons
         var homeAllIcons = $('#home-all-icons'); 
         
-        //clearing container for all icons (don't want to add duplicates)
+        // Clearing container for all icons (don't want to add duplicates)
         homeAllIcons.html('');
         
-        //adding the all information for correct icons from database, based on audience
+        // Adding the all information for correct icons from database, based on audience
         var iconList = [];
         var len = results.rows.length;
         for (var i = 0; i < len; i++) {
-            //console.log(results.rows.item(i));   
             iconList.push(results.rows.item(i));
         }
         
-        //code to be templated
+        // Code to be templated
         var iconTemplate = '<li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon ${navAddClass}" href= ${navLink}><img src="icons/${navIcon}" class="imgResponsive svg-width ${navAddClass}-width svg"/><br>${navTitle}</a></li>';
         
-        //creating templated code, adding to icon container on homepage
+        // Creating templated code, adding to icon container on homepage
         $.template("buttonTemplate", iconTemplate);
         $.tmpl("buttonTemplate", iconList).appendTo('#home-all-icons'); 
         
-        //formatting icon svgs
+        // Formatting icon svgs
         refreshSVGs();
-        //console.log("exited makehomepage");
     }
 
     
