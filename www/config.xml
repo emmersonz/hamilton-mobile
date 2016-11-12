@@ -34,7 +34,7 @@ edu.hamilton.hamiltonapp
   </description>
 
   <author href="http://hamilton.edu" email="webhelp@hamilton.edu">
-     Mykhailo Antoniv, Katherine Droppa, Sam Kotlove, Chris Lee, Noah Lowenthal, Don Stayner and Jim Thomson
+     Ryan Woo, Emmerson Zhaime, Ty Torregrosa, Lyndsay LaBarge, Mykhailo Antoniv, Katherine Droppa, Sam Kotlove, Chris Lee, Noah Lowenthal, Don Stayner, and Jim Thomson
   </author>
   <preference name="KeyboardDisplayRequiresUserAction" value="true" />
   <preference name="SuppressesIncrementalRendering" value="false" />
