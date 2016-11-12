@@ -618,6 +618,134 @@ var diningJSONLoadOffline = function() {
       tx.executeSql(sql, [], getNumbers_success, errorCBgetNumbers);
     });
   }
+    
+ 
+    // Function sets up the contacts list click listener. On the click of a listview item
+    // the id is sent to the details page.
+    function setupContactsClickListener () {
+
+        // For each list item, add a click handler with a unique ID gotten from 
+        // the phonenums db.
+        $('#phonenumlist li a').each(function(){
+          var elementID = $(this).attr('id');
+
+          $(document).on('click', '#'+elementID, function(event){
+              if (event.handled !== true){
+                  contactListObject.itemID = elementID;
+                  $.mobile.changePage("#contactdetails");
+                  event.handled = true;
+              }
+          });
+        });
+    }
+    
+  var loadPhoneList = function (items) {
+    var phonecontacts = [];
+    for (var i = 0; i < items.rows.length; i++) {
+      phonecontacts.push(items.rows.item(i));
+    }
+    var phonetemplate = '<li><a href="#" data-rel="dialog" id=${id}>${name}<br></li>';
+    var permphones = '<li><a href="tel:1-315-859-4000"><span class="red">CAMPUS SAFETY (EMERGENCY)</span><br><span class="smgrey">315-859-4000</span></a</li><li><a href="tel:1-315-859-4141">Campus Safety (Non-Emergency)<br><span class="smgrey">315-859-4141</span></a></li><li><a href="tel:1-315-282-5426">Campus Safety (Tip Now) <br><span class="smgrey">315-282-5426</span></a></li><li><a href="tel:1-315-859-4340">Counseling Center<br><span class="smgrey">315-859-4340</span></a></li>';
+    var pnlist = $('#phonenumlist');
+    pnlist.html('');
+    $.template("contactTemplate", phonetemplate);
+    $.tmpl("contactTemplate", phonecontacts).appendTo('#phonenumlist');
+    pnlist.prepend(permphones);
+    pnlist.listview("refresh");
+      
+    // Setup the click listener for each list item so we can click them.
+    setupContactsClickListener();
+  };
+
+  function getNumbers_success(tx, results) {
+    loadPhoneList(results);
+  }
+    
+ 
+  // Load the contact details. Populate the listview with phone number,
+  // hours, email, and website
+  var populateContactDetails = function (details) {
+      
+      // The database row we got for the details. Contains the info about the 
+      // selected dept.
+      var detailsRow = details.rows.item(0);
+      
+      // details should only be one row.
+      var deptName = detailsRow.name;
+      
+      // Set header for the correct department. Select the header with 
+      // id=details-header-name from the html then set its text to the 
+      // name of the dept.
+      var detailHeaderName = $('#details-header-name');
+      detailHeaderName.text(deptName);
+      
+      var contactDetailsListview = $('#contact-details');
+      
+      // Clear the listview of any items by filling it in with empty string
+      contactDetailsListview.html('');
+      
+      // Just get the data item from the db
+      // and update the html for their listview items.
+      var phoneNumber = detailsRow.phone;
+      var phoneNumberHTML = '<li><a href=tel:' + phoneNumber + '>Phone<br><span class="smgrey">' 
+                            + phoneNumber + '<br></span></a></li>';      
+      contactDetailsListview.append(phoneNumberHTML);
+      
+      
+      // Phone numbers
+      var emailAddress = detailsRow.email;
+      
+      // If there is an email address in the DB
+      if (emailAddress.length > 0){
+        var emailAddressHTML = '<li><a href=mailto:' + emailAddress + '>Email<br><span class="smgrey">' 
+                            + emailAddress + '<br></span></a></li>';
+        contactDetailsListview.append(emailAddressHTML);
+      }
+      
+      var websiteURL = detailsRow.url;
+      var websiteURLHTML = '<li><a href="http://hamilton.edu' + websiteURL + '">Webpage</a></li>';
+      contactDetailsListview.append(websiteURLHTML);
+      
+      // For office hours, we split the string by the | delimiter.
+      var officeHours = detailsRow.officehours;
+      
+      // If the are office hours in the DB at all...
+      if (officeHours.length > 0){
+        var officeHoursPieces = officeHours.split("|"); // Split the officeHours 
+                                                      // by the | delimiter
+        // Build up the HTML and put a break between every piece of officeHoursPieces
+        var officeHoursHTML = '<li data-icon="false"><a>Hours<br><span class="smgrey">';
+        for (var i = 1; i < officeHoursPieces.length; i++) { // Start at one so "Office Hours"
+                                                           // isn't displayed
+          officeHoursHTML = officeHoursHTML + officeHoursPieces[i] + "<br>";
+        }
+        officeHoursHTML = officeHoursHTML + "</span></a></li>";
+      
+        // Put the Hours into its listview
+        contactDetailsListview.append(officeHoursHTML);
+      }
+      
+      contactDetailsListview.listview("refresh");
+  }
+  
+  // Error is the error message from the SQL db query failure.
+  function loadDetailsFailure(err) {
+      alert("Error getting Details from DB: " + err)
+  }
+  
+  // Results is the result of the db query. Called on a succesful phonenums
+  // db query
+  function loadDetailsSuccess(tx, results) {
+      populateContactDetails(results);
+  }
+    
+  // Get the contact details for a specific detailID from the phonenums db
+  function loadContactDetails(detailsID) {
+      var sql = "SELECT * FROM phonenumbers WHERE id='" + detailsID + "'";
+      db.transaction(function (tx) {
+        tx.executeSql(sql, [], loadDetailsSuccess, loadDetailsFailure);
+      });      
+  }
 
  //--------------------AUDIENCE POPUP SELECTOR-----------------------------//
     
@@ -872,7 +1000,7 @@ $(document).on('click','#audlist li a',function(event, data){
       
   }
 
-//---------------------------DYNAMIC HOMESCREEN----------------------//
+//--------------------------DYNAMIC HOMESCREEN----------------------//
 
 
 // Selects the aud id for the preferred audience in the audPrefs table
@@ -920,7 +1048,7 @@ function makeHomePage(tx, results) {
         refreshSVGs();
     }
 
-    
+//-----------------------------------------------------------------------------//    
 
   function getscrollHTML() {
     $.ajax({
@@ -928,271 +1056,13 @@ function makeHomePage(tx, results) {
                 ,data:{}
                 ,success:function(data, textStatus,e){
                     $('#scrollstories').empty().append(data).show();
-                   // console.log("stories in");
+                   
                 }
                 }).done(function( e ) {
                      $('#scrollcontent').iscrollview("refresh");
-                  //  console.log("scroll view refresh");
                 });
   }
 
-
-
-  
-
-  function navorderCmp(fa, fb) {
-    var a = fa.navorder;
-    var b = fb.navorder;
-    return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-  }
-
-  function getNavigationandPages(tx) {
-    var sql = "select audienceID from audPrefs";
-    db.transaction(function (tx) {
-      tx.executeSql(sql, [], function (tx, results) {
-        var len = results.rows.length;
-        for (var i = 0; i < len; i++) {
-          var audience = results.rows.item(i);
-          //console.log("aud = ", audience);
-          var audienceID = audience.audienceID;
-          buildPages(audienceID);
-          var navsql = "select n.navtitle,n.navicon,n2a.navlink,n2a.navorder from appNavs n Inner Join appNavToAudience n2a on n.id = n2a.navid where n2a.audid ='" + audienceID + "' order by navorder";
-          db.transaction(function (tx) {
-            tx.executeSql(navsql, [], function (tx, navresults) {
-              //console.log("navresults = ", navresults);
-              var pagearray = [];
-              for (var i = 0; i < navresults.rows.length; i++) {
-                pagearray.push(navresults.rows.item(i));
-                pagearray[i].navorder += 1;
-              }
-
-              var toRemove = "dininghrs";
-              pagearray = $.grep(pagearray, function(e){
-                   return e.navlink != toRemove;
-              });
-              pagearray.unshift({
-                navIcon: "fa-birthday-cake",
-                navTitle: "Events",
-                navlink: "events",
-                navorder: 0
-              });
-              pagearray.push({
-                navIcon: "fa-cutlery",
-                navTitle: "Dining Menus",
-                navlink: "diningmenus",
-                navorder: 10
-              });
-              pagearray.push({
-                navIcon: "fa-comment",
-                navTitle: "Feedback",
-                navlink: "feedback-page",
-                navorder: 11
-              });
-              pagearray.push({
-                navIcon: "fa-calendar",
-                navTitle: "Calendar",
-                navlink: "collegeCalendar",
-                navorder: 12
-              });
-
-              pagearray.sort(navorderCmp);
-              // sorts the list by navorder
-
-              //console.log("pagearray = ", pagearray);
-              //rowid: 8, id:"", pagetitle: "Events", pagecontents:"<p>Events</p>", pageActive: 1, navlink: "events", navTitle: "Events", navIcon: "fa-birthday-cake"});
-              var navlen = pagearray.length;
-
-              //$('.dynNavbar').html('');
-              //var pagerNavTemplate = '<div><a href="#" class="navright ui-link ui-btn"><i class="fa fa-chevron-right fa-2x"></i></a></div>';
-              $('.dyn-nav').html('');
-              var container;
-              for (var i = 0; i < navlen; i++) {
-                if ((i % 3) === 0) {
-                  $('.dyn-nav').append('<div class="ui-grid-b"></div>');
-                  container = $('.dyn-nav > .ui-grid-b:last-child');
-                }
-                var navigationrow = pagearray[i];
-                var navlink = navigationrow.navlink;
-                var navIcon = navigationrow.navIcon;
-                //var navTemplate = '<div><a href="#' + navlink + '" class="ui-link ui-btn"><i class="fa ' + navIcon + ' fa-2x"></i></a></div>';
-                var blocks = ['a', 'b', 'c'];
-                var navTemplate = '<div class="ui-block-' + blocks[i % 3] + ' ui-block-2x-height"><a class="ui-btn" href="#' + navlink + '"><i class="fa ' + navIcon + ' fa-2x"></i></a></div>';
-                //$('.dynNavbar').append(navTemplate);
-                container.append(navTemplate);
-                //console.log(navTemplate);
-
-
-                // if (i == 4){
-                //$('.dynNavbar').append(pagerNavTemplate);
-                // }else{
-                //   var navTemplate = '<div><a href="#'+navlink+'" class="ui-link ui-btn"><i class="fa '+navIcon+' fa-2x"></i></a></div>';
-                //$('.dynNavbar').append(navTemplate);
-                //  };
-              }
-
-
-
-              //attachScroller();
-              //console.log("attaching scroller");
-
-            });
-          });
-        }
-      });
-    });
-  }
-
-  function buildPages(audienceID) {
-    //var audienceID;
-    var pageTemplate = '<div data-role="page" id="${id}" class="dyn"><div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false" data-transition="none" class="pageheader"><a class="backbtn"><i class="fa fa-chevron-left fa-2x iconfloat"></i><div class="hamicon"><img src="resources/ios/icon/icon-72@2x.png" class="imgResponsive" /></div></a><h1>${pagetitle}</h1></div><div data-iscroll="" data-role="content" class="ui-content"><div>${pagecontents}</div></div><footer data-role="footer" data-position="fixed" data-id="foo1"><nav data-role="navbar"><div class="container dynNavbar"></div></nav></footer>';
-
-    //var pageTemplate='<div data-role="page" id="${id}" class="dyn"><div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false" data-transition="none" class="pageheader"><i class="fa fa-chevron-left fa-2x iconfloat"></i><div class="hamicon"><img src="resources/ios/icon/icon-72@2x.png" class="imgResponsive" /></div><h1>${pagetitle}</h1></div><div data-iscroll="" data-role="content" class="ui-content"><div>${pagecontents}</div></div><footer data-role="footer" data-position="fixed" data-id="foo1"><nav data-role="navbar"><div class="container dynNavbar"><div></div></div></nav></footer>';
-    var sql = "Select p.pagetitle,p.pagecontents,p.id from Pages p Inner Join appPageToNav apn ON p.id = apn.pageid Inner Join appNavs n on apn.navid = n.id Inner Join appNavToAudience n2a on n.id = n2a.navid where p.pageactive=1 and n2a.audid ='" + audienceID + "'";
-    db.transaction(function (tx) {
-      tx.executeSql(sql, [], function (tx, xresults) {
-        var results = xresults.rows.item(0);
-        var pagelen = results.length;
-        var pagearray = [];
-        for (var i = 0; i < pagelen; i++) {
-          pagearray.push(results.item(i));
-        }
-        //console.log(pagearray);
-        var currentpagecount = $(".dyn").length;
-        //console.log(currentpagecount);
-        if (currentpagecount < pagelen) {
-          $.template("attachPageTemplate", pageTemplate);
-          $.tmpl("attachPageTemplate", pagearray).insertAfter('#lastStatic');
-        }
-      });
-    });
-  }
-
-    // Function sets up the contacts list click listener. On the click of a listview item
-    // the id is sent to the details page.
-    function setupContactsClickListener () {
-
-        // For each list item, add a click handler with a unique ID gotten from 
-        // the phonenums db.
-        $('#phonenumlist li a').each(function(){
-          var elementID = $(this).attr('id');
-
-          $(document).on('click', '#'+elementID, function(event){
-              if (event.handled !== true){
-                  contactListObject.itemID = elementID;
-                  $.mobile.changePage("#contactdetails");
-                  event.handled = true;
-              }
-          });
-        });
-    }
-    
-  var loadPhoneList = function (items) {
-    var phonecontacts = [];
-    for (var i = 0; i < items.rows.length; i++) {
-      phonecontacts.push(items.rows.item(i));
-    }
-    var phonetemplate = '<li><a href="#" data-rel="dialog" id=${id}>${name}<br></li>';
-    var permphones = '<li><a href="tel:1-315-859-4000"><span class="red">CAMPUS SAFETY (EMERGENCY)</span><br><span class="smgrey">315-859-4000</span></a</li><li><a href="tel:1-315-859-4141">Campus Safety (Non-Emergency)<br><span class="smgrey">315-859-4141</span></a></li><li><a href="tel:1-315-282-5426">Campus Safety (Tip Now) <br><span class="smgrey">315-282-5426</span></a></li><li><a href="tel:1-315-859-4340">Counseling Center<br><span class="smgrey">315-859-4340</span></a></li>';
-    var pnlist = $('#phonenumlist');
-    pnlist.html('');
-    $.template("contactTemplate", phonetemplate);
-    $.tmpl("contactTemplate", phonecontacts).appendTo('#phonenumlist');
-    pnlist.prepend(permphones);
-    pnlist.listview("refresh");
-      
-    // Setup the click listener for each list item so we can click them.
-    setupContactsClickListener();
-  };
-
-  function getNumbers_success(tx, results) {
-    loadPhoneList(results);
-  }
-    
- 
-  // Load the contact details. Populate the listview with phone number,
-  // hours, email, and website
-  var populateContactDetails = function (details) {
-      
-      // The database row we got for the details. Contains the info about the 
-      // selected dept.
-      var detailsRow = details.rows.item(0);
-      
-      // details should only be one row.
-      var deptName = detailsRow.name;
-      
-      // Set header for the correct department. Select the header with 
-      // id=details-header-name from the html then set its text to the 
-      // name of the dept.
-      var detailHeaderName = $('#details-header-name');
-      detailHeaderName.text(deptName);
-      
-      var contactDetailsListview = $('#contact-details');
-      
-      // Clear the listview of any items by filling it in with empty string
-      contactDetailsListview.html('');
-      
-      // Just get the data item from the db
-      // and update the html for their listview items.
-      var phoneNumber = detailsRow.phone;
-      var phoneNumberHTML = '<li><a href=tel:' + phoneNumber + '>Phone<br><span class="smgrey">' 
-                            + phoneNumber + '<br></span></a></li>';      
-      contactDetailsListview.append(phoneNumberHTML);
-      
-      
-      // Phone numbers
-      var emailAddress = detailsRow.email;
-      
-      // If there is an email address in the DB
-      if (emailAddress.length > 0){
-        var emailAddressHTML = '<li><a href=mailto:' + emailAddress + '>Email<br><span class="smgrey">' 
-                            + emailAddress + '<br></span></a></li>';
-        contactDetailsListview.append(emailAddressHTML);
-      }
-      
-      var websiteURL = detailsRow.url;
-      var websiteURLHTML = '<li><a href="http://hamilton.edu' + websiteURL + '">Webpage</a></li>';
-      contactDetailsListview.append(websiteURLHTML);
-      
-      // For office hours, we split the string by the | delimiter.
-      var officeHours = detailsRow.officehours;
-      
-      // If the are office hours in the DB at all...
-      if (officeHours.length > 0){
-        var officeHoursPieces = officeHours.split("|"); // Split the officeHours 
-                                                      // by the | delimiter
-        // Build up the HTML and put a break between every piece of officeHoursPieces
-        var officeHoursHTML = '<li data-icon="false"><a>Hours<br><span class="smgrey">';
-        for (var i = 1; i < officeHoursPieces.length; i++) { // Start at one so "Office Hours"
-                                                           // isn't displayed
-          officeHoursHTML = officeHoursHTML + officeHoursPieces[i] + "<br>";
-        }
-        officeHoursHTML = officeHoursHTML + "</span></a></li>";
-      
-        // Put the Hours into its listview
-        contactDetailsListview.append(officeHoursHTML);
-      }
-      
-      contactDetailsListview.listview("refresh");
-  }
-  
-  // Error is the error message from the SQL db query failure.
-  function loadDetailsFailure(err) {
-      alert("Error getting Details from DB: " + err)
-  }
-  
-  // Results is the result of the db query. Called on a succesful phonenums
-  // db query
-  function loadDetailsSuccess(tx, results) {
-      populateContactDetails(results);
-  }
-    
-  // Get the contact details for a specific detailID from the phonenums db
-  function loadContactDetails(detailsID) {
-      var sql = "SELECT * FROM phonenumbers WHERE id='" + detailsID + "'";
-      db.transaction(function (tx) {
-        tx.executeSql(sql, [], loadDetailsSuccess, loadDetailsFailure);
-      });      
-  }
 
   function ckTable(tx, callBack, table) {
     var sql = "SELECT CASE WHEN tbl_name = '" + table + "' THEN 1 ELSE 0 END FROM sqlite_master WHERE tbl_name = '" + table + "' AND type = 'table'";
@@ -1244,24 +1114,9 @@ function makeHomePage(tx, results) {
   $(function () {
     FastClick.attach(document.body);
   });
+    
   // had to add handlers for external links for in app browser nonsense
   function handleExternalURLs() {
-    // Handle click events for all external URLs
-    //console.log(device.platform);
-    /*if (device.platform.toUpperCase() === 'ANDROID') {
-        $(document).on('click', 'a[href^="http"]', function (e) {
-            var url = $(this).attr('href');
-            navigator.app.loadUrl(url, { openExternal: true });
-            e.preventDefault();
-        });
-    }
-    else if (device.platform.toUpperCase() === 'IOS') {
-        $(document).on('click', 'a[href^="http"]', function (e) {
-            var url = $(this).attr('href');
-            window.open(url, '_system');
-            e.preventDefault();
-          });
-    }*/
 
     if (device.platform === null) {
       $(document).on('click', 'a[href^="http"]', function (e) {
@@ -1306,6 +1161,8 @@ function makeHomePage(tx, results) {
     }
   }
 
+//-------------------------DATABASE TABLE CREATION---------------------------//
+    
   /* FUNCTION setAudiencePrefTable 
      Builds the audPrefs table in the audDB */
   function setAudiencePrefTable() {
@@ -1331,8 +1188,9 @@ function makeHomePage(tx, results) {
     });
   }
 
+  /* FUNCTION BuildAudienceTable
+      Creates the appAudience table in the db database. */
   function BuildAudienceTable(tx) {
-      console.log("built audience table");
     var audsql =
       "CREATE TABLE IF NOT EXISTS audience ( " +  
       "appAudience VARCHAR(300), " +
@@ -1343,9 +1201,10 @@ function makeHomePage(tx, results) {
     });
   }
 
-  // Content tables.
+  /* FUNCTION BuildContentTables
+     Creates the navigation and navtoaud tables in the db database.
+  */
   function BuildContentTables(tx) {
-      console.log("built content tables")
 
 // new tables
     var navsql =
@@ -1432,10 +1291,10 @@ function makeHomePage(tx, results) {
   }
   
 
-    // Builds the audience database table
-    function loadAudienceJson(data) {
+/* FUNCTION loadAudienceJson
+   Builds the audience db table */
+function loadAudienceJson(data) {
     db.transaction(function (transaction) {
-        //not sure exactly what this does, should we delete from audience?
       var len = data.length;
       if (len > 0) {
         transaction.executeSql('Delete from audience');
@@ -1449,8 +1308,8 @@ function makeHomePage(tx, results) {
     });
   }
   
-
-  // Builds the navigation table
+  /* FUNCTION loadNavigationJson
+     Builds the navigation table */
   function loadNavigationJson(data) {
     db.transaction(function (transaction) {
       //pretty sure we need to delete from navigation (so we can check for new icons)
@@ -1469,9 +1328,9 @@ function makeHomePage(tx, results) {
     });
   }   
     
-    
-  // Builds the navtoaud database table
-  function loadNavToAudJson(data) {
+/* FUNCTION loadNavToAudJson 
+   Builds the navtoaud database table */
+function loadNavToAudJson(data) {
     db.transaction(function (transaction) {
       //not sure if we should delete from navtoaud, if we do it allows us to change what audiences see dynamically
       var len = data.length;
