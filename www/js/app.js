@@ -1346,40 +1346,9 @@ function loadNavToAudJson(data) {
       }
     });
   }   
-    
 
-  // Builds the appPageToNav database table
-  function loadappPageToNavJson(data) {
-    db.transaction(function (transaction) {
-      var len = data.length;
-      if (len > 0) {
-        transaction.executeSql('Delete from appPageToNav');
-      }
-      for (var i = 0; i < len; i++) {
-        var id = data[i].id;
-        var navid = data[i].navid;
-        var pageid = data[i].pageid;
-        var pageorder = data[i].pageorder;
-        transaction.executeSql('INSERT INTO appPageToNav (id, navid, pageid, pageorder) VALUES (?,?,?,?)', [id, navid, pageid, pageorder]);
-      }
-    });
-  }
+  //-------------------------------PAGE EVENTS-----------------------//
     
-
-  function BuildColorTable() {
-      
-      
-  }
-    
-  function LoadColors() {
-      
-      
-      
-  }
-    
-  /* Check to see if version is Stale */
-
-
   // Load the app. This is what happens when you load the app for the first time after it was
   // either killed by OS or user.
   $(document).on("pagecontainerbeforechange", function (event, ui) {
@@ -1389,14 +1358,12 @@ function loadNavToAudJson(data) {
     
   // A pageshow handler for the phonenums db. Currently empty cuz.
   $(document).on('pageshow', '#phonenums', function (e, data) {
-    // this won't work need to check to see if there is a db if not then load it if yes then show it.
-    // db.transaction(getNumbers, db_error);
   });
-  // this doesn't work, might be an app vs browser thing - do more research
-  //document.addEventListener('deviceready', onDeviceReady, false);
+  
 
   // main worker event, find out if the db is there if the data is stale etc.
   $(document).on('pagebeforecreate', 'body', function () {
+      
     //use this function to find out if the app has access to the internet
     checkConnection();
     if (connectionStatus === 'online') {
@@ -1440,15 +1407,7 @@ function loadNavToAudJson(data) {
       // do something else
     }
   });
- function dropAudPref(){
-     audDB.transaction(function (tx){
-        tx.executeSql("DROP TABLE audPrefs",[],
-                                  function(tx,results){console.log("Successfully Dropped5");},
-                                  function(tx,error){console.log("Could not delete5");}
-                                 );
-     });
- }
-
+    
   // Load the phone numbers for the contacts menu. Gets info from db.
   $(document).on('pagebeforeshow', '#phonenums', function (e, data) {
     loadPhoneJson(); // Load listview
@@ -1465,8 +1424,8 @@ function loadNavToAudJson(data) {
       loadContactDetails(contactListObject.itemID);
   });
 
-    // Load the scroll HTML for the Scroll view. Gets info from db.   
-    $(document).on('pagebeforeshow', '#scroll', function (e, data) {
+// Load the scroll HTML for the Scroll view. Gets info from db.   
+ $(document).on('pagebeforeshow', '#scroll', function (e, data) {
      getscrollHTML();
   });
 
@@ -1509,9 +1468,7 @@ function loadNavToAudJson(data) {
     });
   });
 
-    
-    
-    
+
     
   var feedbackSentDone = function(data, textStatus, jqXHR) {
     if (jqXHR.status == 200) {
@@ -1522,8 +1479,9 @@ function loadNavToAudJson(data) {
       console.log("failure :(");
     }
   };
+    
   $(document).on('pagebeforeshow', '#feedback-page', function (e, data) {
-    //$('[data-role="navbar"]').navbar();
+    
     $('#feedback-navbarcont').find('.xnavbar > li > a').removeClass('ui-btn-icon-top');
     $('form.feedback').submit(function(e){
       e.preventDefault();
@@ -1542,7 +1500,7 @@ function loadNavToAudJson(data) {
     });
   });
 
-    //bug reporting notification function
+// Bug reporting notification function
   var bugReportDone = function(data, textStatus, jqXHR) {
     if (jqXHR.status == 200) {
       $("#bug-reported-popup").text(data);
@@ -1552,7 +1510,7 @@ function loadNavToAudJson(data) {
     }
   };
     
-    //sending bug report to server, before page loads
+ // Sending bug report to server, before page loads
   $(document).on('pagebeforeshow', '#feedback-bug', function (e, data) {
     $('#feedback-bug-navbarcont').find('.xnavbar > li > a').removeClass('ui-btn-icon-top');
     $('form.bug').submit(function(e){
@@ -1647,11 +1605,6 @@ function loadNavToAudJson(data) {
 
   //news rss load and rebind
   $(document).on('pagebeforeshow', '#news', function (e, data) {
-    /*$('#news').find('.iscroll-content').rssfeed('http://students.hamilton.edu/rss/articles.cfm?item=A9AAF6B5-FB82-2ADF-26A75A82CDDD1221', {
-      limit: 25,
-      linktarget: '_blank',
-      header: false
-    }, rewriteClass);*/
     initRSSList('news', 'http://students.hamilton.edu/rss/articles.cfm?item=A9AAF6B5-FB82-2ADF-26A75A82CDDD1221');
   });
   $(document).on('pagebeforeshow', '#ham-news', function (e, data) {
@@ -1687,11 +1640,6 @@ function loadNavToAudJson(data) {
        $( "[data-position='fixed']" ).trigger( 'updatelayout' );
    });
   
-  /*$(document).on('pagebeforeshow', function (event, ui) {
-    //var shownPage = $(".ui-page.ui-page-theme-a.ui-page-header-fixed.ui-page-footer-fixed.iscroll-page.ui-page-active");
-    //console.log(ui.toPage[0]);
-    //attachScroller($(ui.toPage[0]));
-  });*/
 
   // load campus map after page shows - don't know why I have to do this though.
   $(document).on('pageshow', '#map', function (e, data) {
@@ -1872,8 +1820,6 @@ function loadNavToAudJson(data) {
   });
     
 $(document).on('pageshow', '#home', function (e, data) {
-      console.log("inside the page show");
-      // $("#myPopup").popup("open");
       createAudiencePopup();
       checkAudSet();
   });
@@ -1882,10 +1828,9 @@ $(document).on('pageshow', '#hamiltonPage', function (){
               $.mobile.changePage( "#home", { transition: "none"} );
   });
 
-  //KJD Necessary for SVG images (icons)
+  // KJD Necessary for SVG images (icons)
   $(document).on('pagebeforeshow', '#home', function (e, data) {
       getPrefAud(e, data);
-      //refreshSVGs(e, data);
   });
       
   function refreshSVGs(e, data) {
