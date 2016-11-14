@@ -1,10 +1,11 @@
-// JSON Callback global variable
+// Global varibles for dining JSON callback
 var diningJSONCallback; 
-
 var diningJSON = null;
 
-// Finds the title element in the song-container div in
-// the radio page
+
+/* FUNCION gotSong
+   Finds the title element in the song-container div in
+   the radio page */
 var gotSong = function(data) {
   $(data).find("item").first(function() {
     var el = $(this);
@@ -14,9 +15,11 @@ var gotSong = function(data) {
   });
 };
 
-// Sends a JSON request for the RSS Feed (probably for The Scroll?)
-// Checks if there was an error fulfilling the request
-// Outputs the error to the console 
+
+/* FUNCTION grabRssFeed
+   Sends a JSON request for the RSS Feed    
+   Checks if there was an error fulfilling the request 
+   Outputs the error to the console if it exists */
 var grabRssFeed = function(url, callback, cacheBust, limit) {
   console.log("start");
   var fxurl = url + (cacheBust ? ("&_=" + Math.round(new Date().getTime() / 1000)) : '');
@@ -31,19 +34,17 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
       // Check for error
       if (data.responseStatus == 200) {
-
         callback(data.responseData);
 
       } else {
-
         // Handle error if required
         var msg = data.responseDetails;
         console.log(msg);
-        //$(e).html('<div class="rssError"><p>'+ msg +'</p></div>');
       }
     }
   );
 };
+
 
 // A function for logging error messages
 (function () {
@@ -55,61 +56,35 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   };
     
     
-// A lot of scrap code
-    
-  /*function rewriteClass() {
-    $('h4 a').addClass("external");
-    $('#news').find('.iscroll-content').attr("style", "");
-    $('.newsholder').iscrollview('refresh');
-  }
-  function rewriteClassHamNews() {
-    $('h4 a').addClass("external");
-    $('#ham-news').find('.iscroll-content').attr("style", "");
-    $('#ham-news .newsholder').iscrollview('refresh');
-  }*/
+// Database global variables
+// db is the database for dining, contact information, and navigation tables
+// audDB contains a single table, audPrefs, which stores the users audience preference
+var db;
+var audDB;
 
-  function rewriteClassEvents(name) {
-    console.log(name);
-    //$(name+" h4 a").addClass("external");
-    //$(name).find('.iscroll-content').attr("style", "");
-    //$(name+' .eventsholder').iscrollview('refresh');
-      
-  }
-    
-    
-  // Database global variable
-  var db;
-  var audDB;
-
-  // Opens the application's database and returns a new database object
-  // window.openDatabase(name, version, display name, size)
-  // If version is "", database will persist over many versions/audiences
-  function setupDB() {
-//      second field in opendatabase = version (switch to empty to allow it to persist over multiple versions)
-//      can store audience based, even through versions      
+/* FUNCTION setupDB
+    Allocates space for each WebSQL database and initializes it.
+    window.openDatabase(name, version, display name, size)
+    If version is "", database will persist over many versions/audiences
+    */
+function setupDB() {    
     db = window.openDatabase("appContentsDB", "1.0", "HamiltonCollege", 200000);
-    audDB = window.openDatabase("appAudience", "", "HamiltonCollege", 200000);
+    audDB = window.openDatabase("appAudience", "", "HamiltonCollege", 50000);
   }
 
-  // Global variable to keep track of the state of JSON and AJAX requests
-  var jsonNotLoadedInitially = false;
-  var loadDiningAJAXRequest;
+//-------------------------DINING MENU FUNCTIONS---------------------------------//
+    
+// Global variable to keep track of the state of JSON and AJAX requests
+var jsonNotLoadedInitially = false;
+var loadDiningAJAXRequest;
     
     
-  // Updates the hours and open-closed icons for the dining halls
-  var updateDiningHallHours = function(data) {
+/* FUNCTION updateDiningHallHours
+   Updates the hours and open-closed icons for the dining halls */
+var updateDiningHallHours = function(data) {
    
     for (var key in data.days[0].cafes) {
-        //TESTING- issue with Date object here
-        /*console.log("CAFE: ");
-        console.log(key);
-        
-        console.log("DATA.DAYS[0].length: ");
-        console.log(data.days[0].cafes.$110);
-        console.log(data.days[0].date);
-        */
-        
-      if (data.days[0].cafes.hasOwnProperty(key)) {
+        if (data.days[0].cafes.hasOwnProperty(key)) {
           
         var now = new Date();
         var cafe = data.days[0].cafes[key];
@@ -216,18 +191,12 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           
         var mealSet = false;
         var endtime12hr = "";
-
-        // TESTING ---------------------------------------------------------  
-        //console.log("HERE NOW, TIME TO GO THROUGH MEALS")
-        //console.log(cafe.dayparts[0]);
-        //------------------------------------------------------------------
           
         // Goes through each meal for a given dining hall on the current day
         $.each(cafe.dayparts[0], function (id, meal) { 
             // For each meal, parse the "dayparts" of the current meal
             // into JavaScript dates 
         
-          
             // Convert the time
             var start = moment(meal.starttime,'HH:mma');
             //var starttime12hr = start.format('h:mma');
@@ -247,20 +216,15 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
           
         
         if (cafe.dayparts[0].length != 0) {
-          console.log(key, " not closed");
-          //cafeElement.find("a .dining-hall-block .hours-text").append(document.createTextNode(" - " + endtime12hr));
           cafeElement.find("a").removeClass("ui-disabled");
         } 
 
         // Set the current cafe to closed or open depending on 
         // if the meal has been set
-        // Maybe why McEwen and Pub are always closed?
         if (mealSet) {
-
           cafeElement.find("a .open-indicator").addClass("open");
         } 
           else {
-
           cafeElement.find("a .open-indicator").addClass("closed");
         }
       }
@@ -268,12 +232,11 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
   };
     
-  // PRE: Data is JSON to check <- Old comment, I don't know what this means
-  // POST: Determines whether menu data should be stored 
-  //       (i.e it is up to date, etc.)
-  //       Updates warnings/error to reflect the data retrieved
+  
+  /* FUNCTION diningDataCheck 
+     Determines whether menu data should be stored (i.e it is up to date, etc.)
+     Updates warnings/error to reflect the data retrieved */   
   var diningDataCheck = function(data) {
-    console.log("starting checks");
       
     if (data.hasOwnProperty("status") && data.status === false) {
       $(".menu-not-loaded").fadeIn();
@@ -316,14 +279,14 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       $.mobile.loading( "hide" );
     }
 
-    //updateDiningHallHours(data);
-    //have the calling function decide whether to update dining hall hours or not
-
     return menuCurrentDate;
   };
     
 
-  var diningJSONLoadOffline = function() {
+/* FUNCTION diningJSONLoadOffline
+   Gets the JSON dining data from the DB when the phone is offline.
+*/
+var diningJSONLoadOffline = function() {
       
     // Get the JSON data from the dining menu database
     var sql = "SELECT jsonData FROM diningmenu";
@@ -359,6 +322,9 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   };
 
   
+  /* FUNCTION updateDiningMenu
+     Updates the dining menu.
+  */
   var updateDiningMenu = function (adata) {
     if (diningJSON != null) {
       diningJSON = adata;
@@ -379,7 +345,8 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   };
 
   var lastDiningHall = null;
-    
+   
+  
   diningJSONCallback = function (adata) {
     if (diningDataCheck(adata)) { // we are not checking this offline
       console.log("updating database with new dining menu");
@@ -480,10 +447,9 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 
     $('.apageheader.menu-show').html('<div id="meals-navbarcont" data-role="navbar"></div>');
     $('#meals-navbarcont').html('<ul class="meals xnavbar"></ul>');
-    //$('.meals.xnavbar').html('<li class="back-cont"><a class="go-back ui-btn-icon-left" data-icon="arrow-l">Back</a></li>');
     $('#diningmenus > .pageheader > .back-btn').hide();
     $('#diningmenus > .pageheader > .dining-back-btn').show();
-    console.log(cafe);
+    
     $.each(cafe.dayparts[0], function (id, meal) { // for each meal
       // convert times
       var start = moment(meal.starttime,'HH:mm a');
@@ -494,10 +460,10 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       $("ul.meals.xnavbar").append('<li><a data-meal-id="' + id + '">' + meal.label + '<p class="meal-times">' +
                                    starttime12hr + '-' + endtime12hr + '</p></a></li>');
 
-      if (!defaultMealSet) { // if current meal has already been set, there is no need need to parse
+      // if current meal has already been set, there is no need need to parse
+      if (!defaultMealSet) { 
         // parse the dayparts of this meal into javascript dates
         var xnow = moment();
-
 
         // is this meal going on now?
         if (start.isBefore(xnow) && end.isAfter(xnow)) {
@@ -514,25 +480,30 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     $(".items").css("display", "block");
 
 
-    $(".meals li a").click(function(){ // initialize meal when navbar link is pressed
+    // initialize meal when navbar link is pressed
+    $(".meals li a").click(function(){ 
       initializeMeal($(this).data("meal-id"));
     });
 
-    if (!defaultMealSet && cafe.dayparts[0].length > 0) { // no meals going on now
+    // no meals going on now
+    if (!defaultMealSet && cafe.dayparts[0].length > 0) { 
       $(".items .diningmenuholder").html('<li><font style="white-space:normal"><div class="alert info always tight">There are no current meals at this dining hall, please select one above.</div></font></li>');
       $('.items .diningmenuholder').listview("refresh");
     }
-    else if (cafe.dayparts[0].length === 0) { // no meals in the day at all
+    
+    // no meals in the day at all
+    else if (cafe.dayparts[0].length === 0) { 
       $(".items .diningmenuholder").html('<li><font style="white-space:normal"><div class="alert info always tight">We could not find any meals today for this dining hall.</div></font></li>');
       $('.items .diningmenuholder').listview("refresh");
     }
 
-    $('[data-role="navbar"]').navbar(); // necessary to apply styling to navbar (meal buttons)
+    // necessary to apply styling to navbar (meal buttons)
+    $('[data-role="navbar"]').navbar(); 
 
     $(".meals").css("display", "block");
-    //$('.meals li a.go-back').removeClass('ui-btn-icon-top');
 
-    var goBack = function(){ // leave the meals/items view and return to dining hall list
+    // leave the meals/items view and return to dining hall list
+    var goBack = function(){ 
       $("#diningmenus .menu-show").css("display", "none");
       $("#diningmenus .menu-hide").css("display", "block");
       $(".menu-out-of-date").addClass("navmargin");
@@ -548,18 +519,14 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       $(".dining-halls .diningmenuholder").css("display", "block");
       $('.dining-halls .diningmenuholder').listview("refresh");
 
-      lastDiningHall = null; // if we go back, then student unselected dining hall
+      // if we go back, then student unselected dining hall
+      lastDiningHall = null; 
 
       $(document).off("backbutton", goBack);
     };
 
 
-
     $('#diningmenus > .pageheader > .dining-back-btn').click(goBack);
-
-    //$(".meals li.back-cont").click(goBack);
-
-    //document.addEventListener("backbutton", goBack, false);
     $(document).bind("backbutton", goBack);
 
 
@@ -573,7 +540,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       dayDelta = 0;
     }
 
-    
     if (connectionStatus == "online") {
       console.log('delta', dayDelta);
       var thisDay = moment(new Date()).add(dayDelta, 'd');
@@ -601,9 +567,12 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       }
     }
   }
+    
+//---------------------PHONE CONTACTS PAGE FUNCTIONS--------------------------------//
 
   function phoneChecks(tx) {
     var sql = "CREATE TABLE IF NOT EXISTS phonenumbers (id varchar(50) PRIMARY KEY, letter varchar(255), name varchar(255), email varchar(255), phone varchar(255), url varchar(255), officehours varchar(255))";
+      
     db.transaction(function (tx) {
       tx.executeSql(sql);
     });
@@ -649,446 +618,8 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       tx.executeSql(sql, [], getNumbers_success, errorCBgetNumbers);
     });
   }
-
-   /* Author: Emmerson Zhaime
-  Checks to see if the Audience preference is already set
-  */
-  function checkAudSet() {
-      var sql = "SELECT * FROM audPrefs";
-      audDB.transaction(function (tx) {
-        tx.executeSql(sql, [], checkAudSet_success, checkAudSet_fail);
-      });
-  }
- /* Author: Emmerson Zhaime
-  If the Audience pref is already, this function is called and does nothing
-  */
-  function checkAudSet_success(tx, results){
-    var audience = results.rows.item(0);
-    if(audience.audienceID == null){
-      // $("#myPopup").popup("open");   
-    }
-    else{
-      console.log("Audience pref was set already");  
-        }        
-    }
     
-  function checkAudSet_fail(tx, results){
-      console.log("Audpref table doesn't exist yet");
-      $("#myPopup").popup("open");   
-  }
-  
-  
-    
-   /* Author: Emmerson Zhaime
-   Selects the appAudience and aud id for audience set to Active in the audience table
-   */
-  function getPrefAud(tx){
-      var sql = "SELECT audienceID, id FROM audPrefs"; 
-      audDB.transaction(function(tx){
-          tx.executeSql(sql, [], getAudIcons);
-      });
-  }
-  /* Author: Emmerson Zhaime    
-  // Gets all the information for the icons for a given audience preference and calls a function to make the homepage
-   */
-  function getAudIcons(tx, results){
-      var audience = results.rows.item(0);
-      var audienceID = audience.audienceID;
-      console.log (audience);
-      var sql = "SELECT * FROM navtoaud as a CROSS JOIN navigation as b ON a.navid=b.id where a.audid='" + audienceID + "'";
-      db.transaction(function(tx){
-          tx.executeSql(sql, [], makeHomePage);
-      });
-  }
-    
-  
-   /* Author: Emmerson Zhaime
-  This is supposed to be the function that makes a homepage from a list of icon information. Now it is just printing all the icons information in the console
-  */
-  function makeHomePage(tx, results){
-    var len = results.rows.length;
-    console.log("length: "+ len);
-  }
-  
-
-/*
-  This function deleted the audience preference that exists and calls a function that insert a new audience preference
-  */
-function deleteAudPref(audience){
-    audDB.transaction(function(tx){
-        tx.executeSql("DELETE FROM audPrefs");
-    });
-    var sql = "SELECT id from audience where appAudience='"+ audience +"'";
-    db.transaction(function(tx){
-        tx.executeSql(sql, [], insertAudPref);
-    });   
-}
-    
-  /*
-  This function inserts the newly selected audience into the audPrefs table
-  */
-function insertAudPref(tx, results){
-    var audience = results.rows.item(0);
-    var audienceID = audience.id;
-    console.log(audienceID);
-    var thisid = guid();
-    var stuid = audienceID;
-    audDB.transaction(function(tx){
-       tx.executeSql('INSERT INTO audPrefs (id,audienceID) VALUES (?,?)', [thisid, stuid]);
-    });
-  }
-    
-
-$(document).on('click','#audlist li a',function(event, data){
-     var elementID = $(this).attr('id'); 
-          if(event.handled !== true){ // This will prevent event triggering more then once
-            console.log("clicked " + elementID);
-            // stuff();
-            deleteAudPref(elementID);
-            // getPrefAud(e, data);
-            // refreshSVGs(e, data);
-            // location.reload();
-            $.mobile.changePage( "#hamiltonPage", { transition: "slide"} );
-            event.handled = true;
-          }
-});
-    
-
-    
-  /* FUNCTION createAudiencePopup
-     Dynamically creates the audience popup menu before the popup appears. 
-      */
-  function createAudiencePopup(tx) {
-      var sql = "SELECT appAudience FROM audience";// WHERE isActive = 1";
-      db.transaction(function (tx) {
-      tx.executeSql(sql, [], createAudiencePopup_success);
-    });
-      
-  }
-    
-  /* FUNCTION createAudiencePopup_success
-     Dynamically creates the audience setting form. 
-     Executes when the SQL query in createAudienceForm is successful */
-  function createAudiencePopup_success(tx, results) {
-      // Add the tuples from the results to an array 
-      // to be used in making a template
-      var audiences = [];
-      for (var i = 0; i < results.rows.length; i++) {
-          audiences.push(results.rows.item(i));
-      }
-      
-      // Add the audience buttons to the form via a template
-      var audienceTemplate = '<li><a href="#" id="${appAudience}">${appAudience}</a></li>';
-      var audPopup = $('#audlist');
-      audPopup.html('');
-      $.template("audTemp", audienceTemplate)
-      $.tmpl("audTemp", audiences).appendTo('#audlist');
-      audPopup.listview("refresh");
-  }
-  /* FUNCTION createAudienceForm
-     Queries the database to dynamically create the audience setting 
-     form before the page is shown. 
-     Only audiences that are active in the audience table will appear
-     as options in the settings menu.
-  */
-  function createAudienceForm(tx) {
-      var sql = "SELECT appAudience FROM audience WHERE isActive = 1";
-      db.transaction(function (tx) {
-      tx.executeSql(sql, [], createAudienceForm_success);
-    });
-      
-  }
-    
-  /* FUNCTION createAudienceForm_success
-     Dynamically creates the audience setting form. 
-     Executes when the SQL query in createAudienceForm is successful */
-  function createAudienceForm_success(tx, results) {
-      // Add the tuples from the results to an array 
-      // to be used in making a template
-      var audiences = [];
-      for (var i = 0; i < results.rows.length; i++) {
-          audiences.push(results.rows.item(i));
-      }
-      
-      // Add the audience buttons to the form via a template
-      var audienceTemplate = '<input type="radio" name="audiencelist" id="choice-${appAudience}" value="off"><label for="choice-${appAudience}">${appAudience}</label>'
-      var audForm = $('#audienceform');
-      audForm.html('');
-      $.template("audTemp", audienceTemplate)
-      $.tmpl("audTemp", audiences).appendTo('#audienceform');
-      $('#audienceform').trigger('create');
-      
-      // Preselect the radio button for the audience that is currently in use
-      selectAudienceRadioBttn();
-      // Add the click handlers to each button
-      audienceFormClickHandlers();
-      
-      
-  }
-
- /* FUNCTION selectAudienceRadioBttn
-    Queries the audPrefs database to get the ID of current audience.
- */
- function selectAudienceRadioBttn(tx) {
-      var sql = "SELECT audienceID FROM audPrefs"; 
-      audDB.transaction(function(tx){
-          tx.executeSql(sql, [], selectAudienceRadioBttn_success);
-      });
-  }
-    
-  /* FUNCTION selectAudienceRadioBttn_success 
-     Queries the audience table to find the name of the current audience. 
-  */
-  function selectAudienceRadioBttn_success(tx, results) {
-      var audID = results.rows.item(0)["audienceID"]
-      var sql = "SELECT appAudience FROM audience WHERE id='" + audID+"'";
-      db.transaction(function(tx){
-          tx.executeSql(sql, [], selectCurrentAudience);
-      });
-      
-  }
-                     
-  /* FUNCTION selectCurrentAudience
-     Preselects the current audience in the settings menu. 
-  */
-  function selectCurrentAudience(tx, results) {
-      var currentAudience = results.rows.item(0)['appAudience'];
-      $('#choice-' + currentAudience).attr("checked",true).checkboxradio("refresh");
-  }
-   
-  /* FUNCTION audienceFormClickHandlers
-     Adds the click handlers to the radio buttons in the audience 
-     settings menu form. When a new audience is select, the 
-     audPrefs table is update with the new audience. 
-  */
-  function audienceFormClickHandlers() {
-      $('input[name="audiencelist"]').change(function () {
-          console.log("CLICKED " + $(this).attr('id'));
-          var newAudience = $(this).attr('id').split('-')[1];
-          console.log(newAudience);
-          
-          // Update the audPrefs table with the new preferred audience
-          var sql = "SELECT id FROM audience WHERE appAudience ='" + newAudience + "'";
-          db.transaction(function (tx) {
-              tx.executeSql(sql, [], updateAudiencePref);
-          });
-          
-          
-      });
-  
-  }
-  
-  /* FUNCTION updateAudiencePref
-     Updates the audPrefs table with the new audience for the app. 
-  */
-  function updateAudiencePref(tx, results) {
-      // Get the ID of the new audience
-      var newAudID = results.rows.item(0)["id"];
-      
-      // Clear out the old audience preference and insert the new one
-      audDB.transaction(function (tx) {
-      tx.executeSql('Delete from audPrefs');
-      var randID = guid();
-      tx.executeSql('INSERT INTO audPrefs (id,audienceID) VALUES (?,?)', [randID, newAudID]);
-    });
-      
-  }
-
-   // Selects the aud id for the preferred audience in the audPrefs table
-    function getPrefAud(tx){
-      console.log("getPrefAud");
-      var sql = "SELECT id, audienceID FROM audPrefs"; 
-      audDB.transaction(function(tx){
-          tx.executeSql(sql, [], getAudIcons);
-      });
-  }
-    
-  function getAudIcons(tx, results){
-      if (results != null) {
-        var audience = results.rows.item(0);
-        var audienceID = audience.audienceID;
-        var sql = "SELECT * FROM navtoaud as a CROSS JOIN navigation as b ON a.navid=b.id where a.audid='" + audienceID + "'";
-        db.transaction(function(tx){
-            tx.executeSql(sql, [], makeHomePage);
-        });
-      }
-  }
-    
-    function makeHomePage(tx, results) {
-        //referencing container for all icons
-        //console.log("entered makehomepage");
-        var homeAllIcons = $('#home-all-icons'); 
-        
-        //clearing container for all icons (don't want to add duplicates)
-        homeAllIcons.html('');
-        
-        //adding the all information for correct icons from database, based on audience
-        var iconList = [];
-        var len = results.rows.length;
-        for (var i = 0; i < len; i++) {
-            //console.log(results.rows.item(i));   
-            iconList.push(results.rows.item(i));
-        }
-        
-        //code to be templated
-        var iconTemplate = '<li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon ${navAddClass}" href= ${navLink}><img src="icons/${navIcon}" class="imgResponsive svg-width ${navAddClass}-width svg"/><br>${navTitle}</a></li>';
-        
-        //creating templated code, adding to icon container on homepage
-        $.template("buttonTemplate", iconTemplate);
-        $.tmpl("buttonTemplate", iconList).appendTo('#home-all-icons'); 
-        
-        //formatting icon svgs
-        refreshSVGs();
-        //console.log("exited makehomepage");
-    }
-
-    
-
-  function getscrollHTML() {
-    $.ajax({
-                type:'post',url:'https://www.hamilton.edu/thescroll/appview.cfm'
-                ,data:{}
-                ,success:function(data, textStatus,e){
-                    $('#scrollstories').empty().append(data).show();
-                   // console.log("stories in");
-                }
-                }).done(function( e ) {
-                     $('#scrollcontent').iscrollview("refresh");
-                  //  console.log("scroll view refresh");
-                });
-  }
-
-
-
-  
-
-  function navorderCmp(fa, fb) {
-    var a = fa.navorder;
-    var b = fb.navorder;
-    return ((a < b) ? -1 : ((a > b) ? 1 : 0));
-  }
-
-  function getNavigationandPages(tx) {
-    var sql = "select audienceID from audPrefs";
-    db.transaction(function (tx) {
-      tx.executeSql(sql, [], function (tx, results) {
-        var len = results.rows.length;
-        for (var i = 0; i < len; i++) {
-          var audience = results.rows.item(i);
-          //console.log("aud = ", audience);
-          var audienceID = audience.audienceID;
-          buildPages(audienceID);
-          var navsql = "select n.navtitle,n.navicon,n2a.navlink,n2a.navorder from appNavs n Inner Join appNavToAudience n2a on n.id = n2a.navid where n2a.audid ='" + audienceID + "' order by navorder";
-          db.transaction(function (tx) {
-            tx.executeSql(navsql, [], function (tx, navresults) {
-              //console.log("navresults = ", navresults);
-              var pagearray = [];
-              for (var i = 0; i < navresults.rows.length; i++) {
-                pagearray.push(navresults.rows.item(i));
-                pagearray[i].navorder += 1;
-              }
-
-              var toRemove = "dininghrs";
-              pagearray = $.grep(pagearray, function(e){
-                   return e.navlink != toRemove;
-              });
-              pagearray.unshift({
-                navIcon: "fa-birthday-cake",
-                navTitle: "Events",
-                navlink: "events",
-                navorder: 0
-              });
-              pagearray.push({
-                navIcon: "fa-cutlery",
-                navTitle: "Dining Menus",
-                navlink: "diningmenus",
-                navorder: 10
-              });
-              pagearray.push({
-                navIcon: "fa-comment",
-                navTitle: "Feedback",
-                navlink: "feedback-page",
-                navorder: 11
-              });
-              pagearray.push({
-                navIcon: "fa-calendar",
-                navTitle: "Calendar",
-                navlink: "collegeCalendar",
-                navorder: 12
-              });
-
-              pagearray.sort(navorderCmp);
-              // sorts the list by navorder
-
-              //console.log("pagearray = ", pagearray);
-              //rowid: 8, id:"", pagetitle: "Events", pagecontents:"<p>Events</p>", pageActive: 1, navlink: "events", navTitle: "Events", navIcon: "fa-birthday-cake"});
-              var navlen = pagearray.length;
-
-              //$('.dynNavbar').html('');
-              //var pagerNavTemplate = '<div><a href="#" class="navright ui-link ui-btn"><i class="fa fa-chevron-right fa-2x"></i></a></div>';
-              $('.dyn-nav').html('');
-              var container;
-              for (var i = 0; i < navlen; i++) {
-                if ((i % 3) === 0) {
-                  $('.dyn-nav').append('<div class="ui-grid-b"></div>');
-                  container = $('.dyn-nav > .ui-grid-b:last-child');
-                }
-                var navigationrow = pagearray[i];
-                var navlink = navigationrow.navlink;
-                var navIcon = navigationrow.navIcon;
-                //var navTemplate = '<div><a href="#' + navlink + '" class="ui-link ui-btn"><i class="fa ' + navIcon + ' fa-2x"></i></a></div>';
-                var blocks = ['a', 'b', 'c'];
-                var navTemplate = '<div class="ui-block-' + blocks[i % 3] + ' ui-block-2x-height"><a class="ui-btn" href="#' + navlink + '"><i class="fa ' + navIcon + ' fa-2x"></i></a></div>';
-                //$('.dynNavbar').append(navTemplate);
-                container.append(navTemplate);
-                //console.log(navTemplate);
-
-
-                // if (i == 4){
-                //$('.dynNavbar').append(pagerNavTemplate);
-                // }else{
-                //   var navTemplate = '<div><a href="#'+navlink+'" class="ui-link ui-btn"><i class="fa '+navIcon+' fa-2x"></i></a></div>';
-                //$('.dynNavbar').append(navTemplate);
-                //  };
-              }
-
-
-
-              //attachScroller();
-              //console.log("attaching scroller");
-
-            });
-          });
-        }
-      });
-    });
-  }
-
-  function buildPages(audienceID) {
-    //var audienceID;
-    var pageTemplate = '<div data-role="page" id="${id}" class="dyn"><div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false" data-transition="none" class="pageheader"><a class="backbtn"><i class="fa fa-chevron-left fa-2x iconfloat"></i><div class="hamicon"><img src="resources/ios/icon/icon-72@2x.png" class="imgResponsive" /></div></a><h1>${pagetitle}</h1></div><div data-iscroll="" data-role="content" class="ui-content"><div>${pagecontents}</div></div><footer data-role="footer" data-position="fixed" data-id="foo1"><nav data-role="navbar"><div class="container dynNavbar"></div></nav></footer>';
-
-    //var pageTemplate='<div data-role="page" id="${id}" class="dyn"><div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false" data-transition="none" class="pageheader"><i class="fa fa-chevron-left fa-2x iconfloat"></i><div class="hamicon"><img src="resources/ios/icon/icon-72@2x.png" class="imgResponsive" /></div><h1>${pagetitle}</h1></div><div data-iscroll="" data-role="content" class="ui-content"><div>${pagecontents}</div></div><footer data-role="footer" data-position="fixed" data-id="foo1"><nav data-role="navbar"><div class="container dynNavbar"><div></div></div></nav></footer>';
-    var sql = "Select p.pagetitle,p.pagecontents,p.id from Pages p Inner Join appPageToNav apn ON p.id = apn.pageid Inner Join appNavs n on apn.navid = n.id Inner Join appNavToAudience n2a on n.id = n2a.navid where p.pageactive=1 and n2a.audid ='" + audienceID + "'";
-    db.transaction(function (tx) {
-      tx.executeSql(sql, [], function (tx, xresults) {
-        var results = xresults.rows.item(0);
-        var pagelen = results.length;
-        var pagearray = [];
-        for (var i = 0; i < pagelen; i++) {
-          pagearray.push(results.item(i));
-        }
-        //console.log(pagearray);
-        var currentpagecount = $(".dyn").length;
-        //console.log(currentpagecount);
-        if (currentpagecount < pagelen) {
-          $.template("attachPageTemplate", pageTemplate);
-          $.tmpl("attachPageTemplate", pagearray).insertAfter('#lastStatic');
-        }
-      });
-    });
-  }
-
+ 
     // Function sets up the contacts list click listener. On the click of a listview item
     // the id is sent to the details page.
     function setupContactsClickListener () {
@@ -1216,6 +747,323 @@ $(document).on('click','#audlist li a',function(event, data){
       });      
   }
 
+ //--------------------AUDIENCE POPUP SELECTOR-----------------------------//
+    
+   /* Author: Emmerson Zhaime
+  Checks to see if the Audience preference is already set
+  */
+  function checkAudSet() {
+      var sql = "SELECT * FROM audPrefs";
+      audDB.transaction(function (tx) {
+        tx.executeSql(sql, [], checkAudSet_success, checkAudSet_fail);
+      });
+  }
+    
+ /* Author: Emmerson Zhaime
+  If the Audience pref is already, this function is called and does nothing
+  */
+  function checkAudSet_success(tx, results){
+    var audience = results.rows.item(0);
+    if(audience.audienceID == null){
+      // $("#myPopup").popup("open");   
+    }
+    else{
+      console.log("Audience pref was set already");  
+        }        
+    }
+    
+  function checkAudSet_fail(tx, results){
+      console.log("Audpref table doesn't exist yet");
+      $("#myPopup").popup("open");   
+  }
+  
+    
+   /* Author: Emmerson Zhaime
+   Selects the appAudience and aud id for audience set to Active in the audience table
+   */
+  function getPrefAud(tx){
+      var sql = "SELECT audienceID, id FROM audPrefs"; 
+      audDB.transaction(function(tx){
+          tx.executeSql(sql, [], getAudIcons);
+      });
+  }
+    
+  /* Author: Emmerson Zhaime    
+  // Gets all the information for the icons for a given audience preference and calls a function to make the homepage
+   */
+  function getAudIcons(tx, results){
+      var audience = results.rows.item(0);
+      var audienceID = audience.audienceID;
+      console.log (audience);
+      var sql = "SELECT * FROM navtoaud as a CROSS JOIN navigation as b ON a.navid=b.id where a.audid='" + audienceID + "'";
+      db.transaction(function(tx){
+          tx.executeSql(sql, [], makeHomePage);
+      });
+  }
+    
+  
+   /* Author: Emmerson Zhaime
+  This is supposed to be the function that makes a homepage from a list of icon information. Now it is just printing all the icons information in the console
+  */
+  function makeHomePage(tx, results){
+    var len = results.rows.length;
+    console.log("length: "+ len);
+  }
+  
+
+/*
+  This function deleted the audience preference that exists and calls a function that insert a new audience preference
+  */
+function deleteAudPref(audience){
+    audDB.transaction(function(tx){
+        tx.executeSql("DELETE FROM audPrefs");
+    });
+    
+    var sql = "SELECT id from audience where appAudience='"+ audience +"'";
+    db.transaction(function(tx){
+        tx.executeSql(sql, [], insertAudPref);
+    });   
+}
+    
+  /*
+  This function inserts the newly selected audience into the audPrefs table
+  */
+function insertAudPref(tx, results){
+    var audience = results.rows.item(0);
+    var audienceID = audience.id;
+    console.log(audienceID);
+    var thisid = guid();
+    var stuid = audienceID;
+    audDB.transaction(function(tx){
+       tx.executeSql('INSERT INTO audPrefs (id,audienceID) VALUES (?,?)', [thisid, stuid]);
+    });
+  }
+    
+
+$(document).on('click','#audlist li a',function(event, data){
+     var elementID = $(this).attr('id'); 
+          if(event.handled !== true){ // This will prevent event triggering more then once
+            console.log("clicked " + elementID);
+            // stuff();
+            deleteAudPref(elementID);
+            // getPrefAud(e, data);
+            // refreshSVGs(e, data);
+            // location.reload();
+            $.mobile.changePage( "#hamiltonPage", { transition: "slide"} );
+            event.handled = true;
+          }
+});
+    
+   
+  /* FUNCTION createAudiencePopup
+     Dynamically creates the audience popup menu before the popup appears. 
+      */
+  function createAudiencePopup(tx) {
+      var sql = "SELECT appAudience FROM audience WHERE isActive = 1";
+      db.transaction(function (tx) {
+      tx.executeSql(sql, [], createAudiencePopup_success);
+    });
+      
+  }
+    
+    
+  /* FUNCTION createAudiencePopup_success
+     Dynamically creates the audience popup form. 
+     Executes when the SQL query in createAudiencePopup is successful */
+  function createAudiencePopup_success(tx, results) {
+      // Add the tuples from the results to an array 
+      // to be used in making a template
+      var audiences = [];
+      for (var i = 0; i < results.rows.length; i++) {
+          audiences.push(results.rows.item(i));
+      }
+      
+      // Add the audience buttons to the form via a template
+      var audienceTemplate = '<li><a href="#" id="${appAudience}">${appAudience}</a></li>';
+      var audPopup = $('#audlist');
+      audPopup.html('');
+      $.template("audTemp", audienceTemplate)
+      $.tmpl("audTemp", audiences).appendTo('#audlist');
+      audPopup.listview("refresh");
+  }
+    
+    
+//---------------------SETTINGS MENU AUDIENCE SELECTOR-----------------------//
+    
+  /* FUNCTION createAudienceForm
+     Queries the database to dynamically create the audience setting 
+     form before the page is shown. 
+     Only audiences that are active in the audience table will appear
+     as options in the settings menu.
+  */
+  function createAudienceForm(tx) {
+      var sql = "SELECT appAudience FROM audience WHERE isActive = 1";
+      db.transaction(function (tx) {
+      tx.executeSql(sql, [], createAudienceForm_success);
+    });
+      
+  }
+    
+  /* FUNCTION createAudienceForm_success
+     Dynamically creates the audience setting form. 
+     Executes when the SQL query in createAudienceForm is successful */
+  function createAudienceForm_success(tx, results) {
+      // Add the tuples from the results to an array 
+      // to be used in making a template
+      var audiences = [];
+      for (var i = 0; i < results.rows.length; i++) {
+          audiences.push(results.rows.item(i));
+      }
+      
+      // Add the audience buttons to the form via a template
+      var audienceTemplate = '<input type="radio" name="audiencelist" id="choice-${appAudience}" value="off"><label for="choice-${appAudience}">${appAudience}</label>'
+      var audForm = $('#audienceform');
+      audForm.html('');
+      $.template("audTemp", audienceTemplate)
+      $.tmpl("audTemp", audiences).appendTo('#audienceform');
+      $('#audienceform').trigger('create');
+      
+      // Preselect the radio button for the audience that is currently in use
+      selectAudienceRadioBttn();
+      // Add the click handlers to each button
+      audienceFormClickHandlers();
+          
+  }
+
+ /* FUNCTION selectAudienceRadioBttn
+    Queries the audPrefs database to get the ID of current audience.
+ */
+ function selectAudienceRadioBttn(tx) {
+      var sql = "SELECT audienceID FROM audPrefs"; 
+      audDB.transaction(function(tx){
+          tx.executeSql(sql, [], selectAudienceRadioBttn_success);
+      });
+  }
+    
+    
+  /* FUNCTION selectAudienceRadioBttn_success 
+     Queries the audience table to find the name of the current audience. 
+  */
+  function selectAudienceRadioBttn_success(tx, results) {
+      var audID = results.rows.item(0)["audienceID"]
+      var sql = "SELECT appAudience FROM audience WHERE id='" + audID+"'";
+      db.transaction(function(tx){
+          tx.executeSql(sql, [], selectCurrentAudience);
+      });
+      
+  }
+                     
+  /* FUNCTION selectCurrentAudience
+     Preselects the current audience in the settings menu. 
+  */
+  function selectCurrentAudience(tx, results) {
+      var currentAudience = results.rows.item(0)['appAudience'];
+      $('#choice-' + currentAudience).attr("checked",true).checkboxradio("refresh");
+  }
+   
+  /* FUNCTION audienceFormClickHandlers
+     Adds the click handlers to the radio buttons in the audience 
+     settings menu form. When a new audience is select, the 
+     audPrefs table is update with the new audience. 
+  */
+  function audienceFormClickHandlers() {
+      $('input[name="audiencelist"]').change(function () {
+          console.log("CLICKED " + $(this).attr('id'));
+          var newAudience = $(this).attr('id').split('-')[1];
+          console.log(newAudience);
+          
+          // Update the audPrefs table with the new preferred audience
+          var sql = "SELECT id FROM audience WHERE appAudience ='" + newAudience + "'";
+          db.transaction(function (tx) {
+              tx.executeSql(sql, [], updateAudiencePref);
+          });
+          
+          
+      });
+  
+  }
+  
+  /* FUNCTION updateAudiencePref
+     Updates the audPrefs table with the new audience for the app. 
+  */
+  function updateAudiencePref(tx, results) {
+      // Get the ID of the new audience
+      var newAudID = results.rows.item(0)["id"];
+      
+      // Clear out the old audience preference and insert the new one
+      audDB.transaction(function (tx) {
+      tx.executeSql('Delete from audPrefs');
+      var randID = guid();
+      tx.executeSql('INSERT INTO audPrefs (id,audienceID) VALUES (?,?)', 
+                    [randID, newAudID]);
+    });
+      
+  }
+
+//--------------------------DYNAMIC HOMESCREEN----------------------//
+
+
+// Selects the aud id for the preferred audience in the audPrefs table
+function getPrefAud(tx){
+      console.log("getPrefAud");
+      var sql = "SELECT id, audienceID FROM audPrefs"; 
+      audDB.transaction(function(tx){
+          tx.executeSql(sql, [], getAudIcons);
+      });
+  }
+    
+function getAudIcons(tx, results){
+      if (results != null) {
+        var audience = results.rows.item(0);
+        var audienceID = audience.audienceID;
+        var sql = "SELECT * FROM navtoaud as a CROSS JOIN navigation as b ON a.navid=b.id where a.audid='" + audienceID + "'";
+        db.transaction(function(tx){
+            tx.executeSql(sql, [], makeHomePage);
+        });
+      }
+  }
+    
+function makeHomePage(tx, results) {
+        // Referencing container for all icons
+        var homeAllIcons = $('#home-all-icons'); 
+        
+        // Clearing container for all icons (don't want to add duplicates)
+        homeAllIcons.html('');
+        
+        // Adding the all information for correct icons from database, based on audience
+        var iconList = [];
+        var len = results.rows.length;
+        for (var i = 0; i < len; i++) {
+            iconList.push(results.rows.item(i));
+        }
+        
+        // Code to be templated
+        var iconTemplate = '<li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon ${navAddClass}" href= ${navLink}><img src="icons/${navIcon}" class="imgResponsive svg-width ${navAddClass}-width svg"/><br>${navTitle}</a></li>';
+        
+        // Creating templated code, adding to icon container on homepage
+        $.template("buttonTemplate", iconTemplate);
+        $.tmpl("buttonTemplate", iconList).appendTo('#home-all-icons'); 
+        
+        // Formatting icon svgs
+        refreshSVGs();
+    }
+
+//-----------------------------------------------------------------------------//    
+
+  function getscrollHTML() {
+    $.ajax({
+                type:'post',url:'https://www.hamilton.edu/thescroll/appview.cfm'
+                ,data:{}
+                ,success:function(data, textStatus,e){
+                    $('#scrollstories').empty().append(data).show();
+                   
+                }
+                }).done(function( e ) {
+                     $('#scrollcontent').iscrollview("refresh");
+                });
+  }
+
+
   function ckTable(tx, callBack, table) {
     var sql = "SELECT CASE WHEN tbl_name = '" + table + "' THEN 1 ELSE 0 END FROM sqlite_master WHERE tbl_name = '" + table + "' AND type = 'table'";
     var result = [];
@@ -1269,24 +1117,9 @@ $(document).on('click','#audlist li a',function(event, data){
   $(function () {
     FastClick.attach(document.body);
   });
+    
   // had to add handlers for external links for in app browser nonsense
   function handleExternalURLs() {
-    // Handle click events for all external URLs
-    //console.log(device.platform);
-    /*if (device.platform.toUpperCase() === 'ANDROID') {
-        $(document).on('click', 'a[href^="http"]', function (e) {
-            var url = $(this).attr('href');
-            navigator.app.loadUrl(url, { openExternal: true });
-            e.preventDefault();
-        });
-    }
-    else if (device.platform.toUpperCase() === 'IOS') {
-        $(document).on('click', 'a[href^="http"]', function (e) {
-            var url = $(this).attr('href');
-            window.open(url, '_system');
-            e.preventDefault();
-          });
-    }*/
 
     if (device.platform === null) {
       $(document).on('click', 'a[href^="http"]', function (e) {
@@ -1331,6 +1164,8 @@ $(document).on('click','#audlist li a',function(event, data){
     }
   }
 
+//-------------------------DATABASE TABLE CREATION---------------------------//
+    
   /* FUNCTION setAudiencePrefTable 
      Builds the audPrefs table in the audDB */
   function setAudiencePrefTable() {
@@ -1356,8 +1191,9 @@ $(document).on('click','#audlist li a',function(event, data){
     });
   }
 
+  /* FUNCTION BuildAudienceTable
+      Creates the appAudience table in the db database. */
   function BuildAudienceTable(tx) {
-      console.log("built audience table");
     var audsql =
       "CREATE TABLE IF NOT EXISTS audience ( " +  
       "appAudience VARCHAR(300), " +
@@ -1368,9 +1204,10 @@ $(document).on('click','#audlist li a',function(event, data){
     });
   }
 
-  // Content tables.
+  /* FUNCTION BuildContentTables
+     Creates the navigation and navtoaud tables in the db database.
+  */
   function BuildContentTables(tx) {
-      console.log("built content tables")
 
 // new tables
     var navsql =
@@ -1457,10 +1294,10 @@ $(document).on('click','#audlist li a',function(event, data){
   }
   
 
-    // Builds the audience database table
-    function loadAudienceJson(data) {
+/* FUNCTION loadAudienceJson
+   Builds the audience db table */
+function loadAudienceJson(data) {
     db.transaction(function (transaction) {
-        //not sure exactly what this does, should we delete from audience?
       var len = data.length;
       if (len > 0) {
         transaction.executeSql('Delete from audience');
@@ -1474,8 +1311,8 @@ $(document).on('click','#audlist li a',function(event, data){
     });
   }
   
-
-  // Builds the navigation table
+  /* FUNCTION loadNavigationJson
+     Builds the navigation table */
   function loadNavigationJson(data) {
     db.transaction(function (transaction) {
       //pretty sure we need to delete from navigation (so we can check for new icons)
@@ -1494,9 +1331,9 @@ $(document).on('click','#audlist li a',function(event, data){
     });
   }   
     
-    
-  // Builds the navtoaud database table
-  function loadNavToAudJson(data) {
+/* FUNCTION loadNavToAudJson 
+   Builds the navtoaud database table */
+function loadNavToAudJson(data) {
     db.transaction(function (transaction) {
       //not sure if we should delete from navtoaud, if we do it allows us to change what audiences see dynamically
       var len = data.length;
@@ -1512,40 +1349,9 @@ $(document).on('click','#audlist li a',function(event, data){
       }
     });
   }   
-    
 
-  // Builds the appPageToNav database table
-  function loadappPageToNavJson(data) {
-    db.transaction(function (transaction) {
-      var len = data.length;
-      if (len > 0) {
-        transaction.executeSql('Delete from appPageToNav');
-      }
-      for (var i = 0; i < len; i++) {
-        var id = data[i].id;
-        var navid = data[i].navid;
-        var pageid = data[i].pageid;
-        var pageorder = data[i].pageorder;
-        transaction.executeSql('INSERT INTO appPageToNav (id, navid, pageid, pageorder) VALUES (?,?,?,?)', [id, navid, pageid, pageorder]);
-      }
-    });
-  }
+  //-------------------------------PAGE EVENTS-----------------------//
     
-
-  function BuildColorTable() {
-      
-      
-  }
-    
-  function LoadColors() {
-      
-      
-      
-  }
-    
-  /* Check to see if version is Stale */
-
-
   // Load the app. This is what happens when you load the app for the first time after it was
   // either killed by OS or user.
   $(document).on("pagecontainerbeforechange", function (event, ui) {
@@ -1555,14 +1361,12 @@ $(document).on('click','#audlist li a',function(event, data){
     
   // A pageshow handler for the phonenums db. Currently empty cuz.
   $(document).on('pageshow', '#phonenums', function (e, data) {
-    // this won't work need to check to see if there is a db if not then load it if yes then show it.
-    // db.transaction(getNumbers, db_error);
   });
-  // this doesn't work, might be an app vs browser thing - do more research
-  //document.addEventListener('deviceready', onDeviceReady, false);
+  
 
   // main worker event, find out if the db is there if the data is stale etc.
   $(document).on('pagebeforecreate', 'body', function () {
+      
     //use this function to find out if the app has access to the internet
     checkConnection();
     if (connectionStatus === 'online') {
@@ -1608,15 +1412,7 @@ $(document).on('click','#audlist li a',function(event, data){
       // do something else
     }
   });
- function dropAudPref(){
-     audDB.transaction(function (tx){
-        tx.executeSql("DROP TABLE audPrefs",[],
-                                  function(tx,results){console.log("Successfully Dropped5");},
-                                  function(tx,error){console.log("Could not delete5");}
-                                 );
-     });
- }
-
+    
   // Load the phone numbers for the contacts menu. Gets info from db.
   $(document).on('pagebeforeshow', '#phonenums', function (e, data) {
     loadPhoneJson(); // Load listview
@@ -1633,8 +1429,8 @@ $(document).on('click','#audlist li a',function(event, data){
       loadContactDetails(contactListObject.itemID);
   });
 
-    // Load the scroll HTML for the Scroll view. Gets info from db.   
-    $(document).on('pagebeforeshow', '#scroll', function (e, data) {
+// Load the scroll HTML for the Scroll view. Gets info from db.   
+ $(document).on('pagebeforeshow', '#scroll', function (e, data) {
      getscrollHTML();
   });
 
@@ -1677,9 +1473,7 @@ $(document).on('click','#audlist li a',function(event, data){
     });
   });
 
-    
-    
-    
+
     
   var feedbackSentDone = function(data, textStatus, jqXHR) {
     if (jqXHR.status == 200) {
@@ -1690,8 +1484,9 @@ $(document).on('click','#audlist li a',function(event, data){
       console.log("failure :(");
     }
   };
+    
   $(document).on('pagebeforeshow', '#feedback-page', function (e, data) {
-    //$('[data-role="navbar"]').navbar();
+    
     $('#feedback-navbarcont').find('.xnavbar > li > a').removeClass('ui-btn-icon-top');
     $('form.feedback').submit(function(e){
       e.preventDefault();
@@ -1710,7 +1505,7 @@ $(document).on('click','#audlist li a',function(event, data){
     });
   });
 
-    //bug reporting notification function
+// Bug reporting notification function
   var bugReportDone = function(data, textStatus, jqXHR) {
     if (jqXHR.status == 200) {
       $("#bug-reported-popup").text(data);
@@ -1720,7 +1515,7 @@ $(document).on('click','#audlist li a',function(event, data){
     }
   };
     
-    //sending bug report to server, before page loads
+ // Sending bug report to server, before page loads
   $(document).on('pagebeforeshow', '#feedback-bug', function (e, data) {
     $('#feedback-bug-navbarcont').find('.xnavbar > li > a').removeClass('ui-btn-icon-top');
     $('form.bug').submit(function(e){
@@ -1815,11 +1610,6 @@ $(document).on('click','#audlist li a',function(event, data){
 
   //news rss load and rebind
   $(document).on('pagebeforeshow', '#news', function (e, data) {
-    /*$('#news').find('.iscroll-content').rssfeed('http://students.hamilton.edu/rss/articles.cfm?item=A9AAF6B5-FB82-2ADF-26A75A82CDDD1221', {
-      limit: 25,
-      linktarget: '_blank',
-      header: false
-    }, rewriteClass);*/
     initRSSList('news', 'http://students.hamilton.edu/rss/articles.cfm?item=A9AAF6B5-FB82-2ADF-26A75A82CDDD1221');
   });
   $(document).on('pagebeforeshow', '#ham-news', function (e, data) {
@@ -1855,11 +1645,6 @@ $(document).on('click','#audlist li a',function(event, data){
        $( "[data-position='fixed']" ).trigger( 'updatelayout' );
    });
   
-  /*$(document).on('pagebeforeshow', function (event, ui) {
-    //var shownPage = $(".ui-page.ui-page-theme-a.ui-page-header-fixed.ui-page-footer-fixed.iscroll-page.ui-page-active");
-    //console.log(ui.toPage[0]);
-    //attachScroller($(ui.toPage[0]));
-  });*/
 
   // load campus map after page shows - don't know why I have to do this though.
   $(document).on('pageshow', '#map', function (e, data) {
@@ -2040,9 +1825,6 @@ $(document).on('click','#audlist li a',function(event, data){
   });
     
 $(document).on('pageshow', '#home', function (e, data) {
-      console.log("inside the page show");
-      // $("#myPopup").popup("open");
-      // createAudiencePopup();
       checkAudSet();
   });
     
@@ -2050,10 +1832,9 @@ $(document).on('pageshow', '#hamiltonPage', function (){
               $.mobile.changePage( "#home", { transition: "none"} );
   });
 
-  //KJD Necessary for SVG images (icons)
+  // KJD Necessary for SVG images (icons)
   $(document).on('pagebeforeshow', '#home', function (e, data) {
       getPrefAud(e, data);
-      //refreshSVGs(e, data);
   });
       
   function refreshSVGs(e, data) {
