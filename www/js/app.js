@@ -655,19 +655,6 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   */
   function checkAudSet() {
       var sql = "SELECT * FROM audPrefs";
-      ckAudTable(audDB, function (callBack) { 
-            console.log(callBack);
-            
-          // Audience table does not exist - create it
-          // setAudiencePrefTable();
-            
-          // Populate the audience table - audience ID is NULL  
-          // upon table creation (i.e no audience has been set yet)
-          // PopulateAudiencePrefTable();
-        
-      }, "audPrefs");
-      console.log(callBack);
-      console.log(audDB);
       audDB.transaction(function (tx) {
         tx.executeSql(sql, [], checkAudSet_success, checkAudSet_fail);
       });
@@ -678,7 +665,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   function checkAudSet_success(tx, results){
     var audience = results.rows.item(0);
     if(audience.audienceID == null){
-      $("#myPopup").popup("open");   
+      // $("#myPopup").popup("open");   
     }
     else{
       console.log("Audience pref was set already");  
@@ -686,8 +673,8 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
     }
     
   function checkAudSet_fail(tx, results){
-      console.log("Audience pref was not set");
-      // $("#myPopup").popup("open");   
+      console.log("Audpref table doesn't exist yet");
+      $("#myPopup").popup("open");   
   }
   
   
@@ -1240,7 +1227,7 @@ $(document).on('click','#audlist li a',function(event, data){
     });
   }
     
-  function ckTable2
+
 
   function ckAudTable(tx, callBack, table) {
     var sql = "SELECT CASE WHEN tbl_name = '" + table + "' THEN 1 ELSE 0 END FROM sqlite_master WHERE tbl_name = '" + table + "' AND type = 'table'";
@@ -1587,7 +1574,7 @@ $(document).on('click','#audlist li a',function(event, data){
       // Check the validity of the icon tables (audience), 
       // If invalid, create the audience tables. 
       clearTables();
-      dropAudPref();
+      // dropAudPref();
       console.log("after dropping AudPref");
       var table = 'audience';
       ckTable(db, function (callBack) { // Check the validity of the pages table.
@@ -2055,7 +2042,7 @@ $(document).on('click','#audlist li a',function(event, data){
 $(document).on('pageshow', '#home', function (e, data) {
       console.log("inside the page show");
       // $("#myPopup").popup("open");
-      createAudiencePopup();
+      // createAudiencePopup();
       checkAudSet();
   });
     
