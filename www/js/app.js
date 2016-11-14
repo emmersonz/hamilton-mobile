@@ -655,6 +655,19 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
   */
   function checkAudSet() {
       var sql = "SELECT * FROM audPrefs";
+      ckAudTable(audDB, function (callBack) { 
+            console.log(callBack);
+            
+          // Audience table does not exist - create it
+          // setAudiencePrefTable();
+            
+          // Populate the audience table - audience ID is NULL  
+          // upon table creation (i.e no audience has been set yet)
+          // PopulateAudiencePrefTable();
+        
+      }, "audPrefs");
+      console.log(callBack);
+      console.log(audDB);
       audDB.transaction(function (tx) {
         tx.executeSql(sql, [], checkAudSet_success, checkAudSet_fail);
       });
@@ -1226,12 +1239,15 @@ $(document).on('click','#audlist li a',function(event, data){
       }, callback_error);
     });
   }
+    
+  function ckTable2
 
   function ckAudTable(tx, callBack, table) {
     var sql = "SELECT CASE WHEN tbl_name = '" + table + "' THEN 1 ELSE 0 END FROM sqlite_master WHERE tbl_name = '" + table + "' AND type = 'table'";
     var result = [];
     audDB.transaction(function (tx) {
       tx.executeSql(sql, [], function (tx, rs) {
+        console.log(rs);
         var newcount = rs.rows.length;
         callBack(newcount);
       }, callback_error);
@@ -1567,11 +1583,12 @@ $(document).on('click','#audlist li a',function(event, data){
       // Allocate space for the DBs
       setupDB(); 
       // Setup the phonenumbers and dining menu DBs
-      phoneChecks(); 
+      phoneChecks();
       // Check the validity of the icon tables (audience), 
       // If invalid, create the audience tables. 
       clearTables();
-      // PopulateAudiencePrefTable();
+      dropAudPref();
+      console.log("after dropping AudPref");
       var table = 'audience';
       ckTable(db, function (callBack) { // Check the validity of the pages table.
         if (callBack == 0) {            // If invalid, create the audience tables.
