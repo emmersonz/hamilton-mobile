@@ -1100,8 +1100,14 @@ function makeHomePage(tx, results) {
         platform: 'Browser'
       };
     }
+
+  document.addEventListener("resume", onResume, false);
   }
 
+  // When the app resumes from background, refresh the current page.
+  function onResume(){
+    location.reload();
+  }
     
   // Global string for the connection status. Either "online" or "offline"
   var connectionStatus;    
