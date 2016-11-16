@@ -309,6 +309,7 @@ footer {height: 60px;}
   border-radius: 5px;
   margin-top: 7px;
   color: rgb(0,  47,  134);
+  box-shadow: none !important;
 }
 
 svg path, svg circle, svg rect{
@@ -568,7 +569,6 @@ ul.diningmenuholder > li.ui-li-static.ui-body-inherit.ui-last-child {
 }
 #diningmenus .dining-back-btn,.events-filter-btn {
     color: white !important;
-    box-shadow: none !important;
     display:none
 }
 /* Some weather things */
