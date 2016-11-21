@@ -1384,8 +1384,6 @@ function loadNavToAudJson(data) {
       // Check the validity of the icon tables (audience), 
       // If invalid, create the audience tables. 
       clearTables();
-      // dropAudPref();
-      console.log("after dropping AudPref");
       var table = 'audience';
       ckTable(db, function (callBack) { // Check the validity of the pages table.
         if (callBack == 0) {            // If invalid, create the audience tables.
