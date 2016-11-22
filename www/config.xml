@@ -24,8 +24,8 @@ edu.hamilton.hamiltonapp
 <widget xmlns = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
         id        = "edu.hamilton.ihamilton-ionic"
-         versionCode="37"
-        version   = "1.5.7">
+         versionCode="43"
+        version   = "1.6.2">
 
   <name>Hamilton Mobile</name>
 
