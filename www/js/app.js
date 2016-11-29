@@ -1426,7 +1426,7 @@ function loadNavToAudJson(data) {
       }, table);
     } else { //if not online do... nothing
       // do something else
-        $('#disconnected-msg').html('Please connect to the Internet');
+        
     }
   });
     
@@ -1851,6 +1851,16 @@ $(document).on('pageshow', '#hamiltonPage', function (){
 
   // KJD Necessary for SVG images (icons)
   $(document).on('pagebeforeshow', '#home', function (e, data) {
+       var table = 'audience';
+       ckTable(db, function (callBack) {
+          if (callBack == 0) {
+            $('#home-all-icons').html('');
+            $('#disconnected-msg').html('Please connect to the Internet');
+          }
+          else {
+              
+          }
+      }, table);
       getPrefAud(e, data);
   });
       
