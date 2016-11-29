@@ -1426,8 +1426,7 @@ function loadNavToAudJson(data) {
       }, table);
     } else { //if not online do... nothing
       // do something else
-        var homeAllIcons = $('#home-all-icons'); 
-        homeAllIcons.hide().html('Please connect to the Internet').fadeIn('fast');
+        $('#disconnected-msg').html('Please connect to the Internet');
     }
   });
     
