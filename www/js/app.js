@@ -1427,7 +1427,7 @@ function loadNavToAudJson(data) {
     } else { //if not online do... nothing
       // do something else
         var homeAllIcons = $('#home-all-icons'); 
-        homeAllIcons.html('Please connect to the Internet');
+        homeAllIcons.hide().html('Please connect to the Internet').fadeIn('fast');
     }
   });
     
