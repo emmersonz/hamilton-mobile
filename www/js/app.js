@@ -1046,8 +1046,8 @@ function makeHomePage(tx, results) {
         
         // Formatting icon svgs
         refreshSVGs();
-        var homeAllIcons = $('#home-all-icons'); 
-        homeAllIcons.hide().html('Please connect to the Internet').fadeIn('fast');
+//        var homeAllIcons = $('#home-all-icons'); 
+//        homeAllIcons.hide().html('Please connect to the Internet').fadeIn('fast');
     }
 
 //-----------------------------------------------------------------------------//    
