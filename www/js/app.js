@@ -1856,15 +1856,16 @@ $(document).on('pageshow', '#hamiltonPage', function (){
        var table = 'audience';
       
       //showing offline message if there is no internet connection on first load
-       var firstConnection = navigator.onLine ? 'online' : 'offline';
+       checkConnection();
        ckTable(db, function (callBack) {
-          
           if (callBack == 0) {
-              if (firstConnection == 'offline'){
+              if (connectionStatus == 'offline'){
               $('#home-all-icons').html('');
               $('#disconnected-msg').html('Please connect to the Internet');
               }
-              else {}
+              else {
+                  
+              }
           }
           else {
               
