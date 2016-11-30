@@ -493,8 +493,10 @@ var diningJSONLoadOffline = function() {
     
     // no meals in the day at all
     else if (cafe.dayparts[0].length === 0) { 
-      $(".items .diningmenuholder").html('<li><font style="white-space:normal"><div class="alert info always tight">We could not find any meals today for this dining hall.</div></font></li>');
-      $('.items .diningmenuholder').listview("refresh");
+//      $(".items .diningmenuholder").html('<li><font style="white-space:normal"><div class="alert info always tight">We could not find any meals today for this dining hall.</div></font></li>');
+//      $('.items .diningmenuholder').listview("refresh");
+        $(".menu-not-loaded").fadeIn(1000);
+        $(".menu-not-loaded").fadeOut(1000);
     }
 
     // necessary to apply styling to navbar (meal buttons)
