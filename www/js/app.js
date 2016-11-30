@@ -1389,7 +1389,7 @@ function loadNavToAudJson(data) {
       
     //use this function to find out if the app has access to the internet
     checkConnection();
-    if (connectionStatus === 'online') {
+    if (connectionStatus == 'online') {
      // console.log("online");  
       // Allocate space for the DBs
       setupDB(); 
@@ -1855,7 +1855,8 @@ $(document).on('pageshow', '#hamiltonPage', function (){
   $(document).on('pagebeforeshow', '#home', function (e, data) {
        var table = 'audience';
        ckTable(db, function (callBack) {
-          if (callBack == 0) {
+          checkConnection();
+          if ((callBack == 0) && (connectionStatus == "offline")){
             $('#home-all-icons').html('');
             $('#disconnected-msg').html('Please connect to the Internet');
           }
