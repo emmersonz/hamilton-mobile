@@ -384,7 +384,7 @@ var diningJSONLoadOffline = function() {
     var lookupFoodItem = function(itemID) {
         
         var fooditem = data.items[itemID];        
-        var cor_lookup = {"humane": "images/menu-item-type-humane.png", "vegan": "images/menu-item-type-vegan.png", "vegetarian" : "images/menu-item-type-vegetarian.png", "made without gluten-containing ingredients": "images/menu-item-type-gluten-free.png", "farm to fork": "images/menu-item-type-farm-to-fork.png", "seafood watch": "images/menu-item-type-seafood.png", "Well-Being": "images/menu-item-type-well-being.png", "halal": "images/menu-item-type-halal.png"};
+        var cor_lookup = {"humane": "images/menu-item-type-humane.png", "vegan": "images/menu-item-type-vegan.png", "vegetarian" : "images/menu-item-type-vegetarian.png", "made without gluten-containing ingredients": "images/menu-item-type-gluten-free.png", "farm to fork": "images/menu-item-type-farm-to-fork.png", "seafood watch": "images/menu-item-type-seafood.png", "Well-Being": "images/menu-item-type-well-being.png", "halal": "images/menu-item-type-halal.png", "in balance": "images/menu-item-type-inbalance.png"};
         
         var fooditemHTML = "<a href='#'>";
         fooditemHTML += "<h1>" + fooditem.label + "</h1>"; // The name of dish
