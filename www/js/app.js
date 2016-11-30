@@ -1854,11 +1854,17 @@ $(document).on('pageshow', '#hamiltonPage', function (){
   // KJD Necessary for SVG images (icons)
   $(document).on('pagebeforeshow', '#home', function (e, data) {
        var table = 'audience';
+      
+      //showing offline message if there is no internet connection on first load
+       var firstConnection = navigator.onLine ? 'online' : 'offline';
        ckTable(db, function (callBack) {
-          checkConnection();
-          if ((callBack == 0) && (connectionStatus == "offline")){
-            $('#home-all-icons').html('');
-            $('#disconnected-msg').html('Please connect to the Internet');
+          
+          if (callBack == 0) {
+              if (firstConnection == 'offline'){
+              $('#home-all-icons').html('');
+              $('#disconnected-msg').html('Please connect to the Internet');
+              }
+              else {}
           }
           else {
               
