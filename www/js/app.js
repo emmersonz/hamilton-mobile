@@ -99,7 +99,7 @@ var updateDiningHallHours = function(data) {
           if (day == 6 || day == 0) {
                 
             // Diner B or after 3pm
-            if (now.getHours() < 4 || now.getHours() > 15) {
+            if (now.getHours() < 4 || now.getHours() >= 15) {
               cafeElement.find(".open-indicator").addClass("open");
             }
                 
@@ -114,7 +114,7 @@ var updateDiningHallHours = function(data) {
               
           // Friday 
           else if (day == 5) {
-            if (now.getHours() < 4 || now.getHours() > 9) {
+            if (now.getHours() < 4 || now.getHours() >= 9) {
               cafeElement.find(".open-indicator").addClass("open");
             } 
             else {
@@ -128,7 +128,7 @@ var updateDiningHallHours = function(data) {
               
           // Monday-Thursday
           else {
-            if (now.getHours() > 9){
+            if (now.getHours() >= 9){
               cafeElement.find(".open-indicator").addClass("open");
             }
             else {
@@ -421,7 +421,7 @@ var diningJSONLoadOffline = function() {
         $.each(station.items, function (id, item) {
 
           // We only care about the specials. Specials in the JSON are either 1 or 0.
-          if (data.items[item].special == "1"){
+          if (data.items[item].special == "1" || targetDiningHall == "512"){
             
             specialsExist = true;  
               
