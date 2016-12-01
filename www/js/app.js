@@ -21,9 +21,9 @@ var gotSong = function(data) {
    Checks if there was an error fulfilling the request 
    Outputs the error to the console if it exists */
 var grabRssFeed = function(url, callback, cacheBust, limit) {
-  console.log("start");
+ // console.log("start");
   var fxurl = url + (cacheBust ? ("&_=" + Math.round(new Date().getTime() / 1000)) : '');
-  console.log(fxurl);
+//  console.log(fxurl);
   var api = "http" +"://ajax.googleapis.com/ajax/services/feed/load?v=1.0&callback=?&q=" +
       encodeURIComponent(fxurl);
   api += "&num=" + ((limit == null) ? 25 : limit);
@@ -39,7 +39,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
       } else {
         // Handle error if required
         var msg = data.responseDetails;
-        console.log(msg);
+     //   console.log(msg);
       }
     }
   );
@@ -99,7 +99,7 @@ var updateDiningHallHours = function(data) {
           if (day == 6 || day == 0) {
                 
             // Diner B or after 3pm
-            if (now.getHours() < 4 || now.getHours() > 15) {
+            if (now.getHours() < 4 || now.getHours() >= 15) {
               cafeElement.find(".open-indicator").addClass("open");
             }
                 
@@ -109,12 +109,12 @@ var updateDiningHallHours = function(data) {
                 
             // Diner and Diner B hours inserted into the HTML
             cafeElement.find("a .dining-hall-block .hours-text").text("12:00am - 4:00am | 3:00pm - 12:00am");
-            console.log("HERE! SATURDAY OR SUNDAY")
+            //console.log("HERE! SATURDAY OR SUNDAY")
           } 
               
           // Friday 
           else if (day == 5) {
-            if (now.getHours() < 4 || now.getHours() > 9) {
+            if (now.getHours() < 4 || now.getHours() >= 9) {
               cafeElement.find(".open-indicator").addClass("open");
             } 
             else {
@@ -123,12 +123,12 @@ var updateDiningHallHours = function(data) {
                 
             // Diner and Diner B hours inserted into the HTML
             cafeElement.find("a .dining-hall-block .hours-text").text("12:00am - 4:00am | 9:00am - 12:00am");
-            console.log("HERE! FRIDAY")
+            //console.log("HERE! FRIDAY")
           }
               
           // Monday-Thursday
           else {
-            if (now.getHours() > 9){
+            if (now.getHours() >= 9){
               cafeElement.find(".open-indicator").addClass("open");
             }
             else {
@@ -137,7 +137,7 @@ var updateDiningHallHours = function(data) {
                 
             // Diner weekday hours inserted into the HTML
               cafeElement.find("a .dining-hall-block .hours-text").text("9:00am - 12:00am");
-              console.log("HERE! ANY DAY")
+              //console.log("HERE! ANY DAY")
           }
         }
         
@@ -152,8 +152,8 @@ var updateDiningHallHours = function(data) {
         // Currently does NOT include the hours that Commons is closed
         // during the day
         else if (key == 110) {
-            console.log("MCEWENNNNNNNN")
-            console.log(day);
+           // console.log("MCEWENNNNNNNN")
+           // console.log(day);
             
             // Friday
             if (day == 5) {
@@ -162,13 +162,13 @@ var updateDiningHallHours = function(data) {
             
             // Monday - Thursday
             else if (day <= 5 && day > 0) {
-                console.log("weekday!");
+               // console.log("weekday!");
                 cafeElement.find("a .dining-hall-block .hours-text").text("7:30am - 8:00pm");
             }
             
             // Friday
             else {
-                console.log(key, " is closed");
+               // console.log(key, " is closed");
                 cafeElement.find("a .dining-hall-block .hours-text").text("Closed Today");
                 cafeElement.find("a").addClass("ui-disabled");
             }
@@ -183,7 +183,7 @@ var updateDiningHallHours = function(data) {
             }
             
             else {
-                console.log(key, " is closed");
+               // console.log(key, " is closed");
                 cafeElement.find("a .dining-hall-block .hours-text").text("Closed Today");
                 cafeElement.find("a").addClass("ui-disabled");
             }
@@ -209,7 +209,7 @@ var updateDiningHallHours = function(data) {
           // Is the current meal being offered now?
           if (start.isBefore(xnow) && end.isAfter(xnow)) {
             mealSet = true;
-            console.log("meal has been set");
+            //console.log("meal has been set");
             return false;
           }
         }); 
@@ -336,7 +336,7 @@ var diningJSONLoadOffline = function() {
         $(".diningmenuholder").fadeIn();
       }
       if (idActive != undefined) {
-        console.log("setting again" + idActive);
+        //console.log("setting again" + idActive);
         $('ul.meals li a[data-meal-id="' + idActive + '"]').click();
       }
       
@@ -349,7 +349,7 @@ var diningJSONLoadOffline = function() {
   
   diningJSONCallback = function (adata) {
     if (diningDataCheck(adata)) { // we are not checking this offline
-      console.log("updating database with new dining menu");
+   //   console.log("updating database with new dining menu");
       db.transaction(function (tx) {
         if (adata != null) {
           tx.executeSql('DELETE FROM diningmenu');
@@ -363,7 +363,7 @@ var diningJSONLoadOffline = function() {
 
       });
     } else {
-      console.log("dining menu old could not update database");
+      //console.log("dining menu old could not update database");
       updateDiningHallHours(adata);
       updateDiningMenu(adata);
     }
@@ -384,7 +384,7 @@ var diningJSONLoadOffline = function() {
     var lookupFoodItem = function(itemID) {
         
         var fooditem = data.items[itemID];        
-        var cor_lookup = {"humane": "images/menu-item-type-humane.png", "vegan": "images/menu-item-type-vegan.png", "vegetarian" : "images/menu-item-type-vegetarian.png", "made without gluten-containing ingredients": "images/menu-item-type-gluten-free.png", "farm to fork": "images/menu-item-type-farm-to-fork.png", "seafood watch": "images/menu-item-type-seafood.png", "Well-Being": "images/menu-item-type-well-being.png", "halal": "images/menu-item-type-halal.png"};
+        var cor_lookup = {"humane": "images/menu-item-type-humane.png", "vegan": "images/menu-item-type-vegan.png", "vegetarian" : "images/menu-item-type-vegetarian.png", "made without gluten-containing ingredients": "images/menu-item-type-gluten-free.png", "farm to fork": "images/menu-item-type-farm-to-fork.png", "seafood watch": "images/menu-item-type-seafood.png", "Well-Being": "images/menu-item-type-well-being.png", "halal": "images/menu-item-type-halal.png", "in balance": "images/menu-item-type-inbalance.png"};
         
         var fooditemHTML = "<a href='#'>";
         fooditemHTML += "<h1>" + fooditem.label + "</h1>"; // The name of dish
@@ -421,7 +421,7 @@ var diningJSONLoadOffline = function() {
         $.each(station.items, function (id, item) {
 
           // We only care about the specials. Specials in the JSON are either 1 or 0.
-          if (data.items[item].special == "1"){
+          if (data.items[item].special == "1" || targetDiningHall == "512"){
             
             specialsExist = true;  
               
@@ -493,8 +493,10 @@ var diningJSONLoadOffline = function() {
     
     // no meals in the day at all
     else if (cafe.dayparts[0].length === 0) { 
-      $(".items .diningmenuholder").html('<li><font style="white-space:normal"><div class="alert info always tight">We could not find any meals today for this dining hall.</div></font></li>');
-      $('.items .diningmenuholder').listview("refresh");
+//      $(".items .diningmenuholder").html('<li><font style="white-space:normal"><div class="alert info always tight">We could not find any meals today for this dining hall.</div></font></li>');
+//      $('.items .diningmenuholder').listview("refresh");
+        $(".menu-not-loaded").fadeIn(1000);
+        $(".menu-not-loaded").fadeOut(1000);
     }
 
     // necessary to apply styling to navbar (meal buttons)
@@ -541,7 +543,7 @@ var diningJSONLoadOffline = function() {
     }
 
     if (connectionStatus == "online") {
-      console.log('delta', dayDelta);
+     // console.log('delta', dayDelta);
       var thisDay = moment(new Date()).add(dayDelta, 'd');
       var thisDayStr = thisDay.format("YYYY-MM-DD"); // sets day difference to dayDelta
       $("#this-day").html(thisDayStr + "<br/>Current Day");
@@ -768,12 +770,12 @@ var diningJSONLoadOffline = function() {
       // $("#myPopup").popup("open");   
     }
     else{
-      console.log("Audience pref was set already");  
+     // console.log("Audience pref was set already");  
         }        
     }
     
   function checkAudSet_fail(tx, results){
-      console.log("Audpref table doesn't exist yet");
+     // console.log("Audpref table doesn't exist yet");
       $("#myPopup").popup("open");   
   }
   
@@ -794,7 +796,7 @@ var diningJSONLoadOffline = function() {
   function getAudIcons(tx, results){
       var audience = results.rows.item(0);
       var audienceID = audience.audienceID;
-      console.log (audience);
+    //  console.log (audience);
       var sql = "SELECT * FROM navtoaud as a CROSS JOIN navigation as b ON a.navid=b.id where a.audid='" + audienceID + "'";
       db.transaction(function(tx){
           tx.executeSql(sql, [], makeHomePage);
@@ -807,7 +809,7 @@ var diningJSONLoadOffline = function() {
   */
   function makeHomePage(tx, results){
     var len = results.rows.length;
-    console.log("length: "+ len);
+//    console.log("length: "+ len);
   }
   
 
@@ -831,7 +833,7 @@ function deleteAudPref(audience){
 function insertAudPref(tx, results){
     var audience = results.rows.item(0);
     var audienceID = audience.id;
-    console.log(audienceID);
+  //  console.log(audienceID);
     var thisid = guid();
     var stuid = audienceID;
     audDB.transaction(function(tx){
@@ -843,7 +845,7 @@ function insertAudPref(tx, results){
 $(document).on('click','#audlist li a',function(event, data){
      var elementID = $(this).attr('id'); 
           if(event.handled !== true){ // This will prevent event triggering more then once
-            console.log("clicked " + elementID);
+          //  console.log("clicked " + elementID);
             // stuff();
             deleteAudPref(elementID);
             // getPrefAud(e, data);
@@ -968,9 +970,9 @@ $(document).on('click','#audlist li a',function(event, data){
   */
   function audienceFormClickHandlers() {
       $('input[name="audiencelist"]').change(function () {
-          console.log("CLICKED " + $(this).attr('id'));
+          //console.log("CLICKED " + $(this).attr('id'));
           var newAudience = $(this).attr('id').split('-')[1];
-          console.log(newAudience);
+        //  console.log(newAudience);
           
           // Update the audPrefs table with the new preferred audience
           var sql = "SELECT id FROM audience WHERE appAudience ='" + newAudience + "'";
@@ -1005,7 +1007,7 @@ $(document).on('click','#audlist li a',function(event, data){
 
 // Selects the aud id for the preferred audience in the audPrefs table
 function getPrefAud(tx){
-      console.log("getPrefAud");
+      //console.log("getPrefAud");
       var sql = "SELECT id, audienceID FROM audPrefs"; 
       audDB.transaction(function(tx){
           tx.executeSql(sql, [], getAudIcons);
@@ -1082,7 +1084,7 @@ function makeHomePage(tx, results) {
     var result = [];
     audDB.transaction(function (tx) {
       tx.executeSql(sql, [], function (tx, rs) {
-        console.log(rs);
+        //console.log(rs);
         var newcount = rs.rows.length;
         callBack(newcount);
       }, callback_error);
@@ -1253,28 +1255,40 @@ function makeHomePage(tx, results) {
     db.transaction(function (tx)
                    {
                     tx.executeSql("DROP TABLE appNavs",[],
-                                  function(tx,results){console.log("Successfully Dropped");},
-                                  function(tx,error){console.log("Could not delete");}
+                                  function(tx,results){//console.log("Successfully Dropped");
+                    },
+                                  function(tx,error){//console.log("Could not delete");
+                    }
                                  );
                     tx.executeSql("DROP TABLE appNavToAudience",[],
-                                  function(tx,results){console.log("Successfully Dropped2");},
-                                  function(tx,error){console.log("Could not delete2");}
+                                  function(tx,results){//console.log("Successfully Dropped2");
+                    },
+                                  function(tx,error){//console.log("Could not delete2");
+                    }
                                  );
                     tx.executeSql("DROP TABLE appPageToNav",[],
-                                  function(tx,results){console.log("Successfully Dropped3");},
-                                  function(tx,error){console.log("Could not delete3");}
+                                  function(tx,results){//console.log("Successfully Dropped3");
+                    },
+                                  function(tx,error){//console.log("Could not delete3");
+                    }
                                  );
                     tx.executeSql("DROP TABLE pages",[],
-                                  function(tx,results){console.log("Successfully Dropped4");},
-                                  function(tx,error){console.log("Could not delete4");}
+                                  function(tx,results){//console.log("Successfully Dropped4");
+                    },
+                                  function(tx,error){//console.log("Could not delete4");
+                    }
                                  );
                      tx.executeSql("DROP TABLE appAudiences",[],
-                                  function(tx,results){console.log("Successfully Dropped5");},
-                                  function(tx,error){console.log("Could not delete5");}
+                                  function(tx,results){//console.log("Successfully Dropped5");
+                     },
+                                  function(tx,error){//console.log("Could not delete5");
+                     }
                                  );
                      tx.executeSql("DROP TABLE audPrefs",[],
-                                  function(tx,results){console.log("Successfully Dropped5");},
-                                  function(tx,error){console.log("Could not delete5");}
+                                  function(tx,results){//console.log("Successfully Dropped5");
+                     },
+                                  function(tx,error){//console.log("Could not delete5");
+                     }
                                  );
         
             });
@@ -1287,7 +1301,7 @@ function makeHomePage(tx, results) {
       //console.log("loadfullJSON");
     $.getJSON("https://www.hamilton.edu/apppages/ajax/getalldataforTy.cfm", function (data) {
       if (data.audience.length > 0) {
-        console.log("data.audience.length > 0");
+       // console.log("data.audience.length > 0");
         loadAudienceJson(data.audience);
       }
       if (data.navigation.length > 0) {
@@ -1375,8 +1389,8 @@ function loadNavToAudJson(data) {
       
     //use this function to find out if the app has access to the internet
     checkConnection();
-    if (connectionStatus === 'online') {
-      console.log("online");  
+    if (connectionStatus == 'online') {
+     // console.log("online");  
       // Allocate space for the DBs
       setupDB(); 
       // Setup the phonenumbers and dining menu DBs
@@ -1388,13 +1402,13 @@ function loadNavToAudJson(data) {
       ckTable(db, function (callBack) { // Check the validity of the pages table.
         if (callBack == 0) {            // If invalid, create the audience tables.
           //create db tables
-          console.log("callback == 0");
+          //console.log("callback == 0");
           BuildAudienceTable();
           BuildContentTables();
           //get the content and add it.
           loadFullJson();               // Then create the other tables
         } else {
-          console.log("callback != 0");
+        //  console.log("callback != 0");
           //check versions then load whatever content you want here? or maybe just all for now just all
           loadFullJson();
         }
@@ -1414,6 +1428,7 @@ function loadNavToAudJson(data) {
       }, table);
     } else { //if not online do... nothing
       // do something else
+        
     }
   });
     
@@ -1460,7 +1475,7 @@ function loadNavToAudJson(data) {
     // Select previous day...  
     $("#prev-day").click(function(){
       currentDiningDayDelta -= 1;                      // decrement delta
-      console.log("loading", currentDiningDayDelta);   // Load the other day
+    //  console.log("loading", currentDiningDayDelta);   // Load the other day
       $( ".ldr" ).loader("show");                      // Loading... (because of async)
       $.mobile.loading( "show" );                      // Show loading screen
       jsonNotLoadedInitially = true;
@@ -1469,7 +1484,7 @@ function loadNavToAudJson(data) {
     });
     $("#next-day").click(function(){
       currentDiningDayDelta += 1;
-      console.log("loading", currentDiningDayDelta);
+     // console.log("loading", currentDiningDayDelta);
       $( ".ldr" ).loader("show");
       $.mobile.loading( "show" );
       jsonNotLoadedInitially = true;
@@ -1483,9 +1498,9 @@ function loadNavToAudJson(data) {
     if (jqXHR.status == 200) {
       $("#feedback-sent-popup").text(data);
       $("#feedback-sent-popup").popup("open");
-      console.log("success!");
+    // console.log("success!");
     } else {
-      console.log("failure :(");
+   //   console.log("failure :(");
     }
   };
     
@@ -1583,7 +1598,7 @@ function loadNavToAudJson(data) {
     var eventList = $('<ul data-role="listview" class="widelist" id="' + name + 'Listview"></ul>');
     grabRssFeed(url,
       function(data){
-        console.log(data);
+       // console.log(data);
         data.feed.entries.forEach(function(el) {
           var contab = $('<a class="ui-link"></a>').attr('href', el.link);
           contab.append($('<div class="title">' + el.title + '</div>'));
@@ -1838,11 +1853,12 @@ $(document).on('pageshow', '#hamiltonPage', function (){
 
   // KJD Necessary for SVG images (icons)
   $(document).on('pagebeforeshow', '#home', function (e, data) {
+       var table = 'audience';
       getPrefAud(e, data);
   });
       
   function refreshSVGs(e, data) {
-      console.log("refresh SVGS");
+      //console.log("refresh SVGS");
       jQuery('img.svg').each(function(){
           var $img = jQuery(this);
           var imgID = $img.attr('id');
