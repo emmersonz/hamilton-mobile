@@ -102,7 +102,9 @@ html head + body .ui-btn.ui-btn-a.ui-btn-active {background-color: #f6f6f6;
     background: white !important; 
     color: rgb(0,  47,  134);
 }
-
+#settingsgear {color:#ccb793;  text-shadow: 0 0 0 #f3f3f3;position:absolute; top:20px; right:15px;}
+#settingsgear:link a:visited{color:#ccb793;}
+#settingsgear:hover{color: #fff;}
 .imgResponsive {max-width: 100%; height: auto; width: 100%;}
 
 .ui-page .pageheader {
