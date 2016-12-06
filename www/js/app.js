@@ -863,7 +863,7 @@ $(document).on('click','#audlist li a',function(event, data){
   function createAudiencePopup(tx) {
       var sql = "SELECT appAudience FROM audience WHERE isActive = 1";
       db.transaction(function (tx) {
-      tx.executeSql(sql, [], createAudiencePopup_success);
+      tx.executeSql(sql, [], createAudiencePopup_success, function failure(tx, result){console.log("failed to get audience")});
     });
       
   }
@@ -1424,6 +1424,7 @@ function loadNavToAudJson(data) {
           // Populate the audience table - audience ID is NULL  
           // upon table creation (i.e no audience has been set yet)
           PopulateAudiencePrefTable();
+          $("#myPopup").popup("open");
         } 
       }, table);
     } else { //if not online do... nothing
@@ -1843,9 +1844,9 @@ function loadNavToAudJson(data) {
     clearInterval(showUpdateInterval);
   });
     
-$(document).on('pageshow', '#home', function (e, data) {
-      checkAudSet();
-  });
+/*$(document).on('pageshow', '#home', function (e, data) {
+       checkAudSet();
+  }); */
     
 $(document).on('pageshow', '#hamiltonPage', function (){
               $.mobile.changePage( "#home", { transition: "none"} );
