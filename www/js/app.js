@@ -767,16 +767,13 @@ var diningJSONLoadOffline = function() {
   function checkAudSet_success(tx, results){
     var audience = results.rows.item(0);
     if(audience.audienceID == null){
-      // $("#myPopup").popup("open");   
-    }
-    else{
-     // console.log("Audience pref was set already");  
-        }        
-    }
+      $("#myPopup").popup("open");   
+    }      
+  }
     
   function checkAudSet_fail(tx, results){
-     // console.log("Audpref table doesn't exist yet");
-      $("#myPopup").popup("open");   
+     console.log("Audpref table doesn't exist yet");
+     // $("#myPopup").popup("open");   
   }
   
     
@@ -1402,6 +1399,7 @@ function loadNavToAudJson(data) {
               }
           });
           loaded.done(function(data){
+             createAudiencePopup();
              $("#myPopup").popup("open");
           });
         } else {
@@ -1420,7 +1418,8 @@ function loadNavToAudJson(data) {
                 loadNavToAudJson(data.navtoaud);
               }
           });
-         
+          createAudiencePopup();
+          checkAudSet();
         }
       }, table);
     
