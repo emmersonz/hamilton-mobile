@@ -1293,26 +1293,8 @@ function makeHomePage(tx, results) {
         
             });
       
-    }    
+    } 
 
-    
-  /* Pull full JSON Feed */
-  function loadFullJson() {
-      //console.log("loadfullJSON");
-    $.getJSON("https://www.hamilton.edu/apppages/ajax/getalldataforTy.cfm", function (data) {
-      if (data.audience.length > 0) {
-       // console.log("data.audience.length > 0");
-        loadAudienceJson(data.audience);
-      }
-      if (data.navigation.length > 0) {
-        loadNavigationJson(data.navigation);
-      }
-      if (data.navtoaud.length > 0) {
-        loadNavToAudJson(data.navtoaud);
-      }
-    });
-  }
-  
 
 /* FUNCTION loadAudienceJson
    Builds the audience db table */
@@ -1406,11 +1388,39 @@ function loadNavToAudJson(data) {
           BuildAudienceTable();
           BuildContentTables();
           //get the content and add it.
-          loadFullJson();               // Then create the other tables
+            /* Pull full JSON Feed */
+          var loaded=$.getJSON("https://www.hamilton.edu/apppages/ajax/getalldataforTy.cfm", function (data) {
+              if (data.audience.length > 0) {
+              // console.log("data.audience.length > 0");
+                loadAudienceJson(data.audience);
+              }
+              if (data.navigation.length > 0) {
+                loadNavigationJson(data.navigation);
+              }
+              if (data.navtoaud.length > 0) {
+                loadNavToAudJson(data.navtoaud);
+              }
+          });
+          loaded.done(function(data){
+             $("#myPopup").popup("open");
+          });
         } else {
         //  console.log("callback != 0");
           //check versions then load whatever content you want here? or maybe just all for now just all
-          loadFullJson();
+          // loadFullJson();
+          $.getJSON("https://www.hamilton.edu/apppages/ajax/getalldataforTy.cfm", function (data) {
+              if (data.audience.length > 0) {
+              // console.log("data.audience.length > 0");
+                loadAudienceJson(data.audience);
+              }
+              if (data.navigation.length > 0) {
+                loadNavigationJson(data.navigation);
+              }
+              if (data.navtoaud.length > 0) {
+                loadNavToAudJson(data.navtoaud);
+              }
+          });
+         
         }
       }, table);
     
@@ -1424,7 +1434,6 @@ function loadNavToAudJson(data) {
           // Populate the audience table - audience ID is NULL  
           // upon table creation (i.e no audience has been set yet)
           PopulateAudiencePrefTable();
-          $("#myPopup").popup("open");
         } 
       }, table);
     } else { //if not online do... nothing
