@@ -1774,6 +1774,10 @@ function loadNavToAudJson(data) {
         // Add today's day of the week as the header
         var days = ["Monday", "Tuesday", "Wednesday", "Thursday", 
                         "Friday", "Saturday", "Sunday"];
+        
+        if (thisDayCode === 0)
+            thisDayCode = 7;
+
         $("#whcl-schedule-list").append("<li data-role='list-divider' role='heading'" + 
                                         " class='ui-li-divider ui-bar-inherit'>" + 
                                         days[thisDayCode - 1] + "</li>")
