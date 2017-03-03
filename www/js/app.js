@@ -771,7 +771,11 @@ var diningJSONLoadOffline = function() {
   }
     
   function checkAudSet_fail(tx, results){
+<<<<<<< HEAD
     // console.log("Audpref table doesn't exist yet");
+=======
+     console.log("Audpref table doesn't exist yet");
+>>>>>>> origin/master
      // $("#myPopup").popup("open");   
   }
   
@@ -1364,7 +1368,11 @@ function loadNavToAudJson(data) {
           BuildContentTables();
           //get the content and add it.
             /* Pull full JSON Feed */
+<<<<<<< HEAD
           var loaded=$.getJSON("https://www.hamilton.edu/apppages/ajax/getalldata.cfm", function (data) {
+=======
+          var loaded=$.getJSON("https://www.hamilton.edu/apppages/ajax/getalldataforTy.cfm", function (data) {
+>>>>>>> origin/master
               if (data.audience.length > 0) {
               // console.log("data.audience.length > 0");
                 loadAudienceJson(data.audience);
@@ -1384,7 +1392,11 @@ function loadNavToAudJson(data) {
         //  console.log("callback != 0");
           //check versions then load whatever content you want here? or maybe just all for now just all
           // loadFullJson();
+<<<<<<< HEAD
           $.getJSON("https://www.hamilton.edu/apppages/ajax/getalldata.cfm", function (data) {
+=======
+          $.getJSON("https://www.hamilton.edu/apppages/ajax/getalldataforTy.cfm", function (data) {
+>>>>>>> origin/master
               if (data.audience.length > 0) {
               // console.log("data.audience.length > 0");
                 loadAudienceJson(data.audience);
@@ -1396,7 +1408,11 @@ function loadNavToAudJson(data) {
                 loadNavToAudJson(data.navtoaud);
               }
           });
+<<<<<<< HEAD
           //createAudiencePopup();
+=======
+          createAudiencePopup();
+>>>>>>> origin/master
           checkAudSet();
         }
       }, table);
