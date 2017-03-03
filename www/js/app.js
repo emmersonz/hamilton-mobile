@@ -15,7 +15,6 @@ var gotSong = function(data) {
   });
 };
 
-
 /* FUNCTION grabRssFeed
    Sends a JSON request for the RSS Feed    
    Checks if there was an error fulfilling the request 
