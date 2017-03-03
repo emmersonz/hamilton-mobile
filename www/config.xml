@@ -1,31 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-#
-# Licensed to the Apache Software Foundation (ASF) under one
-# or more contributor license agreements.  See the NOTICE file
-# distributed with this work for additional information
-# regarding copyright ownership.  The ASF licenses this file
-# to you under the Apache License, Version 2.0 (the
-# "License"); you may not use this file except in compliance
-# with the License.  You may obtain a copy of the License at
-#
-# http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing,
-# software distributed under the License is distributed on an
-# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-#  KIND, either express or implied.  See the License for the
-# specific language governing permissions and limitations
-# under the License.
-#
-edu.hamilton.hamiltonapp
-
--->
+<!--edu.hamilton.hamiltonapp for google play store-->
 <widget xmlns = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
         id        = "edu.hamilton.ihamilton-ionic"
-         versionCode="43"
-        version   = "1.6.2">
+         versionCode="72"
+        version   = "1.6.19">
 
   <name>Hamilton Mobile</name>
 
@@ -36,12 +15,24 @@ edu.hamilton.hamiltonapp
   <author href="http://hamilton.edu" email="webhelp@hamilton.edu">
      Ryan Woo, Emmerson Zhaime, Ty Torregrosa, Lyndsay LaBarge, Mykhailo Antoniv, Katherine Droppa, Sam Kotlove, Chris Lee, Noah Lowenthal, Don Stayner, and Jim Thomson
   </author>
-  <preference name="KeyboardDisplayRequiresUserAction" value="true" />
-  <preference name="SuppressesIncrementalRendering" value="false" />
-  <preference name="UIWebViewBounce" value="false" />
+    <content src="index.html" />
+    <access origin="*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="tel:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="geo:*" />
+    <platform name="android">
+        <allow-intent href="market:*" />
+    </platform>
+    <allow-navigation href="https://*google.com/*"/>
+    <platform name="ios">
+        <allow-intent href="itms:*" />
+        <allow-intent href="itms-apps:*" />
+    </platform>
+   <preference name="UIWebViewBounce" value="false" />
   <preference name="TopActivityIndicator" value="gray" />
-  <preference name="EnableLocation" value="false" />
-  <preference name="EnableViewportScale" value="false" />
   <preference name="AutoHideSplashScreen" value="true" />
   <preference name="ShowSplashScreenSpinner" value="true" />
   <preference name="FadeSplashScreen" value="true" />
@@ -49,53 +40,13 @@ edu.hamilton.hamiltonapp
   <preference name="MediaPlaybackRequiresUserAction" value="false" />
   <preference name="AllowInlineMediaPlayback" value="false" />
   <preference name="BackupWebStorage" value="cloud" />
-  <preference name="android-targetSdkVersion" value="15" />
-  <content src="index.html" />
-  <!--<gap:plugin name="org.apache.cordova.battery-status" />
-  <gap:plugin name="org.apache.cordova.camera" />
-  <gap:plugin name="org.apache.cordova.media-capture" />
-  <gap:plugin name="org.apache.cordova.console" />
-  <gap:plugin name="org.apache.cordova.contacts" />
-  <gap:plugin name="org.apache.cordova.device" />
-  <gap:plugin name="org.apache.cordova.device-motion" />
-  <gap:plugin name="org.apache.cordova.device-orientation" />
-  <gap:plugin name="org.apache.cordova.dialogs" />
-  <gap:plugin name="org.apache.cordova.file" />
-  <gap:plugin name="org.apache.cordova.file-transfer" />
-  <gap:plugin name="org.apache.cordova.geolocation" />
-  <gap:plugin name="org.apache.cordova.globalization" />
-  <gap:plugin name="org.apache.cordova.inappbrowser" />
-  <gap:plugin name="org.apache.cordova.media" />
-  <gap:plugin name="org.apache.cordova.network-information" />
-  <gap:plugin name="org.apache.cordova.splashscreen" />
-  <gap:plugin name="org.apache.cordova.vibration" />
+  <preference name="stay-in-webview" value="false" />
+  <plugin name="cordova-plugin-whitelist" source="npm" />  
+  <plugin name="cordova-plugin-inappbrowser" source="npm" />
+  <plugin name="cordova-plugin-splashscreen" source="npm" />
+  <plugin name="cordova-plugin-geolocation" source="npm" />
+   <plugin name="cordova-plugin-device" source="npm" />
 
-  <plugin name="InAppBrowser" value="org.apache.cordova.InAppBrowser" />-->
-  <!--<gap:plugin name="cordova-plugin-battery-status" source="npm" />
-  <gap:plugin name="cordova-plugin-camera" source="npm" />
-  <gap:plugin name="cordova-plugin-media-capture" source="npm" />
-  <gap:plugin name="cordova-plugin-console" source="npm" />
-  <gap:plugin name="cordova-plugin-contacts" source="npm" />
-  <gap:plugin name="cordova-plugin-device" source="npm" />
-  <gap:plugin name="cordova-plugin-ce-motion" source="npm" />
-  <gap:plugin name="cordova-plugin-device-orientation" source="npm" />
-  <gap:plugin name="cordova-plugin-dialogs" source="npm" />
-  <gap:plugin name="cordova-plugin-file" source="npm" />
-  <gap:plugin name="cordova-plugin-file-transfer" source="npm" />
-  <gap:plugin name="cordova-plugin-geolocation" source="npm" />
-  <gap:plugin name="cordova-plugin-globalization" source="npm" />
-  <gap:plugin name="cordova-plugin-inappbrowser" source="npm" />
-  <gap:plugin name="cordova-plugin-media" source="npm" />
-  <gap:plugin name="cordova-plugin-network-information" source="npm" />
-  <gap:plugin name="cordova-plugin-splashscreen" source="npm" />
-  <gap:plugin name="cordova-plugin-vibration" source="npm" />-->
-
-  <gap:plugin name="cordova-plugin-inappbrowser" source="npm" />
-  <gap:plugin name="cordova-plugin-splashscreen" source="npm" />
-  <gap:plugin name="cordova-plugin-geolocation" source="npm" />
-   <gap:plugin name="cordova-plugin-device" source="npm" />
-
-  <!--<access origin="*" browserOnly="true" />-->
   <icon src="resources/android/icon/drawable-ldpi-icon.png" gap:platform="android" gap:qualifier="ldpi"/>
   <icon src="resources/android/icon/drawable-mdpi-icon.png" gap:platform="android" gap:qualifier="mdpi"/>
   <icon src="resources/android/icon/drawable-hdpi-icon.png" gap:platform="android" gap:qualifier="hdpi"/>
@@ -147,26 +98,5 @@ edu.hamilton.hamiltonapp
   <icon src="icon.png" />
   <gap:splash src="splash.png" />  
 
-  <!-- may need some combination of the two if you encounter phonegap build issues-->
-  <gap:plugin name="cordova-plugin-whitelist" source="npm" />  
-  <!--<plugin name="cordova-plugin-whitelist" spec="1" />-->
-    
-  <access origin="*"/>
-  <allow-navigation href="http://*/*" />
-  <allow-navigation href="https://*/*" />
-  <allow-navigation href="file://*/*" />
-  <allow-intent href="http://*/*" />
-  <allow-intent href="https://*/*" />
-  <allow-intent href="file://*/*" />
-  <allow-intent href="tel:*" />
-  <allow-intent href="sms:*" />
-  <allow-intent href="mailto:*" />
-  <allow-intent href="geo:*" />
-  <platform name="android">
-    <allow-intent href="market:*" />
-  </platform>
-  <platform name="ios">
-    <allow-intent href="itms:*" />
-    <allow-intent href="itms-apps:*" />
-  </platform>
+
 </widget>

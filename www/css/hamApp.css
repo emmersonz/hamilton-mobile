@@ -102,7 +102,7 @@ html head + body .ui-btn.ui-btn-a.ui-btn-active {background-color: #f6f6f6;
     background: white !important; 
     color: rgb(0,  47,  134);
 }
-#settingsgear {color:#ccb793;  text-shadow: 0 0 0 #f3f3f3;position:absolute; top:20px; right:15px;}
+#settingsgear {color:#ccb793;  text-shadow: 0 0 0 #f3f3f3;position:absolute; top:30px; right:15px;}
 #settingsgear:link a:visited{color:#ccb793;}
 #settingsgear:hover{color: #fff;}
 .imgResponsive {max-width: 100%; height: auto; width: 100%;}
@@ -456,28 +456,29 @@ svg path, svg circle, svg rect{
 svg path, svg circle, svg rect{
     fill: currentColor; 
 }
-#home {
+/*div wrapper*/
+.home-icon-wrapper {
+     text-align: center;
+    width:100%;
+}
 
-    text-align:center;
+#home-all-icons {
+    /*ul*/
+  display: inline-block;
+    margin: 0 auto;
+    padding: 0;
 }
-.home-all-icons {
-    display:inline-block;
-    text-align:left
-}
+
 a.homeicon.ui-btn {
     margin:4px;
     width:78px; 
     height:78px;
 }
 .icon-float {
-    /*float:left;*/
-    float:none;
+   float: none;
     display:inline-block;
-    vertical-align: middle;
     margin:0;
     padding:0
-        
-    /*width:90px*/
 }
 
 /* The following -width tag references resize icons on the home page.
@@ -575,11 +576,13 @@ ul.diningmenuholder > li.ui-li-static.ui-body-inherit.ui-last-child {
 }
 /* Some weather things */
 #weather > img {
-    margin-bottom: 2px
+    height: 41px;
+    width: 41px;
+    margin-bottom: 0px
 }
 .weather-text {
     margin:0;
-    margin-top:2px;
+    margin-top:-12px;
     color: white;
     font-weight: bold
 }
@@ -595,11 +598,15 @@ ul.diningmenuholder > li.ui-li-static.ui-body-inherit.ui-last-child {
 }
 
 #radio .whcl-item {
-    font-size: 15pt;
+    float: right;
+    font-size: 15px;
     font-family: sans-serif;
-    margin-top:20px
+    margin-top: 20px;
+    margin-right: 20px;
 }
-
+#whcl-schedule-list {
+    padding-bottom: 70px;
+}
 #radio .whcl-song-title {
     font-size: 12pt;
 }

@@ -23,8 +23,8 @@ var campusMap = (function(){
         for (var el in App.points) {
             if(App.points.hasOwnProperty(el) &&
                 id == App.points[el].id) {
-                console.log("searching through points", el)
-                console.log(windows[el]);
+                //console.log("searching through points", el)
+             //   console.log(windows[el]);
                 return windows[el];
             }
         }
@@ -44,7 +44,7 @@ var campusMap = (function(){
     var putAllPointsOnMap = function(data) {
         for (var i in data) {
             if (data.hasOwnProperty(i)){
-                console.log('adding', i);
+                //console.log('adding', i);
                 var point = data[i],
                     latlng = new google.maps.LatLng(point.lat,point.lng);
                 bounds.extend(latlng);
@@ -164,7 +164,7 @@ var campusMap = (function(){
 
 
     $(document).ready(function(){
-        console.log('loading campus map');
+      //  console.log('loading campus map');
 
         $('#hamSplash .mobilenav.search').tap(function() {
 
@@ -187,10 +187,10 @@ var campusMap = (function(){
             .done(function(data) {
                 //loadPoints(data);
                 fillFindList(data);
-                console.log('loaded locations.json');
+               // console.log('loaded locations.json');
                 App.points = data;
                 createInfoWins(data);
-                console.log(data);
+             //   console.log(data);
                 putAllPointsOnMap(data);
             }).error(function(jqXHR, textStatus, errorThrown){ console.log("error crit", errorThrown, textStatus, jqXHR); });
 

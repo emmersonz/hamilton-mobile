@@ -46,6 +46,7 @@ var grabRssFeed = function(url, callback, cacheBust, limit) {
 };
 
 
+
 // A function for logging error messages
 (function () {
   'use strict';
@@ -489,21 +490,19 @@ var diningJSONLoadOffline = function() {
     if (!defaultMealSet && cafe.dayparts[0].length > 0) { 
       $(".items .diningmenuholder").html('<li><font style="white-space:normal"><div class="alert info always tight">There are no current meals at this dining hall, please select one above.</div></font></li>');
       $('.items .diningmenuholder').listview("refresh");
+         // necessary to apply styling to navbar (meal buttons)
+        $('[data-role="navbar"]').navbar(); 
     }
-    
     // no meals in the day at all
     else if (cafe.dayparts[0].length === 0) { 
 //      $(".items .diningmenuholder").html('<li><font style="white-space:normal"><div class="alert info always tight">We could not find any meals today for this dining hall.</div></font></li>');
 //      $('.items .diningmenuholder').listview("refresh");
         $(".menu-not-loaded").fadeIn(1000);
         $(".menu-not-loaded").fadeOut(1000);
+    }else {
+         $('[data-role="navbar"]').navbar(); 
     }
-
-    // necessary to apply styling to navbar (meal buttons)
-    $('[data-role="navbar"]').navbar(); 
-
     $(".meals").css("display", "block");
-
     // leave the meals/items view and return to dining hall list
     var goBack = function(){ 
       $("#diningmenus .menu-show").css("display", "none");
@@ -767,16 +766,13 @@ var diningJSONLoadOffline = function() {
   function checkAudSet_success(tx, results){
     var audience = results.rows.item(0);
     if(audience.audienceID == null){
-      // $("#myPopup").popup("open");   
-    }
-    else{
-     // console.log("Audience pref was set already");  
-        }        
-    }
+      $("#myPopup").popup("open");   
+    }      
+  }
     
   function checkAudSet_fail(tx, results){
-     // console.log("Audpref table doesn't exist yet");
-      $("#myPopup").popup("open");   
+    // console.log("Audpref table doesn't exist yet");
+     // $("#myPopup").popup("open");   
   }
   
     
@@ -792,7 +788,7 @@ var diningJSONLoadOffline = function() {
     
   /* Author: Emmerson Zhaime    
   // Gets all the information for the icons for a given audience preference and calls a function to make the homepage
-   */
+   
   function getAudIcons(tx, results){
       var audience = results.rows.item(0);
       var audienceID = audience.audienceID;
@@ -801,17 +797,17 @@ var diningJSONLoadOffline = function() {
       db.transaction(function(tx){
           tx.executeSql(sql, [], makeHomePage);
       });
-  }
+  }*/
     
   
    /* Author: Emmerson Zhaime
   This is supposed to be the function that makes a homepage from a list of icon information. Now it is just printing all the icons information in the console
   */
-  function makeHomePage(tx, results){
+ /*  function makeHomePage(tx, results){
     var len = results.rows.length;
 //    console.log("length: "+ len);
   }
-  
+  */
 
 /*
   This function deleted the audience preference that exists and calls a function that insert a new audience preference
@@ -863,7 +859,7 @@ $(document).on('click','#audlist li a',function(event, data){
   function createAudiencePopup(tx) {
       var sql = "SELECT appAudience FROM audience WHERE isActive = 1";
       db.transaction(function (tx) {
-      tx.executeSql(sql, [], createAudiencePopup_success);
+      tx.executeSql(sql, [], createAudiencePopup_success, function failure(tx, result){console.log("failed to get audience")});
     });
       
   }
@@ -899,7 +895,7 @@ $(document).on('click','#audlist li a',function(event, data){
      as options in the settings menu.
   */
   function createAudienceForm(tx) {
-      var sql = "SELECT appAudience FROM audience WHERE isActive = 1";
+      var sql = "SELECT id,appAudience FROM audience WHERE isActive = 1";
       db.transaction(function (tx) {
       tx.executeSql(sql, [], createAudienceForm_success);
     });
@@ -918,7 +914,7 @@ $(document).on('click','#audlist li a',function(event, data){
       }
       
       // Add the audience buttons to the form via a template
-      var audienceTemplate = '<input type="radio" name="audiencelist" id="choice-${appAudience}" value="off"><label for="choice-${appAudience}">${appAudience}</label>'
+      var audienceTemplate = '<input type="radio" name="audiencelist" id="${id}" value="off"><label for="${id}">${appAudience}</label>'
       var audForm = $('#audienceform');
       audForm.html('');
       $.template("audTemp", audienceTemplate)
@@ -948,7 +944,7 @@ $(document).on('click','#audlist li a',function(event, data){
   */
   function selectAudienceRadioBttn_success(tx, results) {
       var audID = results.rows.item(0)["audienceID"]
-      var sql = "SELECT appAudience FROM audience WHERE id='" + audID+"'";
+      var sql = "SELECT id,appAudience FROM audience WHERE id='" + audID+"'";
       db.transaction(function(tx){
           tx.executeSql(sql, [], selectCurrentAudience);
       });
@@ -959,8 +955,9 @@ $(document).on('click','#audlist li a',function(event, data){
      Preselects the current audience in the settings menu. 
   */
   function selectCurrentAudience(tx, results) {
-      var currentAudience = results.rows.item(0)['appAudience'];
-      $('#choice-' + currentAudience).attr("checked",true).checkboxradio("refresh");
+
+      var currentAudience = results.rows.item(0)['id'];
+      $('#' + currentAudience).attr("checked",true).checkboxradio("refresh");
   }
    
   /* FUNCTION audienceFormClickHandlers
@@ -971,11 +968,10 @@ $(document).on('click','#audlist li a',function(event, data){
   function audienceFormClickHandlers() {
       $('input[name="audiencelist"]').change(function () {
           //console.log("CLICKED " + $(this).attr('id'));
-          var newAudience = $(this).attr('id').split('-')[1];
-        //  console.log(newAudience);
+          var newAudience = $(this).attr('id');
           
           // Update the audPrefs table with the new preferred audience
-          var sql = "SELECT id FROM audience WHERE appAudience ='" + newAudience + "'";
+          var sql = "SELECT id FROM audience WHERE id ='" + newAudience + "'";
           db.transaction(function (tx) {
               tx.executeSql(sql, [], updateAudiencePref);
           });
@@ -998,6 +994,9 @@ $(document).on('click','#audlist li a',function(event, data){
       var randID = guid();
       tx.executeSql('INSERT INTO audPrefs (id,audienceID) VALUES (?,?)', 
                     [randID, newAudID]);
+        //$("#audchange").fadeIn(1000);
+        //$("#audchange").fadeOut(1000);
+          $.mobile.changePage( "#home", { transition: "slide"} );
     });
       
   }
@@ -1040,14 +1039,16 @@ function makeHomePage(tx, results) {
         }
         
         // Code to be templated
-        var iconTemplate = '<li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon ${navAddClass}" href= ${navLink}><img src="icons/${navIcon}" class="imgResponsive svg-width ${navAddClass}-width svg"/><br>${navTitle}</a></li>';
+        var iconTemplate = '<li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon ${navAddClass}" href= ${navLink}><img src="icons/${navIcon}" class="replaced-svg imgResponsive svg-width ${navAddClass}-width svg"/><br>${navTitle}</a></li>';
         
         // Creating templated code, adding to icon container on homepage
         $.template("buttonTemplate", iconTemplate);
         $.tmpl("buttonTemplate", iconList).appendTo('#home-all-icons'); 
-        
+        $('#home-all-icons').append($('<li class="icon-float ui-block-2x-height weathericon"><a class="ui-btn homeicon weather-anchor"><div id="weather"></div></a></li>'))
+    
         // Formatting icon svgs
         refreshSVGs();
+        getWeather();
     }
 
 //-----------------------------------------------------------------------------//    
@@ -1096,13 +1097,10 @@ function makeHomePage(tx, results) {
   }
 
   function onDeviceReady() {
-    // Mock device.platform property if not available
-    if (!window.device) {
-      window.device = {
-        platform: 'Browser'
-      };
-    }
-
+        $(document).on('click', 'a[href^="http"],a[href^="https"]', function (e) {
+            e.preventDefault();
+            window.open(this.href, '_system');
+        });
   document.addEventListener("resume", onResume, false);
   }
 
@@ -1122,55 +1120,23 @@ function makeHomePage(tx, results) {
   // There is a delay in mobile browsers of 300ms.  
   // Remove it using FastClick. For when we open a browser from
   // the browser.
-  $(function () {
-    FastClick.attach(document.body);
-  });
+ //$(function () {
+//    FastClick.attach(document.body);
+      //alert('fast click attached');
+  //});
     
-  // had to add handlers for external links for in app browser nonsense
+// had to add handlers for external links for in app browser nonsense
   function handleExternalURLs() {
-
-    if (device.platform === null) {
-      $(document).on('click', 'a[href^="http"]', function (e) {
-        e.preventDefault();
-        var url = $(this).attr('href');
-        window.open(url, '_system');
-        return false;
-      });
-    }
+      window.addEventListener('load', function () {    
+    $(document).on('click', 'a[target="_system"],a[target="_blank"]', function (e) {
+            e.preventDefault();
+            var url = this.href;
+            window.open(url,"_system");                    
+    });
+    //}
+}, false);
       
-      
-    // want to be in-app
-    else if (device.platform.toUpperCase() === 'ANDROID') {
-      $(document).on('click', 'a[href^="http"]', function (e) {
-          
-        // Don't let the event do it's normal thing... instead...
-        e.preventDefault();
-        
-        // Open the event in a 
-        var url = $(this).attr('href');
-        navigator.app.loadUrl(url, { openExternal: true });
-        return false;
-      });
-    }
-    else if (device.platform.toUpperCase() === 'IOS') {
-      $(document).on('click', 'a[href^="http"]', function (e) {
-        e.preventDefault();
-        var url = $(this).attr('href');
-          
-        // Open in-app
-        window.open(url, '_blank');
-        return false;
-      });
-    }
-    else {
-      $(document).on('click', 'a[href^="http"]', function (e) {
-        e.preventDefault();
-        var url = $(this).attr('href');
-        window.open(url, '_system');
-        return false;
-      });
-    }
-  }
+}
 
 //-------------------------DATABASE TABLE CREATION---------------------------//
     
@@ -1293,26 +1259,8 @@ function makeHomePage(tx, results) {
         
             });
       
-    }    
+    } 
 
-    
-  /* Pull full JSON Feed */
-  function loadFullJson() {
-      //console.log("loadfullJSON");
-    $.getJSON("https://www.hamilton.edu/apppages/ajax/getalldataforTy.cfm", function (data) {
-      if (data.audience.length > 0) {
-       // console.log("data.audience.length > 0");
-        loadAudienceJson(data.audience);
-      }
-      if (data.navigation.length > 0) {
-        loadNavigationJson(data.navigation);
-      }
-      if (data.navtoaud.length > 0) {
-        loadNavToAudJson(data.navtoaud);
-      }
-    });
-  }
-  
 
 /* FUNCTION loadAudienceJson
    Builds the audience db table */
@@ -1371,12 +1319,21 @@ function loadNavToAudJson(data) {
   }   
 
   //-------------------------------PAGE EVENTS-----------------------//
-    
+    if (!!window.cordova) {
+            document.addEventListener('deviceready', onDeviceReady, false);
+}
   // Load the app. This is what happens when you load the app for the first time after it was
   // either killed by OS or user.
   $(document).on("pagecontainerbeforechange", function (event, ui) {
     onDeviceReady(); // Wait for the device to be safe to use
-    handleExternalURLs();// Set the means of how to open new pages.
+    //window.addEventListener('load', function () {    
+       // $(document).on('click', 'a[href^="http"],a[href^="https"]', function (e) {
+      //      e.preventDefault();
+       //     var url = this.href;
+       //     window.open(url,"_blank");                    
+    //    });
+//}, false);
+    //handleExternalURLs();// Set the means of how to open new pages.
   });
     
   // A pageshow handler for the phonenums db. Currently empty cuz.
@@ -1406,11 +1363,41 @@ function loadNavToAudJson(data) {
           BuildAudienceTable();
           BuildContentTables();
           //get the content and add it.
-          loadFullJson();               // Then create the other tables
+            /* Pull full JSON Feed */
+          var loaded=$.getJSON("https://www.hamilton.edu/apppages/ajax/getalldata.cfm", function (data) {
+              if (data.audience.length > 0) {
+              // console.log("data.audience.length > 0");
+                loadAudienceJson(data.audience);
+              }
+              if (data.navigation.length > 0) {
+                loadNavigationJson(data.navigation);
+              }
+              if (data.navtoaud.length > 0) {
+                loadNavToAudJson(data.navtoaud);
+              }
+          });
+          loaded.done(function(data){
+             createAudiencePopup();
+             $("#myPopup").popup("open");
+          });
         } else {
         //  console.log("callback != 0");
           //check versions then load whatever content you want here? or maybe just all for now just all
-          loadFullJson();
+          // loadFullJson();
+          $.getJSON("https://www.hamilton.edu/apppages/ajax/getalldata.cfm", function (data) {
+              if (data.audience.length > 0) {
+              // console.log("data.audience.length > 0");
+                loadAudienceJson(data.audience);
+              }
+              if (data.navigation.length > 0) {
+                loadNavigationJson(data.navigation);
+              }
+              if (data.navtoaud.length > 0) {
+                loadNavToAudJson(data.navtoaud);
+              }
+          });
+          //createAudiencePopup();
+          checkAudSet();
         }
       }, table);
     
@@ -1430,6 +1417,7 @@ function loadNavToAudJson(data) {
       // do something else
         
     }
+    
   });
     
   // Load the phone numbers for the contacts menu. Gets info from db.
@@ -1592,18 +1580,17 @@ function loadNavToAudJson(data) {
     var htmlcontent = $('#' + pageid + '>.ui-content>.iscroll-scroller>.iscroll-content div').text();
     $('#' + pageid + '>.ui-content>.iscroll-scroller>.iscroll-content').html('').html(htmlcontent);
   });
-
-//RSS UPDATE    
+  
+//RSS UPDATE  - this function is abadoned  
   var initRSSList = function(name, url){
     var eventList = $('<ul data-role="listview" class="widelist" id="' + name + 'Listview"></ul>');
     grabRssFeed(url,
       function(data){
-       // console.log(data);
         data.feed.entries.forEach(function(el) {
-          var contab = $('<a class="ui-link"></a>').attr('href', el.link);
+          var contab = $('<a class="ui-link"></a>').attr('href', el.link).attr("target", "_blank");
           contab.append($('<div class="title">' + el.title + '</div>'));
           
-          var momentDate = moment(el.publishedDate, 'ddd, DD MMM YYYY hh:mm:ss Z');
+          var momentDate = moment(el.publisheddate, 'ddd, DD MMM YYYY hh:mm:ss Z');
           // This hardcodes the parse format of the date as it is encoded in the rss
           // feed. For events (i.e. 25live) this is beyond our control and may change.
           // Moment deprecated the date interpreting system (where it would just
@@ -1611,7 +1598,7 @@ function loadNavToAudJson(data) {
           // new Date(el.publishedDate) but that is generally unreliable as it is
           // highly browser-specific and not well documented.
           
-          contab.append($('<span class="date">' + momentDate.format("MMM D YYYY, h:mma") + '</span>'));
+          contab.append($('<span class="date">' + momentDate.format("MMM D YYYY") + '</span>'));
           contab.append($('<div class="desc">' + el.contentSnippet + '</div>'));
 
           eventList.append($('<li/>').append(contab));
@@ -1621,40 +1608,82 @@ function loadNavToAudJson(data) {
         rssFeedObj.enhanceWithin();
 
         $('#'+name+'Listview').listview("refresh");
-        $('#'+name+' .eventsholder').iscrollview('refresh');
+       $('#'+name+' .eventsholder').iscrollview('refresh');
         
       }
     );
   };
 
+   
+  
+function RSSBuilder(name,data){
+     var eventList = $('<ul data-role="listview" class="widelist" id="' + name + 'Listview"></ul>');
+    data.rssresults.forEach(function(el) {
+           // var contab = $('<a class="ui-link"></a>').attr('href', el.rsslink).attr("target", "_system");
+           var contab = $('<a class="ui-link"></a>').attr('href', el.rsslink);
+              contab.append($('<div class="title">' + el.title + '</div>'));
+               var momentDate = moment(el.publisheddate, 'ddd, DD MMM YYYY hh:mm:ss Z');
+              // This hardcodes the parse format of the date as it is encoded in the rss
+              // feed. For events (i.e. 25live) this is beyond our control and may change.
+              // Moment deprecated the date interpreting system (where it would just
+              // figure out the date). If this format spec stops working, you may use 
+              // new Date(el.publishedDate) but that is generally unreliable as it is
+              // highly browser-specific and not well documented.
+              contab.append($('<span class="date">' + momentDate.format("MMM D YYYY") + '</span>'));
+              //contab.append($('<div class="desc">' + el.content + '</div>'));
+              eventList.append($('<li/>').append(contab));
+            });
+        var rssFeedObj = $('#'+name+' .rssFeed');
+        rssFeedObj.html(eventList);
+        rssFeedObj.enhanceWithin();
+       $('#'+name+'Listview').listview("refresh");
+       $('#'+name+' .eventsholder').iscrollview('refresh');
+}
+ var RSSList = function(name, url){
+     var limit =15;
+       var api = "https" +"://www.hamilton.edu/apppages/ajax/getrssnew.cfm?z=" +url;
+        api += "&num=" + ((limit == null) ? 10 : limit);
+        api += "&output=json_xml";
+      $.getJSON(api, function(data){
+          if (data.rssresults.length > 0) {
+            RSSBuilder(name,data);
+          } else {
+            // Handle error if required
+            var msg = "There has been an error.";
+         //   console.log(msg);
+          }
+        }
+      );
+  };
+  
   //news rss load and rebind
   $(document).on('pagebeforeshow', '#news', function (e, data) {
-    initRSSList('news', 'http://students.hamilton.edu/rss/articles.cfm?item=A9AAF6B5-FB82-2ADF-26A75A82CDDD1221');
+   RSSList('news', 'spec');
   });
   $(document).on('pagebeforeshow', '#ham-news', function (e, data) {
-    initRSSList('ham-news', 'https://www.hamilton.edu/news/rss/news.cfm?tag=news%20item');
+   RSSList('ham-news', 'hamnews');
   });
 
 
 //EVENTS
   $(document).on('pagebeforeshow', '#events', function (e, data) {
-    initRSSList('events', 'https://25livepub.collegenet.com/calendars/hamilton-college-open-to-the-public.rss');
+    RSSList('events', '25livepublic');
   });
     
 //ATHLETICS    
   $(document).on('pagebeforeshow', '#athleticEvents', function (e, data) {
-    initRSSList('athleticEvents', 'http://25livepub.collegenet.com/calendars/Hamilton_College_Athletic_Competitions.rss');
+   RSSList('athleticEvents', '25liveAth');
   });
 
 //EVENTS >> ART EVENTS
   $(document).on('pagebeforeshow', '#artEvents', function (e, data) {
-    initRSSList('artEvents', 'http://25livepub.collegenet.com/calendars/hamilton-college-performances.rss');
+   RSSList('artEvents', '25livePerf');
       
   });
    
 //EVENTS >> ALUMNI EVENTS    
   $(document).on('pagebeforeshow', '#alumniEvents', function (e, data) {
-    initRSSList('alumniEvents', 'http://25livepub.collegenet.com/calendars/hamilton-college-alumni-and-parent-events.rss');
+   RSSList('alumniEvents', '25liveParent');
   });
   
   $(document).on('pageshow', function() {
@@ -1694,12 +1723,21 @@ function loadNavToAudJson(data) {
   
   var songUpdateInterval;
   var updateSong = function() {
-    grabRssFeed('http://spinitron.com/public/rss.php?station=whcl', function(data){
-      var el = $(this);
-
-      $('#song-container').text(data.feed.entries[0].title);
-
-    }, true, 1);
+       var limit =1;
+      var url ='whcl';
+       var api = "https" +"://www.hamilton.edu/apppages/ajax/getrssnew.cfm?z=" +url;
+        api += "&num=" + ((limit == null) ? 1: limit);
+        api += "&output=json_xml";
+      $.getJSON(api, function(data){
+          if (data.rssresults.length > 0) {
+             $('#song-container').text(data.rssresults[0].title);
+          } else {
+            // Handle error if required
+            var msg = "There has been an error.";
+         //   console.log(msg);
+          }
+        }
+      );
   };
     
   var showStart;
@@ -1765,6 +1803,10 @@ function loadNavToAudJson(data) {
         // Add today's day of the week as the header
         var days = ["Monday", "Tuesday", "Wednesday", "Thursday", 
                         "Friday", "Saturday", "Sunday"];
+        
+        if (thisDayCode === 0)
+            thisDayCode = 7;
+
         $("#whcl-schedule-list").append("<li data-role='list-divider' role='heading'" + 
                                         " class='ui-li-divider ui-bar-inherit'>" + 
                                         days[thisDayCode - 1] + "</li>")
@@ -1843,9 +1885,9 @@ function loadNavToAudJson(data) {
     clearInterval(showUpdateInterval);
   });
     
-$(document).on('pageshow', '#home', function (e, data) {
-      checkAudSet();
-  });
+/*$(document).on('pageshow', '#home', function (e, data) {
+       checkAudSet();
+  }); */
     
 $(document).on('pageshow', '#hamiltonPage', function (){
               $.mobile.changePage( "#home", { transition: "none"} );
@@ -1856,7 +1898,19 @@ $(document).on('pageshow', '#hamiltonPage', function (){
        var table = 'audience';
       getPrefAud(e, data);
   });
-      
+  function getWeather() {
+      $.getJSON("https://www.hamilton.edu/appPages/ajax/getweather.cfm", function (data) {  
+          var el = JSON.parse(data);
+          var imgDisp = $('<img>').attr('src', 'http://openweathermap.org/img/w/'+el.code+'.png');
+          var tempDisp = $('<div/>').addClass('weather-text').html(Math.round(el.temp) + '&deg;F');
+          var weatherEl = $("#weather");
+          weatherEl.empty();
+          weatherEl.append(imgDisp);
+          weatherEl.append(tempDisp);
+        });
+};
+        
+  
   function refreshSVGs(e, data) {
       //console.log("refresh SVGS");
       jQuery('img.svg').each(function(){
