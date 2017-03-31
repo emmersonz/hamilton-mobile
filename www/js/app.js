@@ -15,6 +15,7 @@ var gotSong = function(data) {
   });
 };
 
+
 /* FUNCTION grabRssFeed
    Sends a JSON request for the RSS Feed    
    Checks if there was an error fulfilling the request 
@@ -770,11 +771,7 @@ var diningJSONLoadOffline = function() {
   }
     
   function checkAudSet_fail(tx, results){
-<<<<<<< HEAD
     // console.log("Audpref table doesn't exist yet");
-=======
-     console.log("Audpref table doesn't exist yet");
->>>>>>> origin/master
      // $("#myPopup").popup("open");   
   }
   
@@ -1053,21 +1050,6 @@ function makeHomePage(tx, results) {
         refreshSVGs();
         getWeather();
     }
-
-//-----------------------------------------------------------------------------//    
-
-  function getscrollHTML() {
-    $.ajax({
-                type:'post',url:'https://www.hamilton.edu/thescroll/appview.cfm'
-                ,data:{}
-                ,success:function(data, textStatus,e){
-                    $('#scrollstories').empty().append(data).show();
-                   
-                }
-                }).done(function( e ) {
-                     $('#scrollcontent').iscrollview("refresh");
-                });
-  }
 
 
   function ckTable(tx, callBack, table) {
@@ -1367,11 +1349,7 @@ function loadNavToAudJson(data) {
           BuildContentTables();
           //get the content and add it.
             /* Pull full JSON Feed */
-<<<<<<< HEAD
           var loaded=$.getJSON("https://www.hamilton.edu/apppages/ajax/getalldata.cfm", function (data) {
-=======
-          var loaded=$.getJSON("https://www.hamilton.edu/apppages/ajax/getalldataforTy.cfm", function (data) {
->>>>>>> origin/master
               if (data.audience.length > 0) {
               // console.log("data.audience.length > 0");
                 loadAudienceJson(data.audience);
@@ -1391,11 +1369,7 @@ function loadNavToAudJson(data) {
         //  console.log("callback != 0");
           //check versions then load whatever content you want here? or maybe just all for now just all
           // loadFullJson();
-<<<<<<< HEAD
           $.getJSON("https://www.hamilton.edu/apppages/ajax/getalldata.cfm", function (data) {
-=======
-          $.getJSON("https://www.hamilton.edu/apppages/ajax/getalldataforTy.cfm", function (data) {
->>>>>>> origin/master
               if (data.audience.length > 0) {
               // console.log("data.audience.length > 0");
                 loadAudienceJson(data.audience);
@@ -1407,11 +1381,7 @@ function loadNavToAudJson(data) {
                 loadNavToAudJson(data.navtoaud);
               }
           });
-<<<<<<< HEAD
           //createAudiencePopup();
-=======
-          createAudiencePopup();
->>>>>>> origin/master
           checkAudSet();
         }
       }, table);
@@ -1450,12 +1420,6 @@ function loadNavToAudJson(data) {
   $(document).on('pagebeforeshow', '#contactdetails', function(){   
       loadContactDetails(contactListObject.itemID);
   });
-
-// Load the scroll HTML for the Scroll view. Gets info from db.   
- $(document).on('pagebeforeshow', '#scroll', function (e, data) {
-     getscrollHTML();
-  });
-
   // Load the dining menu to the screen.
   $(document).on('pagebeforeshow', '#diningmenus', function (e, data) {
     //loadDiningJSON();
@@ -1913,6 +1877,7 @@ $(document).on('pageshow', '#hamiltonPage', function (){
        var table = 'audience';
       getPrefAud(e, data);
   });
+    
   function getWeather() {
       $.getJSON("https://www.hamilton.edu/appPages/ajax/getweather.cfm", function (data) {  
           var el = JSON.parse(data);

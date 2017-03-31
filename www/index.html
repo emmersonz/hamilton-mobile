@@ -34,12 +34,14 @@
     <script src="js/utils.js" type="text/javascript"></script>
     <script src="js/moment.min.js" type="text/javascript"></script>
     <script src="js/bbplayer.js" type="text/javascript"></script>
+    
     <script src="phonegap.js"></script>
  <meta http-equiv="Content-Security-Policy" 
-         content="default-src * 'self' gap://*; 
+         content="default-src *  gap://* https://*.hamilton.edu/; 
                   style-src * 'self' 'unsafe-inline' ; 
-                  script-src 'self' http://*.google.com http://*.googleapis.com/ https://query.yahooapis.com https://*.hamilton.edu 'unsafe-eval' http://spinitron.com http://150.209.66.147:8000/ http://legacy.cafebonappetit.com/ http://150.209.65.30:80/ https://*.facebook.com/ 'unsafe-inline' data:;
-                  img-src 'self' http://openweathermap.org/ https://*.facebook.com/  https://*.fbcdn.net/ https://pbs.twimg.com/ https://scontent.cdninstagram.com http://*.googleapis.com/  http://*.google.com/ https://*.hamilton.edu/ http://*.hamilton.edu/ http://150.209.65.30:80/ http://maps.gstatic.com/ http://csi.gstatic.com/ data:;">
+                  script-src 'self' http://*.tagboard.com http://*.google.com http://*.youtube.com http://*.googleapis.com/ https://query.yahooapis.com https://*.hamilton.edu 'unsafe-eval' http://spinitron.com http://150.209.66.147:8000/ http://legacy.cafebonappetit.com/ http://150.209.65.30:80/ https://*.facebook.com/ 'unsafe-inline' data:;
+                  img-src 'self' http://openweathermap.org/ https://*.facebook.com/ http://*.google.com https://*.fbcdn.net/ https://pbs.twimg.com/ https://scontent.cdninstagram.com http://*.googleapis.com/  http://*.google.com/ https://*.hamilton.edu/ http://*.hamilton.edu/ http://150.209.65.30:80/ http://maps.gstatic.com/ http://csi.gstatic.com/ data:;">
+    
 </head>
 <body style="height:auto">
 <div id="container">
@@ -645,17 +647,15 @@
                     <i class="fa fa-arrow-left fa-2x house" style="padding:0"></i>
                 </a>
                 <h1>The Scroll</h1>
+            </div>         
+            <div data-role="content" class="ui-content iframewrapper" style="height:5000px;"> 
+               
+                     <iframe src="https://s3.amazonaws.com/mediacdn.hamilton.edu/static/appScroll.html" style="position:absolute;top:75px; left:0; right:0; border: none" height="100%" width="100%" frameborder="0" scrolling="yes"></iframe>
+           
+                     
             </div>
-            <!-- might need to mess with height stretching more -->
-            
-            <!-- Where The Scroll stories HTML gets inserted -->
-            <div class="ui-content" id="scrollcontent"data-role="content" data-iscroll="">
-                <div id="scrollstories"></div>
             </div>
         </div>
     </div>
-</div>
-      
-      
 </body>
 </html>

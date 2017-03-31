@@ -3,8 +3,8 @@
 <widget xmlns = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
         id        = "edu.hamilton.ihamilton-ionic"
-         versionCode="72"
-        version   = "1.6.19">
+         versionCode="73"
+        version   = "1.6.20">
 
   <name>Hamilton Mobile</name>
 
@@ -26,6 +26,8 @@
     <platform name="android">
         <allow-intent href="market:*" />
     </platform>
+    <allow-navigation href="https://static.tagboard.com" />
+    <allow-navigation href="https://embeds.tagboard.com" />
     <allow-navigation href="https://*google.com/*"/>
     <platform name="ios">
         <allow-intent href="itms:*" />
