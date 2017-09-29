@@ -3,8 +3,8 @@
 <widget xmlns = "http://www.w3.org/ns/widgets"
         xmlns:gap = "http://phonegap.com/ns/1.0"
         id        = "edu.hamilton.ihamilton-ionic"
-         versionCode="73"
-        version   = "1.6.20">
+         versionCode="77"
+        version   = "1.6.24">
 
   <name>Hamilton Mobile</name>
 
@@ -13,7 +13,7 @@
   </description>
 
   <author href="http://hamilton.edu" email="webhelp@hamilton.edu">
-     Ryan Woo, Emmerson Zhaime, Ty Torregrosa, Lyndsay LaBarge, Mykhailo Antoniv, Katherine Droppa, Sam Kotlove, Chris Lee, Noah Lowenthal, Don Stayner, and Jim Thomson
+     Ryan Woo, Emmerson Zhaime, Ty Torregrosa, Lyndsay LaBarge, Mykhailo Antoniv, Katherine Droppa, Sam Kotlove, Chris Lee, Noah Lowenthal,Mike Sprague, Don Stayner, and Jim Thomson
   </author>
     <content src="index.html" />
     <access origin="*" />

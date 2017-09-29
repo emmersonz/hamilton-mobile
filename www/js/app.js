@@ -71,6 +71,7 @@ var audDB;
 function setupDB() {    
     db = window.openDatabase("appContentsDB", "1.0", "HamiltonCollege", 200000);
     audDB = window.openDatabase("appAudience", "", "HamiltonCollege", 50000);
+   // console.log(audDB);
   }
 
 //-------------------------DINING MENU FUNCTIONS---------------------------------//
@@ -194,32 +195,35 @@ var updateDiningHallHours = function(data) {
         var endtime12hr = "";
           
         // Goes through each meal for a given dining hall on the current day
+        if (typeof cafe.dayparts[0] !== 'undefined') {    
         $.each(cafe.dayparts[0], function (id, meal) { 
-            // For each meal, parse the "dayparts" of the current meal
-            // into JavaScript dates 
-        
-            // Convert the time
-            var start = moment(meal.starttime,'HH:mma');
-            //var starttime12hr = start.format('h:mma');
-            var end = moment(meal.endtime,'HH:mma');
-            //endtime12hr = end.format('h:mma');
+                 // For each meal, parse the "dayparts" of the current meal
+                // into JavaScript dates 
+
+                // Convert the time
+                var start = moment(meal.starttime,'HH:mma');
+                //var starttime12hr = start.format('h:mma');
+                var end = moment(meal.endtime,'HH:mma');
+                //endtime12hr = end.format('h:mma');
 
 
-            var xnow = moment();
-        
-          // Is the current meal being offered now?
-          if (start.isBefore(xnow) && end.isAfter(xnow)) {
-            mealSet = true;
-            //console.log("meal has been set");
-            return false;
-          }
-        }); 
-          
-        
-        if (cafe.dayparts[0].length != 0) {
+                var xnow = moment();
+
+              // Is the current meal being offered now?
+              if (start.isBefore(xnow) && end.isAfter(xnow)) {
+                mealSet = true;
+                //console.log("meal has been set");
+                return false;
+              }
+            }); 
+              if (cafe.dayparts[0].length != 0) {
           cafeElement.find("a").removeClass("ui-disabled");
         } 
 
+        }
+          
+        
+      
         // Set the current cafe to closed or open depending on 
         // if the meal has been set
         if (mealSet) {
@@ -766,13 +770,12 @@ var diningJSONLoadOffline = function() {
   function checkAudSet_success(tx, results){
     var audience = results.rows.item(0);
     if(audience.audienceID == null){
-      $("#myPopup").popup("open");   
+         $.mobile.changePage( "#changeaudience");   
     }      
   }
     
   function checkAudSet_fail(tx, results){
-    // console.log("Audpref table doesn't exist yet");
-     // $("#myPopup").popup("open");   
+   $.mobile.changePage( "#changeaudience");   
   }
   
     
@@ -955,9 +958,11 @@ $(document).on('click','#audlist li a',function(event, data){
      Preselects the current audience in the settings menu. 
   */
   function selectCurrentAudience(tx, results) {
-
-      var currentAudience = results.rows.item(0)['id'];
-      $('#' + currentAudience).attr("checked",true).checkboxradio("refresh");
+      var audience = results.rows;
+      if(results.rows.length > 0){
+          var currentAudience = results.rows.item(0)['id'];
+          $('#' + currentAudience).attr("checked",true).checkboxradio("refresh");
+      }
   }
    
   /* FUNCTION audienceFormClickHandlers
@@ -1039,7 +1044,7 @@ function makeHomePage(tx, results) {
         }
         
         // Code to be templated
-        var iconTemplate = '<li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon ${navAddClass}" href= ${navLink}><img src="icons/${navIcon}" class="replaced-svg imgResponsive svg-width ${navAddClass}-width svg"/><br>${navTitle}</a></li>';
+        var iconTemplate = '<li class="icon-float ui-block-2x-height"><a class="ui-btn homeicon ${navAddClass}" href= "${navLink}"><img src="icons/${navIcon}" class="replaced-svg imgResponsive svg-width ${navAddClass}-width svg"/><br>${navTitle}</a></li>';
         
         // Creating templated code, adding to icon container on homepage
         $.template("buttonTemplate", iconTemplate);
@@ -1362,8 +1367,9 @@ function loadNavToAudJson(data) {
               }
           });
           loaded.done(function(data){
-             createAudiencePopup();
-             $("#myPopup").popup("open");
+               checkAudSet();
+            // createAudiencePopup();
+             //$("#myPopup").popup("open");
           });
         } else {
         //  console.log("callback != 0");
