@@ -1465,6 +1465,40 @@ function loadNavToAudJson(data) {
     });
   });
 
+    
+var DiningfeedbackSentDone = function(data, textStatus, jqXHR) {
+    if (jqXHR.status == 200) {
+      $("#Dfeedback-sent-popup").text(data);
+      $("#Dfeedback-sent-popup").popup("open");
+      $('#dfMeal').val('');
+      $('#dfLocation').val('');
+      $('#dfTime').val('');
+      $('#dfDescription').val('');
+      $('#dfEmail').val('');
+    // console.log("success!");
+    } else {
+   //   console.log("failure :(");
+    }
+  };
+    
+$(document).on('pagebeforeshow', '#dfpage', function (e, data) {
+    $('form.dining-feedback').submit(function(e){
+      e.preventDefault();
+      e.stopPropagation();
+
+      var xfer = $.ajax({
+        method: 'POST',
+        url: 'https://www.hamilton.edu/appPages/ajax/collectDiningFeedback.cfm',
+        data: {
+          meal: $('#dfMeal').val(),
+          location: $('#dfLocation').val(),
+          time: $('#dfTime').val(),
+          description: $('#dfDescription').val(),
+          email: $('#dfEmail').val(),
+        }
+      }).done(DiningfeedbackSentDone);
+    });
+  });
 
     
   var feedbackSentDone = function(data, textStatus, jqXHR) {
