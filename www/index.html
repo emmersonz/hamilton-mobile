@@ -130,6 +130,7 @@
              <div data-iscroll="" data-role="content" class="ui-content">
                 <p>This app was built through the collaboration of Hamilton College Student Assembly, LITS and Hamilton College Computer Science department. Below are the names of students and staff members who have worked on it thus far:</p>
                   <ul>
+                      <li>Mitchel Herman</li>
                       <li>Ryan Woo</li>
                       <li>Emmerson Zhaime</li>
                       <li>Ty Torregrosa</li>
@@ -139,7 +140,7 @@
                       <li>Sam Kotlove</li>
                       <li>Chris Lee</li>
                       <li>Noah Lowenthal</li>
-                       <li>Michael Sprague</li>
+                      <li>Michael Sprague</li>
                       <li>Don Stayner</li>
                       <li>Jim Thomson</li>
 
@@ -297,6 +298,37 @@
             <!-- /content -->
         </div>
 
+        <!--Dining Feedback Page-->
+        <div data-role="page" id="dfpage">
+            
+            <!--Dining Feedback Page Header-->
+            <div data-id="header" data-role="header" data-tap-toggle="false" class="pageheader">
+                <a class="back-btn" href="#diningmenus" data-transition="slide" data-direction="reverse" style="padding-bottom:0">
+                    <i class="fa fa-arrow-left fa-2x house" style="padding:0"></i>
+                </a>
+                <h1>Dining Feedback</h1>
+            </div>
+            
+            <form class ="dining-feedback">
+                <label for = "dfMeal">Meal</label>
+                <textarea name = "dfMeal" id = "dfMeal"></textarea>
+                <label for = "dfLocation">Location</label>
+                <textarea name = "dfLocation" id = "dfLocation"></textarea>
+                <label for = "dfTime">Time</label>
+                <textarea name = "dfTime" id = "dfTime"></textarea>
+                <label for = "dfDescription">Description</label>
+                <textarea name = "dfDescription" id = "dfDescription"></textarea>
+                <label for = "dfEmail">Email</label>
+                <textarea name = "dfEmail" id = "dfEmail"></textarea>
+                <button type="submit">Send</button> 
+                <div id="Dfeedback-sent-popup" data-role="popup" data-theme="a" data-overlay-theme="a" class="ui-content">
+                    Bug reported.
+                </div>
+            </form>       
+        </div>
+        
+        <!--/Dining Feedback Page-->
+        
         <!--DINING MENUS-->
         <div data-role="page" id="diningmenus">
             <div data-id="header" data-position="fixed" data-role="header" data-tap-toggle="false"  class="pageheader">
@@ -365,6 +397,7 @@
                         </tr>
                     </table>
                     
+                    
                 </div>
                 <ul data-role="listview" class="widelist diningmenuholder" style="padding-bottom:50px" data-filter="false">
                 
@@ -388,6 +421,8 @@
             </div><!-- /footer -->
             <!-- /content -->
         </div>
+        
+        <a href = #dfpage id = diningfeed>Feedback</a>
         <!--END DINING MENUS -->
         
 <!--EVENTS -->
