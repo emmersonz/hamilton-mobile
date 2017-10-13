@@ -16,7 +16,7 @@
     <link rel="alternate stylesheet" type="text/css" href="css/large.css" title="large">
     <link href="css/owl.carousel.css" rel="stylesheet">
     <link rel="stylesheet" href="css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/bbplayer.css">
+     <!--  <link rel="stylesheet" href="css/bbplayer.css">  -->
      <link rel="stylesheet" href="css/diningstickers.css">
 
 <link href='https://fonts.googleapis.com/css?family=Titillium+Web:200' rel='stylesheet' type='text/css'>
@@ -33,13 +33,13 @@
     <script src="js/app.js" type="text/javascript"></script>
     <script src="js/utils.js" type="text/javascript"></script>
     <script src="js/moment.min.js" type="text/javascript"></script>
-    <script src="js/bbplayer.js" type="text/javascript"></script>
+    <!--   <script src="js/bbplayer.js" type="text/javascript"></script>  -->
     
     <script src="phonegap.js"></script>
  <meta http-equiv="Content-Security-Policy" 
          content="default-src *  gap://* https://*.hamilton.edu/; 
                   style-src * 'self' 'unsafe-inline' ; 
-                  script-src 'self' http://*.tagboard.com http://*.google.com http://*.youtube.com http://*.googleapis.com/ https://query.yahooapis.com https://*.hamilton.edu 'unsafe-eval' http://spinitron.com http://150.209.66.147:8000/ http://legacy.cafebonappetit.com/ http://150.209.65.30:80/ https://*.facebook.com/ 'unsafe-inline' data:;
+                  script-src 'self' https://*.tagboard.com http://*.google.com http://*.youtube.com http://*.googleapis.com/ https://query.yahooapis.com https://*.hamilton.edu 'unsafe-eval' http://spinitron.com http://150.209.66.147:8000/ http://legacy.cafebonappetit.com/ http://150.209.65.30:80/ https://*.facebook.com/ 'unsafe-inline' data:;
                   img-src 'self' http://openweathermap.org/ https://*.facebook.com/ http://*.google.com https://*.fbcdn.net/ https://pbs.twimg.com/ https://scontent.cdninstagram.com http://*.googleapis.com/  http://*.google.com/ https://*.hamilton.edu/ http://*.hamilton.edu/ http://150.209.65.30:80/ http://maps.gstatic.com/ http://csi.gstatic.com/ data:;">
     
 </head>
@@ -91,7 +91,7 @@
                     <li><a id="audiencepref" href="#changeaudience">Change Audience</a></li>
                     <li><a id="authors" href="#authors">Authors</a></li>
                      <li><a id="feedback" href="#feedback-bug">Feedback / Bug Report</a></li>
-                    <li>App Version 1.6.24</li>
+                    <li>App Version 1.6.26</li>
                 </ul>
             </div>
         </div>
@@ -258,15 +258,15 @@
                     <span class="bb-play"></span>
                     
                     <!-- Get the audio stream from here. Downloads a stream pkg. -->
-                    <audio src="http://150.209.66.147:8000/stream/1/" preload="auto">
-                    </audio>
+                     <!-- <audio src="http://150.209.66.147:8000/" preload="auto">
+                    </audio>  -->
                 </div>
                 
                 <!-- The current show -->
                 <div class="whcl-item" id="current-whcl-info">
-                    <span id="current-whcl-show"></span>
+                   <!-- <span id="current-whcl-show"></span>
                     <br>
-                    <span class="whcl-song-title smgrey" id="song-container"></span>
+                    <span class="whcl-song-title smgrey" id="song-container"></span>-->
                 </div>
                 
                 <!-- Schedule -->
@@ -621,8 +621,8 @@
                 <h1>The Scroll</h1>
             </div>         
             <div data-role="content" class="ui-content iframewrapper" style="height:5000px;"> 
-               
-                     <iframe src="https://s3.amazonaws.com/mediacdn.hamilton.edu/static/appScroll.html" style="position:absolute;top:75px; left:0; right:0; border: none" height="100%" width="100%" frameborder="0" scrolling="yes"></iframe>
+               <!--
+                     <iframe src="https://s3.amazonaws.com/mediacdn.hamilton.edu/static/appScroll.html" style="position:absolute;top:75px; left:0; right:0; border: none" height="100%" width="100%" frameborder="0" scrolling="yes"></iframe> -->
            
                      
             </div>
