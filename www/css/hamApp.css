@@ -532,7 +532,14 @@ a.homeicon.ui-btn {
     margin-top: -10px;
     width: 37px;
 }
-
+.hub-width{
+    margin-top: 15px;
+    width: 37px;
+}
+.orientation-width{
+    margin-top: -6px;
+    width: 37px;
+}
 .scroll-width{
     padding-top: 4px;
     width: 25px !important;
